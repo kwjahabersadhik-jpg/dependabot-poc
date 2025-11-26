@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Web.Server", "src\CreditCardsSystem.Web\Server\CreditCardsSystem.Web.Server.csproj", "{3481E512-17EE-4524-9ECE-0901BAA39748}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Web.Client", "src\CreditCardsSystem.Web\Client\CreditCardsSystem.Web.Client.csproj", "{3F799E93-D87B-4FBB-ADE2-393FC93B4040}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Domain.Shared", "src\CreditCardsSystem.Shared\CreditCardsSystem.Domain.Shared.csproj", "{750011C0-9F1C-4439-A570-B299487B5363}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Application", "src\CreditCardsSystem.Application\CreditCardsSystem.Application.csproj", "{F2D606CA-7EB2-473B-B4DC-7D47EE6E3C34}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.ExternalService", "src\CreditCardsSystem.ExternalService\CreditCardsSystem.ExternalService.csproj", "{15133990-F41F-4C42-9DE3-6858056496E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{DE1D1836-0685-450B-8C1A-CB7AE642F4E3}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Utility", "src\CreditCardsSystem.Utility\CreditCardsSystem.Utility.csproj", "{0EFE4274-A784-4467-915F-9E0C364FA023}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Data", "src\CreditCardsSystem.Data\CreditCardsSystem.Data.csproj", "{523B1C3B-ED7B-4129-9682-B7877F314742}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardsSystem.Api", "src\CreditCardsSystem.API\CreditCardsSystem.Api.csproj", "{204B4FAA-FE59-45C2-8D9E-320425892995}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3481E512-17EE-4524-9ECE-0901BAA39748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3481E512-17EE-4524-9ECE-0901BAA39748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3481E512-17EE-4524-9ECE-0901BAA39748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3481E512-17EE-4524-9ECE-0901BAA39748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F799E93-D87B-4FBB-ADE2-393FC93B4040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F799E93-D87B-4FBB-ADE2-393FC93B4040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F799E93-D87B-4FBB-ADE2-393FC93B4040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F799E93-D87B-4FBB-ADE2-393FC93B4040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{750011C0-9F1C-4439-A570-B299487B5363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750011C0-9F1C-4439-A570-B299487B5363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750011C0-9F1C-4439-A570-B299487B5363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750011C0-9F1C-4439-A570-B299487B5363}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2D606CA-7EB2-473B-B4DC-7D47EE6E3C34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2D606CA-7EB2-473B-B4DC-7D47EE6E3C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2D606CA-7EB2-473B-B4DC-7D47EE6E3C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2D606CA-7EB2-473B-B4DC-7D47EE6E3C34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15133990-F41F-4C42-9DE3-6858056496E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15133990-F41F-4C42-9DE3-6858056496E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15133990-F41F-4C42-9DE3-6858056496E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15133990-F41F-4C42-9DE3-6858056496E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EFE4274-A784-4467-915F-9E0C364FA023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EFE4274-A784-4467-915F-9E0C364FA023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EFE4274-A784-4467-915F-9E0C364FA023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EFE4274-A784-4467-915F-9E0C364FA023}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523B1C3B-ED7B-4129-9682-B7877F314742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523B1C3B-ED7B-4129-9682-B7877F314742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523B1C3B-ED7B-4129-9682-B7877F314742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523B1C3B-ED7B-4129-9682-B7877F314742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{204B4FAA-FE59-45C2-8D9E-320425892995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204B4FAA-FE59-45C2-8D9E-320425892995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204B4FAA-FE59-45C2-8D9E-320425892995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204B4FAA-FE59-45C2-8D9E-320425892995}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E9C457DD-3789-4A1D-B8FA-87766BFF3EB0}
+	EndGlobalSection
+EndGlobal
