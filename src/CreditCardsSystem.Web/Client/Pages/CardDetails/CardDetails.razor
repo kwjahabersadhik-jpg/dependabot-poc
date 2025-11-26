@@ -1,0 +1,258 @@
+﻿@page "/card-detail"
+
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@inject ICardDetailsAppService cardDetailsAppService;
+@inject NavigationManager navigationManager;
+
+
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Skeletons
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance
+@using CreditCardsSystem.Utility.Extensions
+@using Kfh.Aurora.Utilities
+
+@inherits ApplicationComponent
+
+
+<PageTitle>Credit Card Detail</PageTitle>
+<div class="main-container">
+    <div class="AO-flex--container mt-1">
+        <div class="AO-left80--container">
+            <div class="AO-left100--container">
+                <div class="breadcrumb-stickyHeader mt-2">
+                    <TelerikBreadcrumb Data="@BreadcrumbItems"></TelerikBreadcrumb>
+
+                    @* <TelerikSkeleton Width="240px" Height="30px" Visible="true" class="AO-skeleton-rectangle AO-cardInfo-skeleton"> </TelerikSkeleton> *@
+                    <div class="cc-accountStatement-header ">
+                        <div class="d-flex align-items-center flex-row gp-16">
+                            <div>
+                                <picture>
+                                    <source srcset="" />
+                                    @* Image thumbnail is hardcoded need to be dynamic *@
+                                    @{
+                                        string cardImage = GetCreditCardImage(cardDetailsState.MyCard?.Data?.CardType);
+                                    }
+                                    <img style="width: 150px; display: block" src="@cardImage" onerror="if (this.src != '@cardImage') this.src = '@DefaultImage';" />
+
+                                </picture>
+                            </div>
+                            <div>
+                                <H2 class="my-2">@DisplayCardNumber(cardDetailsState?.MyCard?.Data?.CardNumberDto)</H2>
+                                <H5 class="my-2">@cardDetailsState?.MyCard?.Data?.ProductName</H5>
+
+                                @if (cardDetailsState?.MyCard.Status == DataStatus.Loading)
+                                {
+                                    <TelerikLoader Class="loader-indicator" Type="LoaderType.Pulsing" Size="@(ThemeConstants.Loader.Size.Small)"></TelerikLoader>
+                                }
+                                else
+                                {
+                                    var cardStatus = cardDetailsState?.MyCard.Data?.CardStatus ?? CreditCardStatus.Pending;
+                                    <Status StatusClass="@Helpers.GetStatusClass(cardStatus)" StatusTitle="@cardStatus.ToString()"></Status>
+                                }
+
+                            </div>
+
+                        </div>
+                        <div>
+                        </div>
+                        <div class="cc-accountStatement-headerActions">
+                            <div class="dots-box">
+
+                                @if (creditCardDto is not null)
+                                {
+                                    <EligibleCardActions IgnoredItems=@(new List<RequestType>(){ RequestType.Detail }) Data="@creditCardDto" LoadForm=OnChangeAction />
+                                    <RequestMakerPage @ref=cardRequestFormRef ReloadData="ReloadData" ReflectCardStatus="(async (newCardStatus)=>{ await ReflectCardStatus(newCardStatus);})" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @* <TelerikBreadcrumb Data="@Items"></TelerikBreadcrumb> *@
+            <TelerikTabStrip @bind-ActiveTabIndex="@ActiveTabIndex">
+                <TabStripTab>
+                    <HeaderTemplate>
+                        My Card
+                    </HeaderTemplate>
+                    <Content>
+                        <MyCard Card="cardDetailsState?.MyCard" ReloadCardInfo="LoadCardDetail" />
+                    </Content>
+                </TabStripTab>
+                <TabStripTab Title="Supplimentary Card">
+                    <SupplimentaryCards Cards="cardDetailsState?.SupplementaryCards" LoadData="GetSupplimentaryCardsAsync" />
+                </TabStripTab>
+            </TelerikTabStrip>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    async Task OnChangeAction(CardRequestFormRequest selectedRequestType)
+    {
+        cardRequestFormRef!.SelectedCard = selectedRequestType.Card;
+        await cardRequestFormRef!.OnChangeAction(selectedRequestType.RequestType);
+    }
+    RequestMakerPage? cardRequestFormRef { get; set; } = default!;
+    async Task ReloadData()
+    {
+        await Task.CompletedTask;
+
+    }
+
+    async Task ReflectCardStatus(NewCardStatus newCardStatus)
+    {
+        await Task.CompletedTask;
+
+    }
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+
+    private string _requestId;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string RequestId
+    {
+        get { return _requestId; }
+        set { _requestId = value; }
+    }
+
+
+    // [CascadingParameter]
+    // public SearchProfile? searchProfileComponent { get; set; }
+
+    private int ActiveTabIndex { get; set; } = 0;
+    private List<BreadcrumbItem> BreadcrumbItems { get; set; } = new();
+
+    private CardDetailState cardDetailsState = new();
+    protected override async Task OnInitializedAsync()
+    {
+        if (!CurrentState.ValidCustomer)
+            navigationManager.NavigateTo("/");
+
+        await LoadCardDetail();
+    }
+
+    private async Task LoadCardDetail()
+    {
+        var requestId = Convert.ToDecimal(RequestId);
+        CurrentState.CurrentRequestId = requestId;
+        LoadBreadCrums();
+        var tasks = new List<Task>
+        {
+            GetCardDetailAsync(),
+            GetSupplimentaryCardsAsync()
+        };
+        await Task.WhenAny(tasks);
+
+        await GetCardBalanceDetailAsync();
+
+
+
+    }
+
+    private CreditCardDto? creditCardDto { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (RequestId != CurrentState.CurrentRequestId.ToString() && RequestId != cardDetailsState.MyCard?.Data?.RequestId.ToString())
+        {
+            await LoadCardDetail();
+        }
+    }
+    private void LoadBreadCrums()
+    {
+        BreadcrumbItems = new List<BreadcrumbItem>
+            {
+                   new() { Text = CurrentState.CustomerProfile?.FullName()!,   Url = "/customer-view?CivilId=" + CurrentState.CurrentCivilId.Encode()!}
+            };
+
+        if (cardDetailsState?.MyCard?.Data != null)
+            BreadcrumbItems.Add(new() { Text = DisplayCardNumber(cardDetailsState?.MyCard?.Data?.CardNumberDto) ?? CurrentState.CurrentRequestId.ToString() ?? "" });
+
+    }
+
+    private async Task GetCardDetailAsync()
+    {
+        cardDetailsState.MyCard.Loading();
+        var cardDetailsResponse = await cardDetailsAppService.GetCardInfo(CurrentState.CurrentRequestId ?? 0);
+
+        if (!cardDetailsResponse.IsSuccess)
+            cardDetailsState.MyCard.Error(new Exception(cardDetailsResponse.Message));
+        else
+            cardDetailsState.MyCard.SetData(cardDetailsResponse.Data!);
+
+        StateHasChanged();
+        LoadBreadCrums();
+    }
+
+    private async Task GetCardBalanceDetailAsync()
+    {
+        cardDetailsState.MyCard.SubStatus = DataStatus.Loading;
+        var cardBalanceResponse = await cardDetailsAppService.GetCardInfo(CurrentState.CurrentRequestId ?? 0, includeCardBalance: true);
+
+        if (!cardBalanceResponse.IsSuccess)
+        {
+            cardDetailsState.MyCard.SubStatus = DataStatus.Error;
+        }
+        else
+        {
+            cardDetailsState.MyCard.SetData(cardBalanceResponse.Data!);
+            cardDetailsState.MyCard.SubStatus = DataStatus.Success;
+        }
+
+        var request = cardDetailsState.MyCard?.Data;
+        if (request is null)
+            return;
+
+        _ = DateTime.TryParse(request.Expiry!, out DateTime _expiry);
+        creditCardDto = new()
+            {
+                RequestId = (decimal)CurrentState.CurrentRequestId!,
+                CardBalance = cardDetailsState.MyCard!,
+                CardNumber = request.CardNumberDto ?? "",
+                CardType = request.CardType.ToString(),
+                AccountNumber = request.BankAccountNumber!,
+                BranchId = request.BranchId,
+                CardLimit = request.ApproveLimit,
+                ExpirationDate = _expiry,
+                StatusId = (int)request.CardStatus,
+                HoldAmount = request.DepositAmount,
+                ApprovedLimit = request.ApproveLimit,
+                MemberShipId = cardDetailsState.MyCard?.Data?.Parameters?.ClubMembershipId ?? ""
+            };
+        StateHasChanged();
+    }
+
+    private async Task GetSupplimentaryCardsAsync()
+    {
+        cardDetailsState.SupplementaryCards.Loading();
+        var cardDetailsResponse = await cardDetailsAppService.GetSupplementaryCardsByRequestId(CurrentState.CurrentRequestId ?? 0);
+
+        if (!cardDetailsResponse.IsSuccess)
+        {
+            cardDetailsState.SupplementaryCards.Error(new Exception(cardDetailsResponse.Message));
+            StateHasChanged();
+            return;
+        }
+
+        cardDetailsState.SupplementaryCards.SetData(cardDetailsResponse.Data!);
+        ActiveTabIndex = 0;
+        StateHasChanged();
+    }
+
+
+
+
+}
+

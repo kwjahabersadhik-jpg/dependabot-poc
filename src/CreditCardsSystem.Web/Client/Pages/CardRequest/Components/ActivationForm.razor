@@ -1,0 +1,60 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Shared.Models.RequestActivity;
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+
+@inherits WorkflowComponent
+<div class="form-flex">
+    @if (!IsAuthorized)
+    {
+        <AccessDenied />
+    }
+    else
+    {
+        <ul class="list">
+            <li>
+                <div class="mt-6">
+                    @if (TayseerCardList is not null)
+                    {
+                        <H5>Tasyseer Cards</H5>
+                        <TelerikDropDownList Data="@(TayseerCardList)" TextField="Text" ValueField="Value" @bind-Value="@CardRequestId">
+                            <DropDownListSettings>
+                                <DropDownListPopupSettings MaxHeight="200px" />
+                            </DropDownListSettings>
+                        </TelerikDropDownList>
+                    }
+                </div>
+            </li>
+            <li>
+                <div class="mt-6">
+                    <H5>Card Number</H5>
+                    <H3>@DisplayCardNumber(SelectedCard!.CardNumberDto)</H3>
+                    </div>
+                </li>
+                <li>
+                    <div class="mt-6">
+                        <H3>Civil ID</H3>
+
+                        <H5>@SelectedCard!.CivilId</H5>
+                    </div>
+                </li>
+                <li>
+                    <div class="mt-6">
+                        <H3>Account No</H3>
+
+                        <H5>@SelectedCard!.BankAccountNumber</H5>
+                    </div>
+                </li>
+
+            </ul>
+    }
+</div>
+
+
+
+
+
+
+
+

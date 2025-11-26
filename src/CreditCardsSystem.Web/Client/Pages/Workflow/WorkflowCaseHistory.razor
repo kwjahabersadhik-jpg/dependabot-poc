@@ -1,0 +1,220 @@
+﻿@page "/cases"
+@inject IWorkflowAppService WorkflowAppService
+
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Workflow
+@using CreditCardsSystem.Domain.Shared.Interfaces.Workflow
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using Humanizer
+@using Kfh.Aurora.Workflow.Dto
+@inherits ApplicationComponent
+
+<div class="container">
+
+    <div class="sticky-breadcrumb px-0">
+        <Breadcrumb Items="@BreadCrumbsItems"></Breadcrumb>
+    </div>
+
+     <div class="row justify-content-between">
+
+        @{
+            var case1 = CaseHistory?.FirstOrDefault();
+        }
+
+        @if (Case != null)
+        {
+
+            <div class="col-lg-8 col-xs-12">
+
+                <div class="d-flex flex-column gp-16">
+
+
+
+                    <div class="d-flex flex-column">
+                        <H2>@(Case.Title)</H2>
+                        <H4 Class="text-gray mt-0">Created on @Case.CreatedOn.ToString("MMM dd, yyyy hh:mm tt")</H4>
+                    </div>
+
+                    <div class="row justify-content-between align-items-center">
+                        <H4 Class="col-4 my-0 text-gray">Description</H4>
+                        <H3 Class="col-8 text-gray my-0">@case1!.Payload.GetValueOrDefault(WorkflowVariables.Description)</H3>
+                    </div>
+
+                    <Divider />
+
+                    <div class="row justify-content-between align-items-center">
+                        <H4 Class="col-4 my-0 text-gray">Initiated By</H4>
+                        <H3 Class="col-8 text-gray my-0">@(Case.InitiatedBy)</H3>
+                    </div>
+
+                    <Divider />
+
+               
+
+                    @if (case1 != null)
+                    {
+                        <div class="row justify-content-between align-items-center">
+                            <H4 Class="col-4 my-0 text-gray">Requested User</H4>
+                            <H3 Class="col-8 text-gray my-0">@(case1.Payload["RequestedUserName"])</H3>
+                        </div>
+
+                        @if (case1?.Payload is not null)
+                        {
+
+                            <div class="card-v2 mt-3">
+                                <H2>Detail</H2>
+                                <ul class="row list-view">
+
+                                    @{
+                                        string[] bcolumns = [WorkflowVariables.Description, WorkflowVariables.IsYouthCard, WorkflowVariables.RequestId, WorkflowVariables.RequestActivityId, WorkflowVariables.RequestActivity];
+                                        
+                                        foreach (var variable in case1!.Payload.Where(x => !bcolumns.Contains(x.Key) && string.IsNullOrEmpty(x.Value.ToString()) == false))
+                                        {
+
+                                            if (variable.Key is (WorkflowVariables.RequestedBy or WorkflowVariables.RequestType or WorkflowVariables.ProductType))
+                                                continue;
+
+                                            if (variable.Key == "RequestedUserName")
+                                                continue;
+
+                                            string? value = variable.Key switch
+                                            {
+                                                WorkflowVariables.CardNumber => DisplayCardNumber(variable.Value?.ToString()),
+                                                WorkflowVariables.AUBCardNumber => DisplayCardNumber(variable.Value?.ToString()),
+                                                WorkflowVariables.RequestType => ((CFUActivity)Enum.Parse(typeof(CFUActivity), variable.Value?.ToString())).GetDescription(),
+                                                _ => variable.Value?.ToString()
+                                            };
+
+
+                                            <li class="col-4">
+                                                <H4>@variable.Key</H4>
+                                                <H3>@value</H3>
+                                            </li>
+
+                                        }
+                                    }
+                                
+                                </ul>
+                            </div>
+
+                        }
+
+                    }
+                    else
+                    {
+                        <Loader />
+                    }
+
+
+                </div>
+            </div>
+        }
+
+        <div class="col-lg-3 col-xs-12">
+                            @if (CaseHistory != null && CaseHistory.Count != 0)
+                {
+                    <div class="mm-flex2-2">
+                        <H2>Activity</H2>
+                    <div class="card-v2 p-3">
+                        <div class="feed">
+                            <ul role="list" class="space-y-6">
+                                <li class="feed-li">
+                                    <div class="feed-li-status">
+                                        <div class="feed-li-status-graybox"></div>
+                                    </div>
+                                    <div class="feed-li-status-2">
+                                        <span class="icon-Circle-check"></span>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="SubHeading2 text-gray50 w-fit" id="tooltipRight" title="@Case!.CreatedOn">@Case!.CreatedOn.Humanize()</span>
+                                        <p class="Heading5 feed-p">
+                                            <span class="feed-span">Initiated by</span>
+                                            <span class="font-bold text-black"> @Case!.InitiatedBy</span>
+                                        </p>
+                                    </div>
+                                </li>
+
+                                @foreach (var item in CaseHistory)
+                                {
+                                    <li class="feed-li">
+                                        <div class="feed-li-status">
+                                            <div class="feed-li-status-graybox"></div>
+                                        </div>
+                                        <div class="feed-li-status-2">
+                                            @switch (item.Status.ToUpper())
+                                            {
+                                                case "OPEN":
+                                                    <span class="feed-li-status-graybox-2"></span>
+                                                    break;
+                                                case "APPROVED":
+                                                    <span class="icon-Circle-check"></span>
+                                                    break;
+                                                case "REJECTED":
+                                                    <span class="icon-Circle-close"></span>
+                                                    break;
+                                            }
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            @if (item.CompletedDate != null)
+                                            {
+                                                <span class="SubHeading2 text-gray50 w-fit" id="tooltipRight" title="@item.CompletedDate">@item.CompletedDate.Humanize()</span>
+                                            }
+                                            <p class="Heading5 feed-p">
+                                                @if (item.Status.ToUpper() == "OPEN")
+                                                {
+                                                    <span class="feed-span text-gray50">@item.Type.Humanize(): Pending</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="feed-span">@item.Type.Humanize(): <b>@item.Status</b> by </span>
+                                                }
+                                                <span class="font-bold text-black"> @item.Assignee</span>
+                                            </p>
+                                            <span class="SubHeading1 text-gray">@string.Join(",", item.Comments ?? [])</span>
+                                        </div>
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                }
+        </div>
+     </div>
+
+</div>
+
+
+
+@code {
+
+    [Parameter, SupplyParameterFromQuery]
+    public Guid InstanceId { get; set; }
+
+    private CaseDetailDto? Case { get; set; }
+
+    private List<GetTaskHistoryResponse>? CaseHistory { get; set; }
+
+    private List<Breadcrumb.BreadcrumbItem> BreadCrumbsItems { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        BreadCrumbsItems = [
+            new() { Text = "Cases", Url = "/cc-tasks" },
+    new() { Text = "Case Detail" }
+        ];
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (InstanceId != Guid.Empty && Case == null)
+        {
+            Case = await WorkflowAppService.GetCase(InstanceId);
+
+            CaseHistory = await WorkflowAppService.GetCaseDetail(InstanceId);
+        }
+    }
+
+}

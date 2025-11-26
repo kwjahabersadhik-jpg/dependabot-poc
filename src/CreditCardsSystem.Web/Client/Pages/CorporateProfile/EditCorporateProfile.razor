@@ -1,0 +1,137 @@
+﻿@page "/edit-corporate-profile"
+@using System.ComponentModel.DataAnnotations;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.CardIssuance
+@using CreditCardsSystem.Domain.Models.Customer;
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+@inherits ApplicationComponent
+
+<PageTitle>Corporate Profile</PageTitle>
+@{
+    string formClass = IsForCanvas ? "AO-left100--container" : "AO-left70--container";
+    bool authorized = IsAllowTo(Model.IsProfileNotFoundInFDR ? Permissions.CorporateProfile.Create() : Permissions.CorporateProfile.Edit());
+    string submitButtonText = Model is not null && Model.IsProfileNotFoundInFDR ? "Submit" : "Update";
+}
+<div class="main-container">
+    <div class="AO-flex--container mt-1">
+        <div class="@formClass">
+
+            @if (!IsValidProfileToCreate)
+            {
+                <div class="demo-alert demo-alert-failure" role="alert">
+                    @Message
+                </div>
+            }
+
+
+            @if (FormStatus == DataStatus.Loading)
+            {
+                <FormSkeleton />
+            }
+
+            @if (FormStatus == DataStatus.Success && IsValidProfileToCreate && Model is not null)
+            {
+                <TelerikForm EditContext="editContext" Model="@Model" ColumnSpacing="32px"
+                             OnValidSubmit="@HandleValidSubmit">
+                    <FormValidation>
+                        <ObjectGraphDataAnnotationsValidator></ObjectGraphDataAnnotationsValidator>
+                      
+                    </FormValidation>
+                    <FormItems>
+
+                        <FormItem>
+                            <Template>
+                                <ul class="offcanvas-list">
+                                    @if (!Model.IsActiveRim)
+                                    {
+                                        <li>
+                                            <H3 Class="text-critical">@GlobalResources.CorporateRimNotActive</H3>
+                                            </li>
+                                    }
+                                    <li>
+                                        <H3>Civil Id*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.CorporateCivilId" PlaceHolder="CorporateCivilId"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>Model.CorporateCivilId)"></ValidationMessage></SubH2>
+
+                                    </li>
+                                    <li>
+                                        <H3>English Name*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.CorporateNameEn" PlaceHolder="CorporateNameEn"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.CorporateNameEn)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <H3>Arabic Name*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.CorporateNameAr" PlaceHolder="CorporateCivilId"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.CorporateNameAr)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <H3>Corporate Short Name*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.EmbossingName" PlaceHolder="EmbossingName"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>Model.EmbossingName)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <H3>Corporate Class*</H3>
+                                        <TelerikNumericTextBox Arrows=false @bind-Value="@Model.RimCode" PlaceHolder="RimCode"></TelerikNumericTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>Model.RimCode)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <AccountDropDownList For="@(() => Model.KfhAccountNo)" DataItem="@DebitAccounts" SelectedCardAccount=SelectedCardAccount Title="Corporate Account" OnCardAccountChanged="OnCardAccountChanged" />
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.KfhAccountNo)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <H3>Address 1*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.AddressLine1" PlaceHolder="Address 1"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>Model.AddressLine1)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                    <li>
+                                        <H3>Address 2*</H3>
+                                        <TelerikTextBox @bind-Value="@Model.AddressLine2" PlaceHolder="Address 2"></TelerikTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>Model.AddressLine2)"></ValidationMessage></SubH2>
+
+                                    </li>
+
+                                </ul>
+                            </Template>
+                        </FormItem>
+                    </FormItems>
+
+                    <FormButtons>
+                        @if (ShowButtons)
+                        {
+                            if (authorized)
+                            {
+                                <Button Type="btn-primary" ButtonType="@ButtonType.Submit" Label="@submitButtonText"></Button>
+                            }
+
+                            <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Cancel" OnClick="GoHome"></Button>
+                        }
+                        @if (NotValid)
+                        {
+                            <div class="alert k-alert-error">
+                                <ValidationSummary />
+                            </div>
+                        }
+
+
+                    </FormButtons>
+
+                </TelerikForm>
+            }
+        </div>
+    </div>
+</div>

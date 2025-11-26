@@ -1,0 +1,58 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@typeparam T
+
+@if (DataItem.Status == DataStatus.Success)
+{
+
+    <div class="table-header mt-6 mx-0">
+        <Title Text="@Label"> </Title>
+        <div class="table-selectedFilters">
+            @* <SingleDropdown Type="TransferType" DropDownData="Enum.GetNames<EStandingOrderTransferType>().ToList()" SelectedValue="@selectedTransferType.ToString()" SelectedValueChanged="OnChangeTransferType"></SingleDropdown> *@
+            @if (ViewAddNew)
+            {
+                <OnClickComponent OnClick=AddNewItem Enabled=ViewAddNew>
+                    <CircleIcon Icon="icon-Plus" Id="opennewacc" Title="Add New" />
+                </OnClickComponent>
+                <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+            }
+        </div>
+    </div>
+
+    <div class="kfh-data-table">
+        @ChildContent
+    </div>
+}
+else if (DataItem.Status == DataStatus.Loading)
+{
+    <DataTableSkeleton></DataTableSkeleton>
+}
+else if (DataItem.Status == DataStatus.Error)
+{
+    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+}
+
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+
+    [Parameter]
+    public bool ViewAddNew { get; set; } = true;
+
+    [Parameter]
+    public DataItem<T> DataItem { get; set; }
+
+    [Parameter]
+    public EventCallback AddEvent { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private async Task AddNewItem()
+    {
+        await AddEvent.InvokeAsync();
+    }
+
+}

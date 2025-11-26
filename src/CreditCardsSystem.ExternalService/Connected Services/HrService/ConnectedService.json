@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/HrService/WLS_HrService.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, HrServiceReference"
+    ],
+    "outputFile": "HrReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

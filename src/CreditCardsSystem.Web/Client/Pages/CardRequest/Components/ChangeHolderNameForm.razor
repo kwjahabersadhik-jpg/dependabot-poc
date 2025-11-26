@@ -1,0 +1,55 @@
+﻿@inherits WorkflowComponent
+@using CreditCardsSystem.Domain.Common;
+
+<div class="mt-4">
+    @if (!IsAuthorized)
+    {
+        <AccessDenied />
+    }
+    else
+    {
+        if (TaskDetail is not null)
+        {
+            <WorkflowTaskDetail TaskDetail="TaskDetail" />
+        }
+        else
+        {
+            <TelerikForm EditContext="formEditContext" ColumnSpacing="10px">
+                <FormItems>
+                    <FormItem>
+                        <Template>
+                            <ul class="offcanvas-list">
+                                <FormList>
+                                    <Form Label="Current Holder Name">
+                                        <H2>@Model.OldCardHolderName</H2>
+                                    </Form>
+
+                                    <Form Label="New Card Holder Name">
+                                        <TelerikTextBox Enabled=@(!HasPendingName) @bind-Value="@Model.NewCardHolderName" Placeholder="Enter Card Holder Name..."></TelerikTextBox>
+                                        <SubH2><ValidationMessage For="@(()=> Model!.NewCardHolderName)" class="kfhtexterror text-red"></ValidationMessage> </SubH2>
+                                    </Form>
+                                </FormList>
+
+                                @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+
+                                @* <MakerField Label="Current Holder Name" Value="@Model.OldCardHolderName" /> *@
+
+                                @* <MakerField Label="Card Holder Name">
+                        <TelerikTextBox Enabled=@(!HasPendingName) @bind-Value="@Model.NewCardHolderName" Placeholder="Enter Card Holder Name..."></TelerikTextBox>
+                        </MakerField> *@
+
+                            </ul>
+
+                        </Template>
+                    </FormItem>
+                </FormItems>
+                <FormValidation>
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                </FormValidation>
+                <FormButtons>
+                </FormButtons>
+            </TelerikForm>
+
+        }
+    }
+</div>

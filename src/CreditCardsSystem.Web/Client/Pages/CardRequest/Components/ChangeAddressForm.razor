@@ -1,0 +1,189 @@
+﻿@using CreditCardsSystem.Domain.Common;
+
+@inherits WorkflowComponent
+
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+    @if (TaskDetail is not null && RequestedBillingAddress is not null)
+    {
+
+        <BillingAddressView Title="Requested Billing Address" OldAddress="CurrentBillingAddress" Address="RequestedBillingAddress" IsViewOnly=IsViewOnly />
+
+    }
+    else if (formEditContext is { Model: not null })
+    {
+        @*   <Title Text="@FormName"></Title> *@
+
+
+
+        <TelerikForm EditContext="formEditContext">
+            <FormValidation>
+                <ObjectGraphDataAnnotationsValidator />
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        
+
+                        <FormList>
+                            <Form Label="Address Type Selection">
+                                <TelerikRadioGroup Enabled=@(!HasPendingAddress) Data="@AddressTypes" @bind-Value="@SelectedAddressType" Layout="RadioGroupLayout.Horizontal" ValueField="Value" TextField="Text" OnChange="() => OnChangeAddressType()"></TelerikRadioGroup>
+                            </Form>
+
+                            <Form Label="Area">
+                                <TelerikDropDownList Enabled=@(!HasPendingAddress) Data="@AreaCodes" TextField="AreaName" ValueField="AreaName" @bind-Value="@ChangeOfAddressRequest.BillingAddress.City" Filterable="true" FilterOperator="StringFilterOperator.Contains">
+                                <DropDownListSettings>
+                                    <DropDownListPopupSettings MaxHeight="200px" />
+                                </DropDownListSettings>
+                                </TelerikDropDownList>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.City)"></ValidationMessage></SubH2>
+                            </Form>
+
+                        @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+
+                        @* <div class="mb-3 address-flex">
+                            <H5 class="form-label">Address Type Selection</H5>
+                            <TelerikRadioGroup Enabled=@(!HasPendingAddress) Data="@AddressTypes" @bind-Value="@SelectedAddressType" Layout="RadioGroupLayout.Horizontal" ValueField="Value" TextField="Text" OnChange="() => OnChangeAddressType()"></TelerikRadioGroup>
+                        </div> 
+
+                        <div class="mb-3">
+                            <H5>Area</H5>
+                            <TelerikDropDownList Enabled=@(!HasPendingAddress) Data="@AreaCodes" TextField="AreaName" ValueField="AreaName" @bind-Value="@ChangeOfAddressRequest.BillingAddress.City" Filterable="true" FilterOperator="StringFilterOperator.Contains">
+                                <DropDownListSettings>
+                                    <DropDownListPopupSettings MaxHeight="200px" />
+                                </DropDownListSettings>
+                            </TelerikDropDownList>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.City)"></ValidationMessage></SubH2>
+                        </div> *@
+
+                            <Form Label="Address">
+                                 <H3>@ChangeOfAddressRequest.BillingAddress.Street</H3>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Street)"></ValidationMessage></SubH2>
+                            </Form>
+
+                            @* <div class="mb-3 address-flex">
+                            <H5>Address</H5>
+                            <H3>@ChangeOfAddressRequest.BillingAddress.Street</H3>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Street)"></ValidationMessage></SubH2>
+                            </div> *@
+
+                            @if (IsFullAddressEnabled)
+                        {
+                            <Form Label="Block">
+                                <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Block" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Block"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Block)"></ValidationMessage></SubH2>
+                            </Form>
+
+                            @* <div class="mb-3">
+                                <H5>Block</H5>
+                                <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Block" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Block"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Block)"></ValidationMessage></SubH2>
+                            </div> *@
+
+
+                            <Form Label="Street">
+                                <TelerikTextBox MaxLength="11" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Street" @bind-Value="@ChangeOfAddressRequest.BillingAddress.StreetNo_NM"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.StreetNo_NM)"></ValidationMessage></SubH2>
+                            </Form>
+
+                            @* <div class="mb-3">
+                                <H5 class="form-label">Street</H5>
+                                <TelerikTextBox MaxLength="11" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Street" @bind-Value="@ChangeOfAddressRequest.BillingAddress.StreetNo_NM"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.StreetNo_NM)"></ValidationMessage></SubH2>
+                            </div> *@
+
+                            <Form Label="House">
+                                <div class="mb-3">
+                                    <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="House" @bind-Value="@ChangeOfAddressRequest.BillingAddress.House"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.House)"></ValidationMessage></SubH2>
+                                </div>
+                            </Form>
+
+                            @* <div class="mb-3">
+                                <H5 class="form-label">House</H5>
+                                <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="House" @bind-Value="@ChangeOfAddressRequest.BillingAddress.House"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.House)"></ValidationMessage></SubH2>
+                            </div> *@
+
+                            <Form Label="Jaddah">
+                                <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Jaddah" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Jada"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Jada)"></ValidationMessage></SubH2>
+                            </Form>
+
+                            @* <div class="mb-3">
+                                <H5 class="form-label">Jaddah</H5>
+                                <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnChangeFullAddress()" PlaceHolder="Jaddah" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Jada"></TelerikTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Jada)"></ValidationMessage></SubH2>
+                            </div> *@
+
+                        }
+                        else
+                        {
+                            <Form Label="P.O.Box">
+                                 <TelerikNumericTextBox T="int?" Enabled="@IsPOBoxEnabled" OnChange="async (obj) => await OnChangePOBox()" Arrows="false" PlaceHolder="P.O.Box" @bind-Value="@ChangeOfAddressRequest.BillingAddress.PostOfficeBoxNumber"></TelerikNumericTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.PostOfficeBoxNumber)"></ValidationMessage></SubH2>
+                            </Form>
+
+                            @* <div class="mb-3">
+                                <H5 class="form-label">P.O.Box</H5>
+                                <TelerikNumericTextBox T="int?" Enabled="@IsPOBoxEnabled" OnChange="async (obj) => await OnChangePOBox()" Arrows="false" PlaceHolder="P.O.Box" @bind-Value="@ChangeOfAddressRequest.BillingAddress.PostOfficeBoxNumber"></TelerikNumericTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.PostOfficeBoxNumber)"></ValidationMessage></SubH2>
+                            </div> *@
+                        }
+                        
+                          <Form Label="Zipcode">
+                                <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="int?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.PostalCode" PlaceHolder="Zipcode"></TelerikNumericTextBox>
+                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.PostalCode)"></ValidationMessage></SubH2>
+                          </Form>
+                        
+                        @* <div class="mb-3">
+                            <H5 class="form-label">Zipcode</H5>
+                            <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="int?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.PostalCode" PlaceHolder="Zipcode"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.PostalCode)"></ValidationMessage></SubH2>
+                        </div> *@
+
+                        <Form Label="Mobile phone*">
+                            <TelerikNumericTextBox Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Mobile" PlaceHolder="Mobile phone" Enabled="false"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Mobile)"></ValidationMessage></SubH2>
+                        </Form>
+
+                        @* <div class="mb-3">
+                            <H5 class="form-label">Mobile phone*</H5>
+                            <TelerikNumericTextBox Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.Mobile" PlaceHolder="Mobile phone" Enabled="false"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.Mobile)"></ValidationMessage></SubH2>
+                        </div> *@
+
+                         <Form Label="Home phone">
+                            <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.HomePhone" PlaceHolder="Home phone"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.HomePhone)"></ValidationMessage></SubH2>
+                         </Form>
+
+                        @* <div class="mb-3">
+                            <H5 class="form-label">Home phone</H5>
+                            <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.HomePhone" PlaceHolder="Home phone"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.HomePhone)"></ValidationMessage></SubH2>
+                        </div> *@
+
+                         <Form Label="Work phone">
+                            <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.WorkPhone" PlaceHolder="Work phone"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.WorkPhone)"></ValidationMessage></SubH2>
+                         </Form>
+                         
+                        @* <div class="mb-3">
+                            <TelerikNumericTextBox Enabled=@(!HasPendingAddress) Arrows="false" T="long?" @bind-Value="@ChangeOfAddressRequest.BillingAddress.WorkPhone" PlaceHolder="Work phone"></TelerikNumericTextBox>
+                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => ChangeOfAddressRequest.BillingAddress.WorkPhone)"></ValidationMessage></SubH2>
+                        </div> *@
+
+                         </FormList>
+
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormButtons></FormButtons>
+        </TelerikForm>
+    }
+}

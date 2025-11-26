@@ -1,0 +1,849 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CreditCardUpdateServicesService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.175_80_KFHCreditCardApplicationWebServices_kfh_creditcard_webservices_CreditCardUpdateServicesService.jws_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://firstdatacorp.com/framework/core" schemaLocation="http___172.16.123.175_80_KFHCreditCardApplicationWebServices_kfh_creditcard_webservices_CreditCardUpdateServicesService.jws_xsd=2"/>
+</xsd:schema>
+  </types>
+  <message name="deleteRequestParameterResponse">
+    <part name="parameters" element="tns:deleteRequestParameterResponse">
+    </part>
+  </message>
+  <message name="performCCPymtRefundWithMQResponse">
+    <part name="parameters" element="tns:performCCPymtRefundWithMQResponse">
+    </part>
+  </message>
+  <message name="updateRequestResponse">
+    <part name="parameters" element="tns:updateRequestResponse">
+    </part>
+  </message>
+  <message name="performMQPaymentResponse">
+    <part name="parameters" element="tns:performMQPaymentResponse">
+    </part>
+  </message>
+  <message name="updateCardEmbossedNameResponse">
+    <part name="parameters" element="tns:updateCardEmbossedNameResponse">
+    </part>
+  </message>
+  <message name="updateCloseToTransfer">
+    <part name="parameters" element="tns:updateCloseToTransfer">
+    </part>
+  </message>
+  <message name="deleteCreditCardRequestParametersByRequestIDResponse">
+    <part name="parameters" element="tns:deleteCreditCardRequestParametersByRequestIDResponse">
+    </part>
+  </message>
+  <message name="insertRequest">
+    <part name="parameters" element="tns:insertRequest">
+    </part>
+  </message>
+  <message name="performFCCreditCardPymtWithMQResponse">
+    <part name="parameters" element="tns:performFCCreditCardPymtWithMQResponse">
+    </part>
+  </message>
+  <message name="insertRequestResponse">
+    <part name="parameters" element="tns:insertRequestResponse">
+    </part>
+  </message>
+  <message name="deleteCreditCardRequestParametersByRequestID">
+    <part name="parameters" element="tns:deleteCreditCardRequestParametersByRequestID">
+    </part>
+  </message>
+  <message name="insertRequestParametersResponse">
+    <part name="parameters" element="tns:insertRequestParametersResponse">
+    </part>
+  </message>
+  <message name="performChangeMqCreditLimitResponse">
+    <part name="parameters" element="tns:performChangeMqCreditLimitResponse">
+    </part>
+  </message>
+  <message name="viewCreditCardPINResponse">
+    <part name="parameters" element="tns:viewCreditCardPINResponse">
+    </part>
+  </message>
+  <message name="performChangeMqCreditLimit">
+    <part name="parameters" element="tns:performChangeMqCreditLimit">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="insertRequestParameters">
+    <part name="parameters" element="tns:insertRequestParameters">
+    </part>
+  </message>
+  <message name="reportCreditCardStatus">
+    <part name="parameters" element="tns:reportCreditCardStatus">
+    </part>
+  </message>
+  <message name="performFCCreditCardPymtWithMQ">
+    <part name="parameters" element="tns:performFCCreditCardPymtWithMQ">
+    </part>
+  </message>
+  <message name="updateBillingAddress">
+    <part name="parameters" element="tns:updateBillingAddress">
+    </part>
+  </message>
+  <message name="performCreditCardActivationResponse">
+    <part name="parameters" element="tns:performCreditCardActivationResponse">
+    </part>
+  </message>
+  <message name="updateCardEmbossedName">
+    <part name="parameters" element="tns:updateCardEmbossedName">
+    </part>
+  </message>
+  <message name="updateRequestParameters">
+    <part name="parameters" element="tns:updateRequestParameters">
+    </part>
+  </message>
+  <message name="updateRequestParametersResponse">
+    <part name="parameters" element="tns:updateRequestParametersResponse">
+    </part>
+  </message>
+  <message name="performCreditCardPaymentRefundResponse">
+    <part name="parameters" element="tns:performCreditCardPaymentRefundResponse">
+    </part>
+  </message>
+  <message name="replaceLostStolenCard">
+    <part name="parameters" element="tns:replaceLostStolenCard">
+    </part>
+  </message>
+  <message name="viewCreditCardPIN">
+    <part name="parameters" element="tns:viewCreditCardPIN">
+    </part>
+  </message>
+  <message name="deleteCloseToTransferResponse">
+    <part name="parameters" element="tns:deleteCloseToTransferResponse">
+    </part>
+  </message>
+  <message name="deleteRequestParameter">
+    <part name="parameters" element="tns:deleteRequestParameter">
+    </part>
+  </message>
+  <message name="replaceLostStolenCardResponse">
+    <part name="parameters" element="tns:replaceLostStolenCardResponse">
+    </part>
+  </message>
+  <message name="updateCloseToTransferResponse">
+    <part name="parameters" element="tns:updateCloseToTransferResponse">
+    </part>
+  </message>
+  <message name="performCreditCardPayment">
+    <part name="parameters" element="tns:performCreditCardPayment">
+    </part>
+  </message>
+  <message name="updateBillingAddressResponse">
+    <part name="parameters" element="tns:updateBillingAddressResponse">
+    </part>
+  </message>
+  <message name="deletRequest">
+    <part name="parameters" element="tns:deletRequest">
+    </part>
+  </message>
+  <message name="validateCreditCardCurrencyRate">
+    <part name="parameters" element="tns:validateCreditCardCurrencyRate">
+    </part>
+  </message>
+  <message name="performTemporaryCreditLimitUpdateResponse">
+    <part name="parameters" element="tns:performTemporaryCreditLimitUpdateResponse">
+    </part>
+  </message>
+  <message name="performCardUpgradeResponse">
+    <part name="parameters" element="tns:performCardUpgradeResponse">
+    </part>
+  </message>
+  <message name="updateCardLinkedAccount">
+    <part name="parameters" element="tns:updateCardLinkedAccount">
+    </part>
+  </message>
+  <message name="updateCardLinkedAccountResponse">
+    <part name="parameters" element="tns:updateCardLinkedAccountResponse">
+    </part>
+  </message>
+  <message name="performCCPymtRefundWithMQ">
+    <part name="parameters" element="tns:performCCPymtRefundWithMQ">
+    </part>
+  </message>
+  <message name="addToCloseToTransferResponse">
+    <part name="parameters" element="tns:addToCloseToTransferResponse">
+    </part>
+  </message>
+  <message name="performCreditCardActivation">
+    <part name="parameters" element="tns:performCreditCardActivation">
+    </part>
+  </message>
+  <message name="deleteCloseToTransfer">
+    <part name="parameters" element="tns:deleteCloseToTransfer">
+    </part>
+  </message>
+  <message name="performMQPayment">
+    <part name="parameters" element="tns:performMQPayment">
+    </part>
+  </message>
+  <message name="addToCloseToTransfer">
+    <part name="parameters" element="tns:addToCloseToTransfer">
+    </part>
+  </message>
+  <message name="deletRequestResponse">
+    <part name="parameters" element="tns:deletRequestResponse">
+    </part>
+  </message>
+  <message name="replaceDamageCardResponse">
+    <part name="parameters" element="tns:replaceDamageCardResponse">
+    </part>
+  </message>
+  <message name="performCardUpgrade">
+    <part name="parameters" element="tns:performCardUpgrade">
+    </part>
+  </message>
+  <message name="updateRequest">
+    <part name="parameters" element="tns:updateRequest">
+    </part>
+  </message>
+  <message name="changeSupplementaryLimit">
+    <part name="parameters" element="tns:changeSupplementaryLimit">
+    </part>
+  </message>
+  <message name="reportCreditCardStatusResponse">
+    <part name="parameters" element="tns:reportCreditCardStatusResponse">
+    </part>
+  </message>
+  <message name="performCreditCardDeduct">
+    <part name="parameters" element="tns:performCreditCardDeduct">
+    </part>
+  </message>
+  <message name="replaceDamageCard">
+    <part name="parameters" element="tns:replaceDamageCard">
+    </part>
+  </message>
+  <message name="validateCreditCardCurrencyRateResponse">
+    <part name="parameters" element="tns:validateCreditCardCurrencyRateResponse">
+    </part>
+  </message>
+  <message name="performTemporaryCreditLimitUpdate">
+    <part name="parameters" element="tns:performTemporaryCreditLimitUpdate">
+    </part>
+  </message>
+  <message name="performCreditCardPaymentRefund">
+    <part name="parameters" element="tns:performCreditCardPaymentRefund">
+    </part>
+  </message>
+  <message name="performCreditCardPaymentResponse">
+    <part name="parameters" element="tns:performCreditCardPaymentResponse">
+    </part>
+  </message>
+  <message name="performCreditCardDeductResponse">
+    <part name="parameters" element="tns:performCreditCardDeductResponse">
+    </part>
+  </message>
+  <message name="changeSupplementaryLimitResponse">
+    <part name="parameters" element="tns:changeSupplementaryLimitResponse">
+    </part>
+  </message>
+  <portType name="CreditCardUpdateServicesService">
+    <operation name="insertRequest">
+      <input message="tns:insertRequest" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequestRequest">
+    </input>
+      <output message="tns:insertRequestResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequestResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequest/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateRequest">
+      <input message="tns:updateRequest" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequestRequest">
+    </input>
+      <output message="tns:updateRequestResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequestResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequest/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewCreditCardPIN">
+      <input message="tns:viewCreditCardPIN" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/viewCreditCardPINRequest">
+    </input>
+      <output message="tns:viewCreditCardPINResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/viewCreditCardPINResponse">
+    </output>
+    </operation>
+    <operation name="deletRequest">
+      <input message="tns:deletRequest" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deletRequestRequest">
+    </input>
+      <output message="tns:deletRequestResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deletRequestResponse">
+    </output>
+    </operation>
+    <operation name="performMQPayment">
+      <input message="tns:performMQPayment" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performMQPaymentRequest">
+    </input>
+      <output message="tns:performMQPaymentResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performMQPaymentResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performMQPayment/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="insertRequestParameters">
+      <input message="tns:insertRequestParameters" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequestParametersRequest">
+    </input>
+      <output message="tns:insertRequestParametersResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequestParametersResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/insertRequestParameters/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCreditCardPayment">
+      <input message="tns:performCreditCardPayment" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPaymentRequest">
+    </input>
+      <output message="tns:performCreditCardPaymentResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPaymentResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPayment/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reportCreditCardStatus">
+      <input message="tns:reportCreditCardStatus" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/reportCreditCardStatusRequest">
+    </input>
+      <output message="tns:reportCreditCardStatusResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/reportCreditCardStatusResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/reportCreditCardStatus/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="changeSupplementaryLimit">
+      <input message="tns:changeSupplementaryLimit" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/changeSupplementaryLimitRequest">
+    </input>
+      <output message="tns:changeSupplementaryLimitResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/changeSupplementaryLimitResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/changeSupplementaryLimit/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performChangeMqCreditLimit">
+      <input message="tns:performChangeMqCreditLimit" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performChangeMqCreditLimitRequest">
+    </input>
+      <output message="tns:performChangeMqCreditLimitResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performChangeMqCreditLimitResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performChangeMqCreditLimit/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCreditCardPaymentRefund">
+      <input message="tns:performCreditCardPaymentRefund" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPaymentRefundRequest">
+    </input>
+      <output message="tns:performCreditCardPaymentRefundResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPaymentRefundResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardPaymentRefund/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCreditCardDeduct">
+      <input message="tns:performCreditCardDeduct" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardDeductRequest">
+    </input>
+      <output message="tns:performCreditCardDeductResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardDeductResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardDeduct/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateBillingAddress">
+      <input message="tns:updateBillingAddress" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateBillingAddressRequest">
+    </input>
+      <output message="tns:updateBillingAddressResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateBillingAddressResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateBillingAddress/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateRequestParameters">
+      <input message="tns:updateRequestParameters" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequestParametersRequest">
+    </input>
+      <output message="tns:updateRequestParametersResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequestParametersResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateRequestParameters/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCloseToTransfer">
+      <input message="tns:updateCloseToTransfer" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCloseToTransferRequest">
+    </input>
+      <output message="tns:updateCloseToTransferResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCloseToTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCloseToTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="addToCloseToTransfer">
+      <input message="tns:addToCloseToTransfer" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/addToCloseToTransferRequest">
+    </input>
+      <output message="tns:addToCloseToTransferResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/addToCloseToTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/addToCloseToTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCreditCardActivation">
+      <input message="tns:performCreditCardActivation" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardActivationRequest">
+    </input>
+      <output message="tns:performCreditCardActivationResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardActivationResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCreditCardActivation/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteCloseToTransfer">
+      <input message="tns:deleteCloseToTransfer" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCloseToTransferRequest">
+    </input>
+      <output message="tns:deleteCloseToTransferResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCloseToTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCloseToTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="replaceDamageCard">
+      <input message="tns:replaceDamageCard" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceDamageCardRequest">
+    </input>
+      <output message="tns:replaceDamageCardResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceDamageCardResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceDamageCard/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCardUpgrade">
+      <input message="tns:performCardUpgrade" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCardUpgradeRequest">
+    </input>
+      <output message="tns:performCardUpgradeResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCardUpgradeResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCardUpgrade/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="replaceLostStolenCard">
+      <input message="tns:replaceLostStolenCard" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceLostStolenCardRequest">
+    </input>
+      <output message="tns:replaceLostStolenCardResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceLostStolenCardResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/replaceLostStolenCard/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteRequestParameter">
+      <input message="tns:deleteRequestParameter" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteRequestParameterRequest">
+    </input>
+      <output message="tns:deleteRequestParameterResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteRequestParameterResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteRequestParameter/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="validateCreditCardCurrencyRate">
+      <input message="tns:validateCreditCardCurrencyRate" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/validateCreditCardCurrencyRateRequest">
+    </input>
+      <output message="tns:validateCreditCardCurrencyRateResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/validateCreditCardCurrencyRateResponse">
+    </output>
+    </operation>
+    <operation name="performFCCreditCardPymtWithMQ">
+      <input message="tns:performFCCreditCardPymtWithMQ" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performFCCreditCardPymtWithMQRequest">
+    </input>
+      <output message="tns:performFCCreditCardPymtWithMQResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performFCCreditCardPymtWithMQResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performFCCreditCardPymtWithMQ/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCardEmbossedName">
+      <input message="tns:updateCardEmbossedName" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCardEmbossedNameRequest">
+    </input>
+      <output message="tns:updateCardEmbossedNameResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCardEmbossedNameResponse">
+    </output>
+    </operation>
+    <operation name="performCCPymtRefundWithMQ">
+      <input message="tns:performCCPymtRefundWithMQ" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCCPymtRefundWithMQRequest">
+    </input>
+      <output message="tns:performCCPymtRefundWithMQResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCCPymtRefundWithMQResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performCCPymtRefundWithMQ/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performTemporaryCreditLimitUpdate">
+      <input message="tns:performTemporaryCreditLimitUpdate" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performTemporaryCreditLimitUpdateRequest">
+    </input>
+      <output message="tns:performTemporaryCreditLimitUpdateResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performTemporaryCreditLimitUpdateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/performTemporaryCreditLimitUpdate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteCreditCardRequestParametersByRequestID">
+      <input message="tns:deleteCreditCardRequestParametersByRequestID" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCreditCardRequestParametersByRequestIDRequest">
+    </input>
+      <output message="tns:deleteCreditCardRequestParametersByRequestIDResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCreditCardRequestParametersByRequestIDResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/deleteCreditCardRequestParametersByRequestID/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCardLinkedAccount">
+      <input message="tns:updateCardLinkedAccount" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCardLinkedAccountRequest">
+    </input>
+      <output message="tns:updateCardLinkedAccountResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateServicesService/updateCardLinkedAccountResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="CreditCardUpdateServicesServiceSoapBinding" type="tns:CreditCardUpdateServicesService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="insertRequest">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateRequest">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewCreditCardPIN">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="deletRequest">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="performMQPayment">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="insertRequestParameters">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCreditCardPayment">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reportCreditCardStatus">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="changeSupplementaryLimit">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performChangeMqCreditLimit">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCreditCardPaymentRefund">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCreditCardDeduct">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateBillingAddress">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateRequestParameters">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCloseToTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="addToCloseToTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCreditCardActivation">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteCloseToTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="replaceDamageCard">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCardUpgrade">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="replaceLostStolenCard">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteRequestParameter">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="validateCreditCardCurrencyRate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="performFCCreditCardPymtWithMQ">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCardEmbossedName">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="performCCPymtRefundWithMQ">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performTemporaryCreditLimitUpdate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteCreditCardRequestParametersByRequestID">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCardLinkedAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_CreditCardUpdateServicesService">
+    <port name="CreditCardUpdateServicesServiceSoap3" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardUpdateServicesService.CreditCardUpdateServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap2" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap5" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardUpdateServicesService.CreditCardUpdateServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap4" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap7" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap6" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap9" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap8" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CreditCardUpdateServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateServicesServiceSoap" binding="tns:CreditCardUpdateServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardUpdateServicesService.CreditCardUpdateServicesServiceSoap/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

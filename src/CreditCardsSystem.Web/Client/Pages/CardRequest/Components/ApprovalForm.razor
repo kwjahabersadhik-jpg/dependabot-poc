@@ -1,0 +1,99 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components.Dialog
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails;
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using Telerik.SvgIcons
+
+@inherits WorkflowComponent
+@{
+    string HelperText = "Available card limit ";
+
+    if (CardDefinition is not null)
+    {
+        HelperText += IsSupplementaryCard ? SupplementaryMaxApproveLimit : $" ({CardDefinition!.MinLimit} - {CardDefinition!.MaxLimit})";
+    }
+
+}
+
+<CheckerField Label="Customer CivilId" Value="@RequestActivity.CivilId"></CheckerField>
+<CheckerField Label="Customer Name" Value="@RequestActivity.CustomerName"></CheckerField>
+
+
+@if (SelectedCard?.RequestedLimit > 0)
+{
+    <CheckerField Label="Requested Limit" Value="@SelectedCard?.RequestedLimit.ToMoney()"></CheckerField>
+    @if (Model?.ApprovedLimit != null && !(SelectedCard?.IsCorporateCard ?? false))
+    {
+        <CheckerField Label="ApproveLimit">
+            <TextInputField Value="@Model.ApprovedLimit.ToString()" ValueChanged="@OnChangeRequestLimit" Type="textfield-input" AddOnType="Text" AddOnValue="KWD"
+                            HelperText="@HelperText"></TextInputField>
+        </CheckerField>
+    }
+
+}
+
+@if (SelectedCard?.IsCorporateCard ?? false)
+{
+    <CheckerField Label="Corporate CivilId" Value="@SelectedCard?.CorporateCivilId"></CheckerField>
+}
+
+@if (!string.IsNullOrEmpty(RequestActivity?.ApproverName))
+{
+    <CheckerField Label="ApproverName" Value="@RequestActivity?.ApproverName"></CheckerField>
+}
+
+
+
+@if (collateral is Domain.Enums.Collateral.AGAINST_DEPOSIT or Domain.Enums.Collateral.AGAINST_DEPOSIT_USD)
+{
+
+    <CheckerField Label="Deposit Number" Value="@SelectedCard?.Parameters?.DepositNumber"></CheckerField>
+    <CheckerField Label="Deposit Amount" Value="@SelectedCard?.DepositAmount?.ToString()"></CheckerField>
+    <CheckerField Label="Deposit AccountNumber" Value="@SelectedCard?.Parameters?.DepositAccountNumber"></CheckerField>
+}
+
+@if (collateral is Collateral.AGAINST_MARGIN)
+{
+    <CheckerField Label="Margin AccountNumber" Value="@SelectedCard?.Parameters?.MarginAccountNumber"></CheckerField>
+    <CheckerField Label="Margin Amount" Value="@SelectedCard?.Parameters?.MarginAmount"></CheckerField>
+}
+
+<BillingAddressView Title="Billing Address" Address="@SelectedCard?.BillingAddress" />
+
+
+
+@if (Model is not null && IsTayseerSalaryException && SelectedCard is { CardStatus: not CreditCardStatus.Pending or CreditCardStatus.Approved })
+{
+    <CascadingValue Value="SelectedCard" Name="CardDetail">
+        <TayseerCardFields @ref=TayseerCardFieldRef ReadyForAction="ReadyForAction" CustomerDateOfBirth="Model.DateOfBirth" CreditCheckModel="Model.CreditCheckModel" />
+    </CascadingValue>
+}
+
+
+@if (Model is not null && IsAllowTo(Permissions.AccountBoardingRequest.EnigmaEdit()) && SelectedCard is { CardStatus: CreditCardStatus.CardUpgradeStarted or CreditCardStatus.AccountBoardingStarted })
+{
+    <BCDForm @ref=BCDFormRef ReadyForAction="ReadyForAction" CardStatus="RequestActivity.CardStatus" Model="Model.BCDParameters" />
+}
+
+@if (Model is not null && !IsAllowTo(Permissions.AccountBoardingRequest.EnigmaEdit()) && SelectedCard is { CardStatus: CreditCardStatus.CardUpgradeStarted or CreditCardStatus.AccountBoardingStarted })
+{
+    <AccessDenied />
+}
+
+
+@if (SelectedCard is { IsPrimaryCard: true })
+{
+    <SupplimentaryApproval Cards="Supplementary" SelectedItems="SelectedItems"></SupplimentaryApproval>
+}
+
+<DocumentList RequestId="RequestActivity.RequestId" />
+
+<CreditCardsSystem.Web.Client.Components.Dialog.DialogBox />

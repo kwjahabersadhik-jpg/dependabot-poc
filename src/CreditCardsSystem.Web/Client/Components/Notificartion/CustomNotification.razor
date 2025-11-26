@@ -1,0 +1,88 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+
+
+<TelerikNotification @ref="@NotificationReference" Class="MyTelerikNotification" VerticalPosition="NotificationVerticalPosition.Bottom" HorizontalPosition="NotificationHorizontalPosition.Center">
+    <Template>
+        <div class="d-flex  align-items-center  justify-content-start gp-8">
+            <div>
+                @if (Item.Status == DataStatus.Loading)
+                {
+                    <Loader Class="loader-small"> </Loader>
+                }
+                else if (Item.Status != DataStatus.Uninitialized)
+                {
+                    <span class="@(Item.Status == DataStatus.Success? "icon-Circle-check":"icon-Circle-close")"> </span>
+                }
+            </div>
+            <div>
+                @Message
+            </div>
+        </div>
+    </Template>
+</TelerikNotification>
+
+
+
+
+
+@code {
+
+    private TelerikNotification NotificationReference { get; set; } = new();
+
+    public DataItem<object> Item { get; set; } = new();
+
+    public bool IsShowOverlay { get; set; } = false;
+    // Summary:
+    //     Defines when the notification will be closed automatically. Set 0 if you don't
+    //     want to be automatically closed. Defaults to 3000ms.
+    public int CloseAfter { get; set; } = 3000;
+
+    private string CustomMessage = string.Empty;
+    private string Message => Item.Exception?.Message ?? CustomMessage;
+
+    public void SetItem(DataItem<object> item)
+    {
+        Item = item;
+    }
+
+    public void Loading(string message = "Loading...")
+    {
+        CustomMessage = message;
+        Item.Loading();
+
+        Show(closeManually: true);
+    }
+
+    public void Success(string message = "")
+    {
+        if (!string.IsNullOrEmpty(message))
+            CustomMessage = message;
+
+        Item.SetData(null);
+        Show();
+    }
+
+    public void Failure(string message = "")
+    {
+        if (!string.IsNullOrEmpty(message))
+            Item.Error(new(message));
+        else
+            Item.Error();
+
+        Show();
+    }
+
+    public void Hide()
+    {
+        NotificationReference.HideAll();
+    }
+
+    public void Show(bool closeManually = false)
+    {
+        IsShowOverlay = Item.Status == DataStatus.Loading;
+
+        Hide();
+        NotificationReference.Show(new() { Closable = closeManually, CloseAfter = closeManually ? 0 : CloseAfter });
+    }
+}

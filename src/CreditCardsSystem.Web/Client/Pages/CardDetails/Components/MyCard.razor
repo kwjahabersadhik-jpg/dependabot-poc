@@ -1,0 +1,245 @@
+﻿@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Skeletons
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Utility.Extensions
+@inherits ApplicationComponent
+
+
+
+@if (Card.Status == DataStatus.Success)
+{
+
+    <div>
+
+        @* <TelerikBreadcrumb Data="@Items"></TelerikBreadcrumb> *@
+
+        @* <TelerikSkeleton Width="240px" Height="30px" Visible="true" class="AO-skeleton-rectangle AO-cardInfo-skeleton"> </TelerikSkeleton> *@
+
+        <div class="cc-accountStatement-header align-items-center mt-2">
+
+            <Title Text="Card details"> </Title>
+
+
+            <div class="cc-accountStatement-headerActions">
+                <OnClickComponent OnClick="async () => await NewCardRequest.ToggleAsync()">
+                    <CircleIcon Icon="icon-Cards" Id="NewRequest" Title="Cards Requests" />
+                    <TelerikTooltip TargetSelector="#NewRequest" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                </OnClickComponent>
+            </div>
+        </div>
+    </div>
+
+    <div class="kfh-info-prv-cont mt-4">
+        <div class="row mb-3">
+
+            <div class="col col-md-2">
+                <H5>Card Number </H5>
+                <H3>@DisplayCardNumber(Data.CardNumberDto)</H3>
+            </div>
+            <div class="col col-md-2">
+                <H5>Account Activation Flag</H5>
+                <H3>@Data.AccountActiviationFlag</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Account Number </H5>
+                <H3>@Data.BankAccountNumber</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Card Holder Name</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.HolderEmbossName</H3Wait>
+            </div>
+
+            @if (!Data.IsPrimaryCard)
+            {
+                <div class="col col-md-2">
+                    <H5>Primary Card Holder Name</H5>
+
+                    <a @onclick="@(()=> NavigateToParentCardDetailPage(Data.PrimaryCardCivilId,Data.PrimaryCardRequestId))" class="text-green">
+                        <p class="Heading3" style="color: mediumblue;text-decoration: underline;">
+                            @Data.PrimaryCardHolderName
+                        </p>
+                    </a>
+                </div>
+            }
+            <div class="col col-md-2">
+                <H5>Fd AccountName</H5>
+                <H3>@Data.FdrAccountNumber</H3>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col col-md-2">
+                <H5>Next Payment Date Limit</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.DateNextPayment.Formed()</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>External Status</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.ExternalStatus</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Date Of Last Payment</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.LastPayDate.Formed()</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Internal Status</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.InternalStatus</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Last Statement Balance</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded" class="form-control">@Data.LastStatementBalance</H3Wait>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Last Statement Date</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.DateLastStatement.Formed()</H3Wait>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col col-md-2">
+                <H5>Credit Limit</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.ApproveLimit</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Available Credit</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.AvailableLimit</H3Wait>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Last Payment Amount</H5>
+                <H3>@Data.LastPayAmount</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Current Balance</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@(Data.ApproveLimit - Data.AvailableLimit)</H3Wait>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Status Change Date</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.DateLastStatusChanged.Formed()</H3Wait>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Minimum Payment Due</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.CurrentMinPaymentDue</H3Wait>
+            </div>
+        </div>
+        <div class="row mb-3">
+
+            <div class="col col-md-2">
+                <H5>Days Delinquent</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.DaysDelinquent</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Total Delinquent Amount</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.DelinquentAmount</H3Wait>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Disputes</H5>
+                <H3>@Data.DisputeAmount</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>BCD Promotion Flag</H5>
+                <H3>@Data.PcdFlag</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Promotion Name</H5>
+                <H3>@Data.PromotionName</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Delivery Status</H5>
+                <span Class="Heading3 text-wrap" style="overflow-wrap: break-word;">@Data.DeliveryStatus</span>
+            </div>
+
+        </div>
+        <div class="row mb-3">
+            @if (!string.IsNullOrEmpty(Data.SecondaryCardNo))
+            {
+                <div class="col col-md-2">
+                    <H5>MasterCard status</H5>
+                    <TelerikButton ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)" OnClick="@LoadMasterCardStatus" Enabled="@(!IsLoadingCardStatus)" Visible="@(IsLoadedCardStatus)">
+                        @LoadingCardStatusButtonText
+                        <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@IsLoadingCardStatus"></TelerikLoader>
+                    </TelerikButton>
+
+                    <H3>
+                        @Data.MasterCardStatus
+                    </H3>
+                </div>
+            }
+
+            <div class="col col-md-2">
+                <H5>Plastic status</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.PlasticActionEnum?.GetDescription()</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>VISA status</H5>
+                @*TODO Localization *@
+                <H3Wait IsLoaded="IsSubDataLoaded">@(Data.AccountActiviationFlag == "Y" ? "Pending Activation" : "Activated")</H3Wait>
+            </div>
+            <div class="col col-md-2">
+                <H5>Corporate Data</H5>
+                <H3>@(Data.IsCorporateCard ? "Yes" : "No")</H3>
+            </div>
+            @if (Data.IsCorporateCard)
+            {
+
+                <div class="col col-md-2">
+                    <H5>Corporate CivilId</H5>
+                    <H3>@Data.CorporateCivilId</H3>
+                </div>
+            }
+            <div class="col col-md-2">
+                <H5>Secondary Card Number</H5>
+                <H3>@DisplayCardNumber(Data.SecondaryCardNo)</H3>
+            </div>
+
+            <div class="col col-md-2">
+                <H5>Expiration Date of Plastic</H5>
+                <H3Wait IsLoaded="IsSubDataLoaded">@Data.Expiry</H3Wait>
+            </div>
+        </div>
+
+        @if (Card.SubStatus == DataStatus.Error)
+        {
+            <div class='@($"alert alert-info")'>
+                <div class="alert-icon">
+                    <span class="icon-Information"></span>
+                </div>
+                <div class="alert-content">
+                    <H3>Unable to get card balance details</H3>
+                </div>
+            </div>
+
+        }
+
+    </div>
+
+
+
+}
+else if (Card.Status == DataStatus.Loading)
+{
+    <CardDetailSkeleton />
+}
+else if (Card.Status == DataStatus.Error)
+{
+    <EmptyState IconName="tech-error" Heading="Technical Error" Description="@Card.Exception!.Message" />
+}
+
+
+@code {
+
+    public OffCanvas NewCardRequest { get; set; } = default!;
+
+    public bool IsShowLoaderForApplyFilters { get; set; }
+    private string CardName { get; set; } = string.Empty;
+}

@@ -1,0 +1,148 @@
+﻿ @page "/single-report"
+
+
+@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.Report
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Domain.Models.Request
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@using CreditCardsSystem.Web.Client.Pages.Reports.Components
+@using Exception = System.Exception
+
+
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header row mx-0">
+                    <Title Text="Credit Card Statement - Single Print"></Title>
+            </div>
+            @if (!IsAllowTo(Permissions.StatementSingleReport.View()))
+            {
+                <AccessDenied />
+            }
+            else
+            {
+                <CardContainer>
+
+                    <TelerikForm EditContext="editContext" Model="filterModel">
+                        <FormValidation>
+                            <ObjectGraphDataAnnotationsValidator />
+                        </FormValidation>
+                        <FormItems>
+                            <FormItem>
+                                <Template>
+
+                                    <div class="form-flex">
+                                        <ul class="list">
+                                            <li>
+                                                <H3 class="form-label">Period</H3>
+                                                <TelerikDatePicker BottomView="@CalendarView.Year" @bind-Value="@filterModel.Period" Format="MMM yy"></TelerikDatePicker>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => filterModel.Period)"></ValidationMessage></SubH2>
+                                            </li>
+                                            <li>
+                                                <H3 class="form-label">Card Number</H3>
+                                                <TelerikTextBox @bind-Value="@filterModel.CardNumber" Placeholder="Enter Card Number..."></TelerikTextBox>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => filterModel.CardNumber)"></ValidationMessage></SubH2>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="drawer-buttons mt-4">
+                                        @if (IsAllowTo(Permissions.StatementSingleReport.Print()))
+                                        {
+                                            <Button Type="btn-primary btn-sm" Enabled="!IsProcessing" Label="Print Statement" OnClick="async () => await PrintReport()"></Button>
+                                        }
+                                    </div>
+
+                                </Template>
+                            </FormItem>
+
+                        </FormItems>
+                        <FormButtons>
+
+                        </FormButtons>
+                    </TelerikForm>
+
+                </CardContainer>
+            }
+       
+    </div>
+</div>
+
+
+@code {
+    [Inject] public ISingleReportAppService reportService { get; set; } = default!;
+
+    private EditContext editContext { get; set; }
+    private SingleReportFilter filterModel { get; set; }
+
+
+    private OffCanvas filterCanvas { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAllowTo(Permissions.StatementSingleReport.View()))
+        {
+            return;
+        }
+
+        await BindEditContext();
+    }
+
+    async Task PrintReport()
+    {
+
+        if (!editContext.Validate())
+        {
+            return;
+        }
+
+        Notification.Loading("Downloading report...");
+
+        var eFormResponse = await reportService.PrintReport(filterModel);
+
+        if (!eFormResponse.IsSuccess)
+        {
+            Notification.Failure(eFormResponse.Message);
+            return;
+        }
+
+        var formResponse = eFormResponse.Data!;
+        var streamData = new MemoryStream(formResponse!.FileBytes!);
+        using var streamRef = new DotNetStreamReference(stream: streamData);
+        await Js.InvokeVoidAsync("downloadFileFromStream", $"{formResponse?.FileName}", streamRef);
+        Notification.Success("Downloaded!");
+
+    }
+
+
+
+
+
+    async Task BindEditContext()
+    {
+        filterModel ??= new();
+        editContext = new EditContext(filterModel);
+
+    }
+
+
+
+
+
+}

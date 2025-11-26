@@ -1,0 +1,245 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.CardIssuance
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@inject ILogger<CardDefDetails> Logger
+
+
+@page "/cards/def"
+
+@inject ICardDefsAppService CardDefsAppService
+@inject NavigationManager NavigationManager
+@inherits ApplicationComponent
+
+
+@if (!IsAllowTo(Permissions.CardDefinitions.View()))
+{
+    <AccessDenied />
+}
+else
+{
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                 <Title Text="Cards Definitions"></Title>
+            </div>
+
+            @if (CardsTypesResponse.Status == DataStatus.Success)
+            {
+                <div class="KFHnopadding kfh-data-table ">
+                    <TelerikGrid Data="@CardsTypesResponse.Data"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%">
+
+                        <GridToolBarTemplate>
+                            @if (!IsAllowTo(Permissions.CardDefinitions.Create()))
+                            {
+                                <GridCommandButton OnClick="() => ViewCardDetailsForm(null!)" Class="btn-secondary">Add New</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.Name)" Title="Card Type Name" OnCellRender="@((e) => e.Class = "col-xl-2  text-start")" HeaderClass="col-xl-2 text-start ps-4">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4 class="text-start ps-4">@item!.Name</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.CardProduct)" Title="Card Product">
+                                <Template>
+
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.CardProduct</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.CardType)" Title="Card Type">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.CardType</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.MinLimit)" Title="Min Limit">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.MinLimit</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.MaxLimit)" Title="Max Limit">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.MaxLimit</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.Duality)" Title="Duality">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.Duality</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.Installments)" Title="Installements">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.Installments</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.BinNo)" Title="Bin No">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.BinNo</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.SystemNo)" Title="System No">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.SystemNo</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.Fees)" Title="Fees">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.Fees</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.MerchantAcct)" Title="Merchant Account">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.MerchantAcct</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.MonthlyMaxDue)" Title="Monthly MAx Due">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        <H4>@item!.MonthlyMaxDue</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(CardDefinitionDto.Islocked)" Title="Status">
+                                <Template>
+                                     @{
+                                        var item = context as CardDefinitionDto;
+                                        @if (item!.Islocked == true)
+                                        {
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+                                        }
+                                    }
+                                   
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="Actions" Title=" ">
+                                <Template>
+                                    @{
+                                        var item = context as CardDefinitionDto;
+                                        if (!item!.Islocked.HasValue || !item.Islocked.Value)
+                                        {
+                                            <TextButton Label="Edit card" RightIcon="icon-LTR" Enabled="true" OnClick="@(() => ViewCardDetailsForm(item!))"></TextButton>
+
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+                </div>
+            }
+            else if (CardsTypesResponse.Status == DataStatus.Loading)
+            {
+                <div class="KFHnopadding kfh-data-table ">
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+                </div>
+            }
+            else if (CardsTypesResponse.Status == DataStatus.Error)
+            {
+                <div class="KFHnopadding kfh-data-table ">
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+                </div>
+            }
+        </div>
+    </div>
+
+    <CardDefDetails @ref="CardDefDetailsRef"></CardDefDetails>
+
+}
+
+
+@code {
+
+    public DataItem<List<CardDefinitionDto>> CardsTypesResponse { get; set; } = new();
+    public CardDefDetails CardDefDetailsRef { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {   
+        CardsTypesResponse.Loading();
+        var cardsTypes = await CardDefsAppService.GetCardsTypes();
+        if (cardsTypes.IsSuccess)
+            CardsTypesResponse.SetData(cardsTypes.Data!);
+        else
+            CardsTypesResponse.Error(new Exception(cardsTypes.Message));
+    }
+
+    private async Task ViewCardDetailsForm(CardDefinitionDto cardDefinitionDto)
+    {
+        await CardDefDetailsRef.OpenCardDetailsDrawer(cardDefinitionDto);
+    }
+
+}

@@ -1,0 +1,236 @@
+﻿@page "/card-request-detail"
+
+
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Workflow
+@using CreditCardsSystem.Utility.Extensions
+@using Humanizer
+
+@inject IJSRuntime Js;
+
+@inherits ApplicationComponent
+
+@{
+    bool isCancelledTask = TaskDetail?.Status?.Equals("CANCELED", StringComparison.InvariantCultureIgnoreCase) ?? false;
+}
+
+
+<div class="breadcrumb-stickyHeader my-0">
+    <Breadcrumb Items="@BreadCrumbsItems"></Breadcrumb>
+</div>
+
+
+
+
+@if (RequestActivity.Status == DataStatus.Loading)
+{
+    <div class="message-view">
+        <div>
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <FormSkeleton />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (RequestActivity.Status == DataStatus.Error)
+{
+    <div class="message-view">
+        <div>
+            <div class="d-flex flex-column">
+                <div class="justify-content-between">
+                    @RequestActivity.Exception.Message <TextButton OnClick="@(()=> { NavigateTo("/cc-tasks"); })" Label="Go to TaskList" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (RequestActivity.Data is null)
+{
+    <NoRecordsFound />
+}
+else
+{
+
+
+
+    <div class="message-view">
+        <div>
+            <div class="d-flex flex-column">
+                @* <Alert Type="alert-info" Message="Workflow message"></Alert> *@
+                @if (isCancelledTask)
+                {
+                    <div class="d-flex justify-content-between">
+                        <div>
+
+                            <H2>@TaskDetail?.Title @(IsSupplementaryCard ? " (Supplementary Card)" : "")</H2>
+                            <H4 Class="my-0 text-gray">@TaskDetail?.CreatedDate.ToString()</H4>
+                            <H4 Class="my-0 text-gray">@Title</H4>
+                            <SubH3>@TaskDetail?.Description</SubH3>
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            @{
+                                var reqStatus = (RequestActivityStatus)RequestActivity!.Data!.RequestActivityStatusId;
+                                CreditCardStatus cardStatus = RequestActivity?.Data?.CardStatus ?? CreditCardStatus.None;
+                            }
+                            <H2>
+                                @TaskDetail?.Title @(IsSupplementaryCard ? " (Supplementary)" : "")
+                                @*      <SubH2>@TaskDetail?.Description</SubH2> *@
+                                @* <Status StatusClass="@Helpers.GetRequestActivityStatusClass(reqStatus)" StatusTitle="@reqStatus.ToString()"></Status> *@
+                            </H2>
+                            <H4 Class="my-0 text-gray">@TaskDetail?.CreatedDate.ToString()</H4>@* .Formed("d MMMM, yyyy hh:mm:ss")</H4> *@
+                            <H4 Class="my-0 text-gray">@Title</H4>
+
+                        </div>
+                        <div class="d-flex justify-content-end align-items-center flex-row gp-16">
+                            @if (!RequestActivity.Data.IsCorporateActivity && RequestActivityType is not (CFUActivity.MemberShipDeleteRequest or CFUActivity.CorporateProfileAdd or CFUActivity.CorporateProfileUpdate))
+                            {
+                                <div>
+                                    <picture>
+                                        <source srcset="" />@{
+                                            var image = @GetCreditCardImage(RequestActivity?.Data?.CardType);
+                                        }
+                                        <img style="width:120px !important; height: 76px !important; display: block" src=@image onerror="if (this.src !=  '@image') this.src = '@DefaultImage';" />
+                                    </picture>
+
+                                </div>
+
+                                <div class="d-flex flex-column">
+                                    <H3>@DisplayCardNumber(TaskDetail!.Payload.GetValueOrDefault(WorkflowVariables.CardNumber)?.ToString())</H3>
+                                    <SubH1>@RequestActivity?.Data?.ProductName</SubH1>
+                                    <SubH1>@RequestActivity?.Data?.ProductType</SubH1>
+                                    <Status StatusClass="@Helpers.GetStatusClass(cardStatus)" StatusTitle="@cardStatus.GetDescription()"></Status>
+                                </div>
+
+                                @if (RequestActivityType is not CFUActivity.CREDIT_REVERSE)
+                                {
+                                    <OnClickComponent OnClick="ReprintRequestForm">
+                                        <TelerikTooltip TargetSelector="#printStm" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                        <CircleIcon Icon="icon-Print" Id="statmentDownload" Title="Print Form" />
+                                        <TelerikTooltip TargetSelector="#statmentDownload" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                    </OnClickComponent>
+                                }
+                            }
+
+
+                        </div>
+                    </div>
+                }
+
+
+
+            </div>
+        </div>
+        <Divider />
+        @if (!isCancelledTask)
+        {
+            @if (activityComponentType is not null)
+            {
+                <div class="d-flex flex-column gp-24 ">
+                    <DynamicComponent Type="@activityComponentType" Parameters="@components[RequestActivityType].Parameters" @ref="dynamicComponent" />
+                </div>
+            }
+
+            <div class="d-flex justify-content-end gp-16">
+                @if (isReadyForAction)
+                {
+                    if (IsRejected)
+                    {
+                        <Button Type="btn-secondary--critical btn-sm" Label="Delete Request" Loader="(CurrentAction==ActionType.Rejected && !ShowLoader)" Enabled="ShowLoader" OnClick="()=> {CancelDialogVisible = true;}"> </Button>
+                    }
+                    else
+                    {
+                        <Button Type="btn-secondary--critical btn-sm" Label="Reject" Loader="(CurrentAction==ActionType.Rejected && !ShowLoader)" Enabled="ShowLoader" OnClick="()=> {CurrentAction=ActionType.Rejected; RejectDialogVisible = true;}"> </Button>
+                        <Button Type="btn-primary btn-sm" Label="Approve" Loader="(CurrentAction==ActionType.Approved && !ShowLoader)" Enabled="ShowLoader" OnClick="()=> {ApproveDialogVisible = true;}"> </Button>
+                    }
+                }
+                else
+                {
+                    <Alert Type="alert-warning" Message="@ViewOnlyReason" ActionLabel=""></Alert>
+                }
+            </div>
+        }
+
+        @if (Comments is { Result.Count: > 0 })
+        {
+            <H2>Comments</H2>
+            foreach (var comment in Comments.Result)
+            {
+                <Card>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="product-item">
+                            <div class="product-info">
+                                <H3 Class="InvoiceNo">
+                                    @comment.Comment.Value
+                                </H3>
+                                <SubH2 Title="@comment.Comment.CreatedAt.ToString("f")">- @comment.Comment.CommentBy <i>@comment.Comment.CreatedAt.Humanize()</i></SubH2>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            }
+        }
+    </div>
+}
+
+<TelerikDialog @bind-Visible="@RejectDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <span class="dialog-icon icon-Critical" />
+                <H2>Reject Request</H2>
+            </div>
+            <H4>You are about to reject this service request </H4>
+            <p>Please enter rejection reason for @RequestActivity!.Data?.CfuActivity.GetDescription()?</p>
+            <TelerikTextBox @bind-Value="@RejectionReason" Placeholder="Enter rejected reason"></TelerikTextBox>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { RejectDialogVisible = false; })" />
+                <Button Type="btn-secondary--critical btn-sm" Label="Reject Request" Loader="(CurrentAction==ActionType.Rejected && !ShowLoader)" OnClick="@RejectRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikDialog @bind-Visible="@ApproveDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Approve Request</H2>
+            </div>
+            <H4>You are about to Approve this service request </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ApproveDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Approve Request" Loader="(CurrentAction==ActionType.Approved && !ShowLoader)" OnClick="@ApproveRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+<TelerikDialog @bind-Visible="@CancelDialogVisible" Class="modal-dialog" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <span class="dialog-icon icon-Critical" />
+                <H2> Cancel Credit Card </H2>
+            </div>
+            <H4>You’re about to Cancel the selected credit card </H4>
+            <H4><b>@(RequestActivity?.Data?.ProductType)</b></H4>
+
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Keep it" OnClick="@(() => { CancelDialogVisible = false; })" />
+                <Button Type="btn-secondary--critical btn-sm" Label="Confirm" OnClick="@(()=>Cancel())" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom" />

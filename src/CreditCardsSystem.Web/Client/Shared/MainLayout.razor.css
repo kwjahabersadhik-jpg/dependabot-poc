@@ -1,0 +1,38 @@
+html, body, .k-drawer-container, .k-drawer-content {
+    width: 100%;
+    max-height: 100%;
+}
+
+.main {
+    width: 97%;
+    height: 100%;
+    max-height: 100%;
+}
+
+.main {
+    overflow-y: auto;
+}
+
+.k-drawer-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.top-row {
+    left: 0;
+    left: 0;
+}
+
+.k-grid-content tr:hover .btn-secondary-copy {
+    display: inline;
+}
+
+.kfh-notification {
+    z-index: 1234;
+}
+
+.k-notification-success {
+    border-color: #00924B;
+    color: white;
+    background-color: #00924B;
+}

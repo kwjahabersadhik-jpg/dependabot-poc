@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/WLSInformaticaManagementService/WLS_InformaticaManagementService.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, InformaticaManagementServiceReference"
+    ],
+    "outputFile": "InformaticaManagementServiceReference.cs",
+    "targetFramework": "net8.0",
+    "typeReuseMode": "All"
+  }
+}

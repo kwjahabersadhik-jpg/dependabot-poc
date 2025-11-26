@@ -1,0 +1,260 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+
+@inject RequestStateContainer RequestStateContainer
+@inherits PromotionsRequestsHelpers
+
+<H2>PCT (@RequestStateContainer.RequestHeader.ActivityType.ToString())</H2>
+
+<style>
+    .content {
+        padding-right: 40px;
+    }
+</style>
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+
+    </tr>
+
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Pct ID</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.PctId))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Pct Flag</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.PctFlag))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>No Of WavedMonths</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.NoOfWavedMonths))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Create Date</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.CreateDate))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Fees</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.Fees))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Description</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.Description))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Is Staff</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.IsStaff))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Service No</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.ServiceNo))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Early Closure Fees</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosureFees))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Early Closure Percentage</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosurePercentage))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Early Closure Months</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosureMonths))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            
+        </td>
+
+    </tr>
+
+</table>
+
+@if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+{
+
+    <H2>PCT (Old)</H2>
+
+    <table>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Pct ID</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.PctId) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Pct Flag</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.PctFlag) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>No Of WavedMonths</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.NoOfWavedMonths) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Create Date</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.CreateDate) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Fees</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.Fees) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Description</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.Description) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Is Staff</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.IsStaff) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Service No</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.ServiceNo) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Early Closure Fees</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosureFees) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Early Closure Percentage</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosurePercentage), true)</H5>
+                </div>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Early Closure Months</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PctDto.EarlyClosureMonths) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br />
+    <br />
+
+}
+
+
+@code {
+
+
+}

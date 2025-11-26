@@ -1,0 +1,1126 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="BankingCustomerProfileService" targetNamespace="http://www.openuri.org/">
+<documentation>Customer Profile SOAP API
+</documentation>
+  <types>
+    <xsd:schema>
+			<xsd:import namespace="http://www.openuri.org/" schemaLocation="KFHCmrCustomerProfile.CustomerProfile.ws.pro.BankingCustomerProfileService_xsd=xsd0"/>
+		</xsd:schema>
+    <xsd:schema>
+			<xsd:import namespace="http://www.kfh.com/" schemaLocation="KFHCmrCustomerProfile.CustomerProfile.ws.pro.BankingCustomerProfileService_xsd=xsd1"/>
+		</xsd:schema>
+  </types>
+  <message name="updateCustomerAddressResponse">
+    <part name="parameters" element="tns:updateCustomerAddressResponse">
+    </part>
+  </message>
+  <message name="viewCustomerProfileExtension">
+    <part name="parameters" element="tns:viewCustomerProfileExtension">
+    </part>
+  </message>
+  <message name="viewCustomerProfileResponse">
+    <part name="parameters" element="tns:viewCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="deleteCustomerProfileExtensionAttributeResponse">
+    <part name="parameters" element="tns:deleteCustomerProfileExtensionAttributeResponse">
+    </part>
+  </message>
+  <message name="searchByMatchingNameBeginningResponse">
+    <part name="parameters" element="tns:searchByMatchingNameBeginningResponse">
+    </part>
+  </message>
+  <message name="viewEzwayCustomerProfile">
+    <part name="parameters" element="tns:viewEzwayCustomerProfile">
+    </part>
+  </message>
+  <message name="getCustomerCRSDetails">
+    <part name="parameters" element="tns:getCustomerCRSDetails">
+    </part>
+  </message>
+  <message name="searchCustomerProfileUserDefinedData">
+    <part name="parameters" element="tns:searchCustomerProfileUserDefinedData">
+    </part>
+  </message>
+  <message name="getCorporateRelationManagerResponse">
+    <part name="parameters" element="tns:getCorporateRelationManagerResponse">
+    </part>
+  </message>
+  <message name="updateCustomerCivilIdInfo">
+    <part name="parameters" element="tns:updateCustomerCivilIdInfo">
+    </part>
+  </message>
+  <message name="searchByOtherLanguageName">
+    <part name="parameters" element="tns:searchByOtherLanguageName">
+    </part>
+  </message>
+  <message name="ViewProfileAttributes">
+    <part name="parameters" element="tns:ViewProfileAttributes">
+    </part>
+  </message>
+  <message name="searchByFirstAndLastNameResponse">
+    <part name="parameters" element="tns:searchByFirstAndLastNameResponse">
+    </part>
+  </message>
+  <message name="viewCustomerProfile">
+    <part name="parameters" element="tns:viewCustomerProfile">
+    </part>
+  </message>
+  <message name="updateCustomerCivilIdInfoResponse">
+    <part name="parameters" element="tns:updateCustomerCivilIdInfoResponse">
+    </part>
+  </message>
+  <message name="updateCustomerProfile">
+    <part name="parameters" element="tns:updateCustomerProfile">
+    </part>
+  </message>
+  <message name="viewGenericCustomerProfileResponse">
+    <part name="parameters" element="tns:viewGenericCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="getCustomerCRSDetailsResponse">
+    <part name="parameters" element="tns:getCustomerCRSDetailsResponse">
+    </part>
+  </message>
+  <message name="searchByPhoneNumber">
+    <part name="parameters" element="tns:searchByPhoneNumber">
+    </part>
+  </message>
+  <message name="getCustomerClassResponse">
+    <part name="parameters" element="tns:getCustomerClassResponse">
+    </part>
+  </message>
+  <message name="searchByFirstAndLastName">
+    <part name="parameters" element="tns:searchByFirstAndLastName">
+    </part>
+  </message>
+  <message name="insertCustomerProfileExtensionResponse">
+    <part name="parameters" element="tns:insertCustomerProfileExtensionResponse">
+    </part>
+  </message>
+  <message name="getEducationResponse">
+    <part name="parameters" element="tns:getEducationResponse">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="deleteCustomerProfileExtensionAttribute">
+    <part name="parameters" element="tns:deleteCustomerProfileExtensionAttribute">
+    </part>
+  </message>
+  <message name="viewJointAccountProfilesResponse">
+    <part name="parameters" element="tns:viewJointAccountProfilesResponse">
+    </part>
+  </message>
+  <message name="getEducation">
+    <part name="parameters" element="tns:getEducation">
+    </part>
+  </message>
+  <message name="viewCBKCustomerProfileResponse">
+    <part name="parameters" element="tns:viewCBKCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="viewGenericCustomerProfileNotFiltered">
+    <part name="parameters" element="tns:viewGenericCustomerProfileNotFiltered">
+    </part>
+  </message>
+  <message name="viewDetailedGenericCustomerProfile">
+    <part name="parameters" element="tns:viewDetailedGenericCustomerProfile">
+    </part>
+  </message>
+  <message name="getJobTitle">
+    <part name="parameters" element="tns:getJobTitle">
+    </part>
+  </message>
+  <message name="getCorporateRelationManager">
+    <part name="parameters" element="tns:getCorporateRelationManager">
+    </part>
+  </message>
+  <message name="viewGenericCustomerProfileNotFilteredResponse">
+    <part name="parameters" element="tns:viewGenericCustomerProfileNotFilteredResponse">
+    </part>
+  </message>
+  <message name="viewRimToRimRelation">
+    <part name="parameters" element="tns:viewRimToRimRelation">
+    </part>
+  </message>
+  <message name="viewCustomerDetailsResponse">
+    <part name="parameters" element="tns:viewCustomerDetailsResponse">
+    </part>
+  </message>
+  <message name="checkVVIPCustomerStatus">
+    <part name="parameters" element="tns:checkVVIPCustomerStatus">
+    </part>
+  </message>
+  <message name="viewEzwayCustomerProfileResponse">
+    <part name="parameters" element="tns:viewEzwayCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="viewJointAccountProfiles">
+    <part name="parameters" element="tns:viewJointAccountProfiles">
+    </part>
+  </message>
+  <message name="getBankingStaticDataResponse">
+    <part name="parameters" element="tns:getBankingStaticDataResponse">
+    </part>
+  </message>
+  <message name="checkVVIPCustomerStatusResponse">
+    <part name="parameters" element="tns:checkVVIPCustomerStatusResponse">
+    </part>
+  </message>
+  <message name="createRimProfile">
+    <part name="parameters" element="tns:createRimProfile">
+    </part>
+  </message>
+  <message name="insertCustomerProfileExtensionArr">
+    <part name="parameters" element="tns:insertCustomerProfileExtensionArr">
+    </part>
+  </message>
+  <message name="getCustomerAddressFromPACI">
+    <part name="parameters" element="tns:getCustomerAddressFromPACI">
+    </part>
+  </message>
+  <message name="createRimProfileResponse">
+    <part name="parameters" element="tns:createRimProfileResponse">
+    </part>
+  </message>
+  <message name="insertCustomerProfileExtensionArrResponse">
+    <part name="parameters" element="tns:insertCustomerProfileExtensionArrResponse">
+    </part>
+  </message>
+  <message name="viewBlackListed">
+    <part name="parameters" element="tns:viewBlackListed">
+    </part>
+  </message>
+  <message name="viewBankingCustomerProfileResponse">
+    <part name="parameters" element="tns:viewBankingCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="getCustomerClass">
+    <part name="parameters" element="tns:getCustomerClass">
+    </part>
+  </message>
+  <message name="getCustomerAddressFromPACIResponse">
+    <part name="parameters" element="tns:getCustomerAddressFromPACIResponse">
+    </part>
+  </message>
+  <message name="isCustomerBlackListedResponse">
+    <part name="parameters" element="tns:isCustomerBlackListedResponse">
+    </part>
+  </message>
+  <message name="viewCustomerDetails">
+    <part name="parameters" element="tns:viewCustomerDetails">
+    </part>
+  </message>
+  <message name="isCustomerBlackListed">
+    <part name="parameters" element="tns:isCustomerBlackListed">
+    </part>
+  </message>
+  <message name="getBankingStaticData">
+    <part name="parameters" element="tns:getBankingStaticData">
+    </part>
+  </message>
+  <message name="viewDetailedGenericCustomerProfileResponse">
+    <part name="parameters" element="tns:viewDetailedGenericCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="updateCustomerProfileResponse">
+    <part name="parameters" element="tns:updateCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="viewBlackListedResponse">
+    <part name="parameters" element="tns:viewBlackListedResponse">
+    </part>
+  </message>
+  <message name="viewGenericCustomerProfile">
+    <part name="parameters" element="tns:viewGenericCustomerProfile">
+    </part>
+  </message>
+  <message name="updateCustomerAddress">
+    <part name="parameters" element="tns:updateCustomerAddress">
+    </part>
+  </message>
+  <message name="createBankingCustomerProfile">
+    <part name="parameters" element="tns:createBankingCustomerProfile">
+    </part>
+  </message>
+  <message name="ViewProfileAttributesResponse">
+    <part name="parameters" element="tns:ViewProfileAttributesResponse">
+    </part>
+  </message>
+  <message name="viewCustomerProfileExtensionResponse">
+    <part name="parameters" element="tns:viewCustomerProfileExtensionResponse">
+    </part>
+  </message>
+  <message name="getAccountTypeResponse">
+    <part name="parameters" element="tns:getAccountTypeResponse">
+    </part>
+  </message>
+  <message name="insertCustomerProfileExtension">
+    <part name="parameters" element="tns:insertCustomerProfileExtension">
+    </part>
+  </message>
+  <message name="viewBankingCustomerProfile">
+    <part name="parameters" element="tns:viewBankingCustomerProfile">
+    </part>
+  </message>
+  <message name="updateCustomerKYCInfoResponse">
+    <part name="parameters" element="tns:updateCustomerKYCInfoResponse">
+    </part>
+  </message>
+  <message name="searchByOtherLanguageNameResponse">
+    <part name="parameters" element="tns:searchByOtherLanguageNameResponse">
+    </part>
+  </message>
+  <message name="viewRimToRimRelationResponse">
+    <part name="parameters" element="tns:viewRimToRimRelationResponse">
+    </part>
+  </message>
+  <message name="deleteCustomerProfileExtension">
+    <part name="parameters" element="tns:deleteCustomerProfileExtension">
+    </part>
+  </message>
+  <message name="getCustomerProfileLookupData">
+    <part name="parameters" element="tns:getCustomerProfileLookupData">
+    </part>
+  </message>
+  <message name="getAccountType">
+    <part name="parameters" element="tns:getAccountType">
+    </part>
+  </message>
+  <message name="viewCBKCustomerProfile">
+    <part name="parameters" element="tns:viewCBKCustomerProfile">
+    </part>
+  </message>
+  <message name="searchCustomerProfileUserDefinedDataResponse">
+    <part name="parameters" element="tns:searchCustomerProfileUserDefinedDataResponse">
+    </part>
+  </message>
+  <message name="getJobTitleResponse">
+    <part name="parameters" element="tns:getJobTitleResponse">
+    </part>
+  </message>
+  <message name="searchByMatchingNameBeginning">
+    <part name="parameters" element="tns:searchByMatchingNameBeginning">
+    </part>
+  </message>
+  <message name="getCustomerProfileLookupDataResponse">
+    <part name="parameters" element="tns:getCustomerProfileLookupDataResponse">
+    </part>
+  </message>
+  <message name="deleteCustomerProfileExtensionResponse">
+    <part name="parameters" element="tns:deleteCustomerProfileExtensionResponse">
+    </part>
+  </message>
+  <message name="createBankingCustomerProfileResponse">
+    <part name="parameters" element="tns:createBankingCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="updateCustomerKYCInfo">
+    <part name="parameters" element="tns:updateCustomerKYCInfo">
+    </part>
+  </message>
+  <message name="searchByPhoneNumberResponse">
+    <part name="parameters" element="tns:searchByPhoneNumberResponse">
+    </part>
+  </message>
+  <portType name="BankingCustomerProfileService">
+    <operation name="getAccountType">
+      <input message="tns:getAccountType" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getAccountTypeRequest">
+    </input>
+      <output message="tns:getAccountTypeResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getAccountTypeResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getAccountType/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewBankingCustomerProfile">
+      <input message="tns:viewBankingCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBankingCustomerProfileRequest">
+    </input>
+      <output message="tns:viewBankingCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBankingCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBankingCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewJointAccountProfiles">
+      <input message="tns:viewJointAccountProfiles" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewJointAccountProfilesRequest">
+    </input>
+      <output message="tns:viewJointAccountProfilesResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewJointAccountProfilesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewJointAccountProfiles/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewCustomerProfileExtension">
+      <input message="tns:viewCustomerProfileExtension" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfileExtensionRequest">
+    </input>
+      <output message="tns:viewCustomerProfileExtensionResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfileExtensionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfileExtension/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchByOtherLanguageName">
+      <input message="tns:searchByOtherLanguageName" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByOtherLanguageNameRequest">
+    </input>
+      <output message="tns:searchByOtherLanguageNameResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByOtherLanguageNameResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByOtherLanguageName/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCustomerCivilIdInfo">
+      <input message="tns:updateCustomerCivilIdInfo" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerCivilIdInfoRequest">
+    </input>
+      <output message="tns:updateCustomerCivilIdInfoResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerCivilIdInfoResponse">
+    </output>
+    </operation>
+    <operation name="getCustomerAddressFromPACI">
+      <input message="tns:getCustomerAddressFromPACI" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerAddressFromPACIRequest">
+    </input>
+      <output message="tns:getCustomerAddressFromPACIResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerAddressFromPACIResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerAddressFromPACI/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchByFirstAndLastName">
+      <input message="tns:searchByFirstAndLastName" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByFirstAndLastNameRequest">
+    </input>
+      <output message="tns:searchByFirstAndLastNameResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByFirstAndLastNameResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByFirstAndLastName/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchByMatchingNameBeginning">
+      <input message="tns:searchByMatchingNameBeginning" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByMatchingNameBeginningRequest">
+    </input>
+      <output message="tns:searchByMatchingNameBeginningResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByMatchingNameBeginningResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByMatchingNameBeginning/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCustomerCRSDetails">
+      <input message="tns:getCustomerCRSDetails" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerCRSDetailsRequest">
+    </input>
+      <output message="tns:getCustomerCRSDetailsResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerCRSDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerCRSDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCustomerProfileLookupData">
+      <input message="tns:getCustomerProfileLookupData" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerProfileLookupDataRequest">
+    </input>
+      <output message="tns:getCustomerProfileLookupDataResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerProfileLookupDataResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerProfileLookupData/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCustomerKYCInfo">
+      <input message="tns:updateCustomerKYCInfo" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerKYCInfoRequest">
+    </input>
+      <output message="tns:updateCustomerKYCInfoResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerKYCInfoResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerKYCInfo/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewCustomerDetails">
+      <input message="tns:viewCustomerDetails" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerDetailsRequest">
+    </input>
+      <output message="tns:viewCustomerDetailsResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCustomerProfile">
+      <input message="tns:updateCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerProfileRequest">
+    </input>
+      <output message="tns:updateCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getBankingStaticData">
+      <input message="tns:getBankingStaticData" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getBankingStaticDataRequest">
+    </input>
+      <output message="tns:getBankingStaticDataResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getBankingStaticDataResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getBankingStaticData/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewEzwayCustomerProfile">
+      <input message="tns:viewEzwayCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewEzwayCustomerProfileRequest">
+    </input>
+      <output message="tns:viewEzwayCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewEzwayCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewEzwayCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewRimToRimRelation">
+      <input message="tns:viewRimToRimRelation" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewRimToRimRelationRequest">
+    </input>
+      <output message="tns:viewRimToRimRelationResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewRimToRimRelationResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewRimToRimRelation/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="isCustomerBlackListed">
+      <input message="tns:isCustomerBlackListed" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/isCustomerBlackListedRequest">
+    </input>
+      <output message="tns:isCustomerBlackListedResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/isCustomerBlackListedResponse">
+    </output>
+    </operation>
+    <operation name="createBankingCustomerProfile">
+      <input message="tns:createBankingCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/createBankingCustomerProfileRequest">
+    </input>
+      <output message="tns:createBankingCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/createBankingCustomerProfileResponse">
+    </output>
+    </operation>
+    <operation name="updateCustomerAddress">
+      <input message="tns:updateCustomerAddress" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerAddressRequest">
+    </input>
+      <output message="tns:updateCustomerAddressResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerAddressResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/updateCustomerAddress/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewCBKCustomerProfile">
+      <input message="tns:viewCBKCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCBKCustomerProfileRequest">
+    </input>
+      <output message="tns:viewCBKCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCBKCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCBKCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="checkVVIPCustomerStatus">
+      <input message="tns:checkVVIPCustomerStatus" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/checkVVIPCustomerStatusRequest">
+    </input>
+      <output message="tns:checkVVIPCustomerStatusResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/checkVVIPCustomerStatusResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/checkVVIPCustomerStatus/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewCustomerProfile">
+      <input message="tns:viewCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfileRequest">
+    </input>
+      <output message="tns:viewCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="ViewProfileAttributes">
+      <input message="tns:ViewProfileAttributes" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/ViewProfileAttributesRequest">
+    </input>
+      <output message="tns:ViewProfileAttributesResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/ViewProfileAttributesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/ViewProfileAttributes/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteCustomerProfileExtension">
+      <input message="tns:deleteCustomerProfileExtension" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtensionRequest">
+    </input>
+      <output message="tns:deleteCustomerProfileExtensionResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtensionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtension/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="insertCustomerProfileExtension">
+      <input message="tns:insertCustomerProfileExtension" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtensionRequest">
+    </input>
+      <output message="tns:insertCustomerProfileExtensionResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtensionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtension/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCorporateRelationManager">
+      <input message="tns:getCorporateRelationManager" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCorporateRelationManagerRequest">
+    </input>
+      <output message="tns:getCorporateRelationManagerResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCorporateRelationManagerResponse">
+    </output>
+    </operation>
+    <operation name="searchByPhoneNumber">
+      <input message="tns:searchByPhoneNumber" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByPhoneNumberRequest">
+    </input>
+      <output message="tns:searchByPhoneNumberResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByPhoneNumberResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchByPhoneNumber/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteCustomerProfileExtensionAttribute">
+      <input message="tns:deleteCustomerProfileExtensionAttribute" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtensionAttributeRequest">
+    </input>
+      <output message="tns:deleteCustomerProfileExtensionAttributeResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtensionAttributeResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/deleteCustomerProfileExtensionAttribute/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="insertCustomerProfileExtensionArr">
+      <input message="tns:insertCustomerProfileExtensionArr" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtensionArrRequest">
+    </input>
+      <output message="tns:insertCustomerProfileExtensionArrResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtensionArrResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/insertCustomerProfileExtensionArr/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="createRimProfile">
+      <input message="tns:createRimProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/createRimProfileRequest">
+    </input>
+      <output message="tns:createRimProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/createRimProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/createRimProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCustomerClass">
+      <input message="tns:getCustomerClass" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerClassRequest">
+    </input>
+      <output message="tns:getCustomerClassResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerClassResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getCustomerClass/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getJobTitle">
+      <input message="tns:getJobTitle" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getJobTitleRequest">
+    </input>
+      <output message="tns:getJobTitleResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getJobTitleResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getJobTitle/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewBlackListed">
+      <input message="tns:viewBlackListed" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBlackListedRequest">
+    </input>
+      <output message="tns:viewBlackListedResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBlackListedResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewBlackListed/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEducation">
+      <input message="tns:getEducation" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getEducationRequest">
+    </input>
+      <output message="tns:getEducationResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getEducationResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/getEducation/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewGenericCustomerProfileNotFiltered">
+      <input message="tns:viewGenericCustomerProfileNotFiltered" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfileNotFilteredRequest">
+    </input>
+      <output message="tns:viewGenericCustomerProfileNotFilteredResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfileNotFilteredResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfileNotFiltered/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchCustomerProfileUserDefinedData">
+      <input message="tns:searchCustomerProfileUserDefinedData" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchCustomerProfileUserDefinedDataRequest">
+    </input>
+      <output message="tns:searchCustomerProfileUserDefinedDataResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchCustomerProfileUserDefinedDataResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/searchCustomerProfileUserDefinedData/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewDetailedGenericCustomerProfile">
+      <input message="tns:viewDetailedGenericCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewDetailedGenericCustomerProfileRequest">
+    </input>
+      <output message="tns:viewDetailedGenericCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewDetailedGenericCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewDetailedGenericCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewGenericCustomerProfile">
+      <input message="tns:viewGenericCustomerProfile" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfileRequest">
+    </input>
+      <output message="tns:viewGenericCustomerProfileResponse" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/BankingCustomerProfileService/viewGenericCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="BankingCustomerProfileServiceSoapBinding" type="tns:BankingCustomerProfileService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#policy"/>
+    <operation name="getAccountType">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewBankingCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewJointAccountProfiles">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewCustomerProfileExtension">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchByOtherLanguageName">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCustomerCivilIdInfo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getCustomerAddressFromPACI">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchByFirstAndLastName">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchByMatchingNameBeginning">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCustomerCRSDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCustomerProfileLookupData">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCustomerKYCInfo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewCustomerDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getBankingStaticData">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewEzwayCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewRimToRimRelation">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="isCustomerBlackListed">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="createBankingCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateCustomerAddress">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewCBKCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="checkVVIPCustomerStatus">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="ViewProfileAttributes">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteCustomerProfileExtension">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="insertCustomerProfileExtension">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCorporateRelationManager">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="searchByPhoneNumber">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteCustomerProfileExtensionAttribute">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="insertCustomerProfileExtensionArr">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="createRimProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCustomerClass">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getJobTitle">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewBlackListed">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEducation">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewGenericCustomerProfileNotFiltered">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchCustomerProfileUserDefinedData">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewDetailedGenericCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewGenericCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="BankingCustomerProfileService">
+    <port name="BankingCustomerProfileServiceSoap2" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap9" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap7" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap8" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap5" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://integration/ws/BankingCustomerProfileService.BankingCustomerProfileServiceSoap/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/BankingCustomerProfileService.BankingCustomerProfileServiceSoap/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap6" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="https://integration/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap3" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/BankingCustomerProfileService.BankingCustomerProfileServiceSoap/1.0"/>
+    </port>
+    <port name="BankingCustomerProfileServiceSoap4" binding="tns:BankingCustomerProfileServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/BankingCustomerProfileService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" wsu:Id="policy"><wsp:ExactlyOne><wsp:All><sp:SupportingTokens xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"><wsp:Policy><sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"/></wsp:Policy></sp:SupportingTokens></wsp:All></wsp:ExactlyOne></wsp:Policy>
+</definitions>

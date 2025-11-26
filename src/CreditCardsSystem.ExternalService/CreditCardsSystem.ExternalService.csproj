@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<NoWarn>1701;1702;8981;0108</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Connected Services\CreditCardInquiryService\**" />
+    <EmbeddedResource Remove="Connected Services\CreditCardInquiryService\**" />
+    <None Remove="Connected Services\CreditCardInquiryService\**" />
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Autofac" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="RestSharp" />
+		<PackageReference Include="System.ServiceModel.Duplex" />
+		<PackageReference Include="System.ServiceModel.Federation" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Connected Services\CloseCreditCardStandingOrderService\" />
+	  <Folder Include="Connected Services\ReporterService\" />
+	  <Folder Include="SOA\CorporateCreditCardService\" />
+	  <Folder Include="SOA\DocumentManagementSerivce\" />
+	  <Folder Include="SOA\MonetaryTransferService\" />
+	  <Folder Include="SOA\CurrencyInformationService\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\CreditCardsSystem.Shared\CreditCardsSystem.Domain.Shared.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,235 @@
+﻿@page "/card-request-list"
+
+@using CreditCardsSystem.Data.Models;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using CreditCardsSystem.Domain.Models.Request;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Shared.Models.RequestActivity;
+@using CreditCardsSystem.Utility.Extensions;
+ 
+
+
+@inject ICardIssuanceAppService cardIssueService;
+@inject IRequestActivityAppService requestActivityAppService;
+@inject IReportAppService ReportService;
+
+
+@inherits ApplicationComponent
+
+<div class="AO-flex--container">
+    <div class="AO-left80--container">
+
+        <div class="accountStatement-content">
+            <div class="cc-transactions-header">
+                <div class="d-flex flex-column mt-6">
+                    <Title Text="Card Requests"></Title>
+                </div>
+                <div class="accountStatement-search">
+                    <OnClickComponent OnClick="async () => await FiltersDrawerRef.ToggleAsync()">
+                        <CircleIcon Icon="icon-Filter" />
+                    </OnClickComponent>
+                </div>
+            </div>
+            <div>
+
+                @if (RequestListStatus.Status == DataStatus.Loading)
+                {
+                    <div class="kfh-data-table d-flex">
+                        <div class="d-flex flex-column mt-4">
+                            <Repeater Count="4">
+                                <DataTableSkeleton></DataTableSkeleton>
+                            </Repeater>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="kfh-data-table d-flex ps-5">
+                        <TelerikGrid Data="@RequestListStatus.Data" Class="table-noHeader" EnableLoaderContainer=true
+                                     Pageable="true" PageSize="10" Width="100%" Resizable="true" Reorderable="true" Groupable="true"
+                                     Sortable="true" SortMode="@SortMode.Multiple">
+                            <GridColumns>
+                                <GridColumn OnCellRender="@((e) => e.Class = "Cell17 AO-detailed--cell")">
+                                    <Template>
+                                        @{
+
+                                            var rq = context as RequestActivityResult;
+                                            if (rq is not null){
+                                            <OnClickComponent OnClick="async()=>{ await GoToDetailPage(rq.RequestActivityID);}">
+                                                <div class="d-flex justify-content-between align-items-center ps-3">
+                                                    <div class="d-flex align-items-center gp-32">
+                                                        <div class="product-item">
+                                                            <CircleIcon Icon="icon-KFH" CircleSize="50px" IConSize="25px"></CircleIcon>
+                                                        </div>
+                                                        <div class="product-info">
+                                                            @{
+                                                                var rq = context as RequestActivityResult;
+                                                                <OnClickComponent OnClick="async()=>{ await GoToDetailPage(rq.RequestActivityID);}">
+                                                                    <H2 class="mb-2">
+                                                                        <span>@(((CFUActivity)rq.CFUActivityID!).GetDescription()) </span>
+                                                                    </H2>
+                                                                </OnClickComponent>
+                                                            }
+                                                            @{
+
+                                                                <H3>Requested by <span> @rq.TellerName <span>&#183;</span> (@rq.TellerID) </span> on @rq.CreationDate?.Formed()</H3>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        @{
+                                                            var reqStatus = (RequestActivityStatus)rq!.RequestActivityStatusID;
+                                                            <Status StatusClass="@Helpers.GetRequestActivityStatusClass(reqStatus)" StatusTitle="@reqStatus.ToString()"></Status>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </OnClickComponent>
+                                            }
+                                        }
+                                    </Template>
+                                </GridColumn>
+                            </GridColumns>
+                        </TelerikGrid>
+                    </div>
+
+
+                }
+
+            </div>
+            @* ----- Search & filters ----- *@
+
+            @* ----- Search & filters -  END ----- *@
+        </div>
+    </div>
+</div>
+
+
+<OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+    <OffcanvasContent>
+        <H3>Request Action</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikDropDownList Data="@activities" TextField="name" ValueField="value" DefaultText="-- All Activity --" @bind-Value="@filter.CFUActivity">
+                <DropDownListSettings>
+                    <DropDownListPopupSettings MaxHeight="200px" />
+                </DropDownListSettings>
+            </TelerikDropDownList>
+        </div>
+
+        <H3>Request Activity Status</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikDropDownList Data="@(Enum.GetNames(typeof(BaseActivityStatus)).Select(item => new RequestActivities(item.GetDescription(), Enum.Parse<RequestActivityStatus>(item))))" TextField="name" ValueField="value" DefaultText="-- All Activity --" @bind-Value="@filter.Status">
+                <DropDownListSettings>
+                    <DropDownListPopupSettings MaxHeight="200px" />
+                </DropDownListSettings>
+            </TelerikDropDownList>
+        </div>
+
+        <H3>Customer Civil Id</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikTextBox @bind-Value="@filter.CustomerCivilId" Placeholder="Enter customer civil Id..."></TelerikTextBox>
+        </div>
+
+        <H3>Card Number</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikTextBox @bind-Value="@filter.CardNumber" Placeholder="Enter card number..."></TelerikTextBox>
+        </div>
+
+        <H3>From Date</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikDatePicker AutoComplete="true" @bind-Value="filter.FromDate"></TelerikDatePicker>
+        </div>
+
+
+        <H3>To Date</H3>
+        <div class="credit-card-filters mt-4">
+            <TelerikDatePicker AutoComplete="true" @bind-Value="filter.ToDate"></TelerikDatePicker>
+        </div>
+    </OffcanvasContent>
+
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons">
+            <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Reset" OnClick="Reset"></Button>
+            <Button Type="btn-primary" ButtonType="@ButtonType.Submit" Label="Search" OnClick="async()=>{ await GetRequestActivities();await FiltersDrawerRef.ToggleAsync();}" Enabled=@(RequestListStatus.Status!=DataStatus.Loading) Loader=@(RequestListStatus.Status==DataStatus.Loading)></Button>
+        </div>
+    </OffcanvasFooterContent>
+
+</OffCanvas>
+
+
+
+
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public decimal? Id { get; set; }
+
+    OffCanvas FiltersDrawerRef { get; set; } = default!;
+
+    RequestActivityFilter filter { get; set; }
+
+    record RequestActivities(string name, RequestActivityStatus value);
+    record ActivitiesRecord(string name, CFUActivity value);
+
+    List<ActivitiesRecord> activities { get; set; } = new();
+    DataItem<List<RequestActivityResult>> RequestListStatus { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BindFormData();
+        await GetRequestActivities();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is null) return;
+        await GoToDetailPage(Id.Value);
+    }
+
+    async Task BindFormData()
+    {
+        foreach (CardUpdateCFUActivity vv in Enum.GetValues<CardUpdateCFUActivity>())
+        {
+            activities.Add(new(name: vv.GetDescription(), value: Enum.Parse<CFUActivity>(vv.ToString())));
+        }
+
+        filter = new() { Status = RequestActivityStatus.Pending };
+
+        await Task.CompletedTask;
+    }
+
+
+
+    async Task GoToDetailPage(decimal requestActivityID)
+    {
+        NavigationManager.NavigateTo(QueryHelpers.AddQueryString(Page.RequestDetail, "id", requestActivityID.ToString()));
+        await Task.CompletedTask;
+    }
+
+
+
+    async Task Reset()
+    {
+        filter = new();
+        StateHasChanged();
+        await Task.CompletedTask;
+    
+    }
+
+    async Task GetRequestActivities()
+    {
+        RequestListStatus.Loading();
+
+        var result = await requestActivityAppService.GetAllRequestActivity(filter);
+        if (result.IsSuccess)
+            RequestListStatus.SetData(result.Data!);
+        else
+            RequestListStatus.Error(new(result.Message));
+    }
+
+}

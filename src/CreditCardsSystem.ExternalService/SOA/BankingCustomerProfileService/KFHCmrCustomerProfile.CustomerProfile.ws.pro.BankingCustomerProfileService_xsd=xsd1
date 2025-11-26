@@ -1,0 +1,24 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.kfh.com/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.kfh.com/">
+<xsd:complexType name="Exception">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="message" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="Exception" type="ns0:Exception"/>
+<xsd:complexType name="result">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="isSuccessful" type="xsd:boolean"/>
+<xsd:element form="qualified" minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="message" type="xsd:string"/>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="errorDetails" nillable="true" type="ns0:errorDetails"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="errorDetails">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="message" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="application" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="result" type="ns0:result"/>
+</xsd:schema>

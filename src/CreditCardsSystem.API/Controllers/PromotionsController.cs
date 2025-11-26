@@ -27,10 +27,10 @@ namespace CreditCardsSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPromotionsTasks(string kfhId)
         {
+            logger.LogInformation("get promotions admin tasks by kfhId : {kfhId}", kfhId);
+
             if (string.IsNullOrEmpty(kfhId) || (int.TryParse(kfhId, out var userId) && userId <= 0))
                 return BadRequest("invalid kfh employee id");
-
-            logger.LogInformation("get promotions admin tasks by kfhId : {kfhId}", kfhId);
 
             var creditCardAppUrl = discovery.Get("app_creditcard");
             var creditCardClient = "creditCard";
@@ -40,7 +40,6 @@ namespace CreditCardsSystem.API.Controllers
             var promotionsTasksResponse = await requestsOpsAppService.GetRequestsByCriteria(new RequestsSearchCriteria
             {
                 ActivityStatus = ActivityStatus.Pending,
-                Count = 500
             });
 
             if (!promotionsTasksResponse.IsSuccess)
@@ -49,6 +48,7 @@ namespace CreditCardsSystem.API.Controllers
             if (!promotionsTasksResponse.Data!.Any())
                 return Ok(new List<TaskDto>());
 
+            logger.LogInformation("admin promotions tasks {@tasks}", promotionsTasksResponse.Data.Select(x=> new { x.ActivityForm, x.ActivityStatus, x.MakerName }));
 
             var requests = (from pt in promotionsTasksResponse.Data!
                             where userPermissionsResult.Permissions.Contains(DetectTaskPermission(pt.ActivityForm))
@@ -92,7 +92,8 @@ namespace CreditCardsSystem.API.Controllers
                 ActivityForm.CardDef => Permissions.CardDefinitions.Approve(),
                 ActivityForm.CardEligibilityMatrix => Permissions.CardEligibilityMatrix.Approve(),
                 _ => "invalid activity form"
-            };
+            }
+                ;
 
             return permission;
         }

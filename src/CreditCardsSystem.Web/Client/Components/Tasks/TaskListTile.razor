@@ -1,0 +1,53 @@
+﻿@using CreditCardsSystem.Web.Client.Components.Tasks.Model
+
+<div class="d-flex justify-content-between align-items-center ps-3">
+    <div class="d-flex align-items-center gp-32">
+        <div id="BottomTooltip" title="@Item.ApplicationName">
+            <CircleIcon Icon=@Item.ApplicationIcon CircleSize="50px"
+                        IConSize="25px">
+            </CircleIcon>
+        </div>
+        <div class="d-flex flex-column align-items-start gp-4">
+            @* <H4 Class="my-0">Created on @Item.CreatedDate </H4> *@
+            <div class="d-flex flex-row gp-6">
+                <H2 Class="my-0">@Item.Title</H2>
+                    @if (!string.IsNullOrEmpty(Item.Assignee))
+                {
+                    <span>&#183;</span>
+                    <H3 Class="my-0 text-grey">(@Item.Assignee)</H3>
+                    @* <ActionsMenu IconType="icon-User-lock" class=""></ActionsMenu> *@
+                }
+            </div>
+            <SubH1>@Item.Description</SubH1>
+
+                @if (@Item.Assignees.Any())
+            {
+                @* <H3 Class="my-0">Assignees @Item.Assignees</H3> *@
+                @* <H3 Class="my-0">Assignees Team1 , Team2 , Team3</H3> *@
+                @* <ChipGroup>
+            <Chip Text="Team1" Value="Accounts"></Chip>
+            <Chip Text="Team2" Value="Deposit" IsActive="true"></Chip>
+            <Chip Text="Team3" Value="Gold" IsActive="true"></Chip>
+            </ChipGroup> *@
+            }
+        </div>
+    </div>
+    <div class="d-flex align-items-end gp-32">
+        @* <div>
+        <TextButton Label="Assign to me" OnClick="@(() => { })" Enabled="true"></TextButton>
+        </div> *@
+
+        <div>
+            @* <TextButton Label="Assign to me" OnClick="@(() => { })" Enabled="true" LeftIcon="icon-Reply"></TextButton> *@
+
+        </div>
+    </div>
+</div>
+<TelerikTooltip TargetSelector="#tooltipBottom"></TelerikTooltip>
+
+@code {
+
+    [Parameter]
+    public required TaskListTileViewModel Item { get; set; }
+
+}

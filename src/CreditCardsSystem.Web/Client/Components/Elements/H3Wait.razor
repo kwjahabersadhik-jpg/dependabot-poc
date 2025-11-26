@@ -1,0 +1,40 @@
+﻿<p class='@($"Heading3 {Class}")' title="@Title" id="@Id">
+    @if (IsLoaded)
+    {
+        @ChildContent
+    }else{
+        @*<TelerikLoader Class="loader-indicator" Type="LoaderType.Pulsing" Size="@(ThemeConstants.Loader.Size.Small)"></TelerikLoader>*@
+        if (LoaderCss is not null)
+        {
+            <Loader class="loader-small table-loader"></Loader>
+        }
+        else
+        {
+            <TelerikSkeleton Width="100px" Height="10px" ShapeType="@SkeletonShapeType.Text" class="AO-skeleton-rectangle"></TelerikSkeleton>
+        }
+    }
+</p>
+
+
+
+@code {
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    [Parameter]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public string Id { get; set; } = default!;
+
+    [Parameter]
+    public bool IsLoaded { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? LoaderCss { get; set; }
+
+}

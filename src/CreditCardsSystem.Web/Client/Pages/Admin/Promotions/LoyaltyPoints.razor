@@ -1,0 +1,245 @@
+﻿@page "/loyalty/points"
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Models.BCDPromotions.LoyaltyPoints
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+
+@inject ILoyaltyPointsAppService LoyaltyPointsAppService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits ApplicationComponent
+
+
+
+
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+            <Title Text="Loyalty Points"></Title>
+        </div>
+
+        <div class="KFHnopadding kfh-data-table nosvgIcon">
+            @if (PointsResponse.Status == DataStatus.Success)
+            {
+                <div class="loyalty-sections-list ">
+
+                    <div class="loyalty-section">
+
+                        <div class="loyalty-section-cotnent">
+
+                            <div class="loyalty-section-card ps-4 pe-4">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <div class="d-flex align-items-center gp-16 mb-6">
+                                        <div class="d-flex flex-column ">
+                                            <div class="d-flex flex-row justify-content-start align-items-center">
+                                                <span>🏛️</span>
+                                                <H2 class="ps-4">Local Points</H2>
+                                            </div>
+                                            <div class="mt-2">
+                                                <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                        <div>
+                                            <div class="d-flex flex-row align-items-center justify-content-start">
+                                                <div>
+                                                    <span><H5>Current Points:</H5></span>
+                                                </div>
+                                                <div class="ps-2">
+                                                    <H1>@PointsResponse.Data!.LocalPoints</H1>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-row justify-content-start ">
+                                                    <div> </div>
+                                                    <div class="w-60">
+                                                        <TelerikNumericTextBox Step="1" Enabled=IsEditable @bind-Value="@PointsResponse.Data.LocalPointsTemp"></TelerikNumericTextBox>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="loyalty-section-card ps-4 pe-4">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex align-items-center gp-16 mb-6">
+                                            <div class="d-flex flex-column ">
+                                                <div class="d-flex flex-row justify-content-start align-items-center">
+                                                    <span>🛬</span>
+                                                    <H2 class="ps-4">International Points</H2>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                            <div>
+                                                <div class="d-flex flex-row align-items-center justify-content-start">
+                                                    <div>
+                                                        <span><H5>Current Points:</H5></span>
+                                                    </div>
+                                                    <div class="ps-2">
+                                                        <H1>@PointsResponse.Data!.InternationalPoints</H1>
+                                                    </div>
+                                                </div>
+                                                <div class="w-60">
+                                                    <TelerikNumericTextBox Step="1" Enabled=IsEditable @bind-Value="@PointsResponse.Data.InternationalPointsTemp"></TelerikNumericTextBox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="loyalty-section-card ps-4 pe-4">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex align-items-center gp-16 mb-6">
+                                            <div class="d-flex flex-column ">
+                                                <div class="d-flex flex-row justify-content-start align-items-center">
+                                                    <span>💵</span>
+                                                    <H2 class="ps-4">Cost Per Point</H2>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                            <div>
+                                                <div class="d-flex flex-row align-items-center justify-content-start">
+                                                    <div>
+                                                        <span><H5>Current Points:</H5></span>
+                                                    </div>
+                                                    <div class="ps-2">
+                                                        <H1>@PointsResponse.Data!.CostPerPoint</H1>
+                                                    </div>
+                                                </div>
+                                                <div class="w-60">
+                                                    <TelerikNumericTextBox Step="1" Enabled=IsEditable @bind-Value="@PointsResponse.Data.CostPerPointTemp"></TelerikNumericTextBox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <Divider />
+
+                                <div class="d-flex flex-row justify-content-between">
+
+                                    @if (IsAllowTo(Permissions.LoyaltyPoints.Approve()))
+                                {
+                                    <div>
+                                        <Button Type="btn-secondary--critical btn-md" Label="Reject" OnClick="() => AcceptOrReject(false)"></Button>
+                                    </div>
+
+                                    <div>
+                                        <Button Type="btn-secondary btn-md" Label="Accept" OnClick="() => AcceptOrReject(true)"></Button>
+                                    </div>
+                                }
+                                @if (IsEditable)
+                                {
+                                    <div>
+                                        <Button Type="btn-primary btn-md" Label="Send Request" OnClick="MakeRequest"></Button>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            }
+            else if (PointsResponse.Status == DataStatus.Loading)
+            {
+                <DataTableSkeleton />
+            }
+            else if (PointsResponse.Status == DataStatus.Error)
+            {
+                <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+            }
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+@code {
+
+
+    public string Error { get; set; } = string.Empty;
+    public DataItem<PointDto> PointsResponse { get; set; } = new();
+
+    public bool IsEditable { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPoints();
+        IsEditable = IsAllowTo(Permissions.LoyaltyPoints.Edit());
+    }
+
+    public async Task GetPoints()
+    {
+        PointsResponse.Loading();
+        var response = await LoyaltyPointsAppService.GetPoints();
+        if (response.IsSuccess)
+            PointsResponse.SetData(response.Data!);
+        else
+            PointsResponse.Error(new Exception(response.Message));
+    }
+
+    public async Task MakeRequest()
+    {
+        Error = string.Empty;
+
+        if (!IsInputValid())
+        {
+            Error = "please enter valid data";
+            return;
+        }
+
+        var response = await LoyaltyPointsAppService.MakeRequest(PointsResponse.Data!);
+        if (response.IsSuccess)
+        {
+            Notification.Show(AlertType.Success, "request sent for approval");
+            await GetPoints();
+        }
+        else
+            Notification.Show(AlertType.Error, "something went wrong");
+
+    }
+
+    public async Task AcceptOrReject(bool isAccept)
+    {
+        Error = string.Empty;
+
+        if (!IsInputValid())
+        {
+            Error = "please enter valid data";
+            return;
+        }
+
+        var response = await LoyaltyPointsAppService.AcceptOrReject(PointsResponse.Data!, isAccept);
+
+        if (response.IsSuccess)
+        {
+            var message = isAccept ? "request is accepted" : "request is rejected";
+            Notification.Show(AlertType.Success, message);
+            await GetPoints();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+
+    }
+
+    public bool IsInputValid()
+    {
+        return PointsResponse.Data!.CostPerPointTemp != null && PointsResponse.Data!.InternationalPointsTemp != null && PointsResponse.Data!.LocalPointsTemp != null;
+    }
+
+    }

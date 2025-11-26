@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:ns0="http://www.openuri.org/" targetNamespace="http://www.openuri.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="createDocument">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="documentDetails" type="ns0:documentDetails" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="createDocumentResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="createDocumentResult" type="ns0:documentCreationResult" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Exception">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="message" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="getDocument">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="cabinetName" type="xsd:string" />
+			<xsd:element minOccurs="0" form="qualified" name="docId" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="getDocumentResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="getDocumentResult" nillable="true" type="xsd:base64Binary" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="getDocumentType">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="getDocumentDetails" type="ns0:getDocumentDetails" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="getDocumentTypeResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="getDocumentTypeResult" type="ns0:documentIDTypeListDTO" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="searchDocumentDetails">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="cabinetName" type="xsd:string" />
+			<xsd:element minOccurs="0" form="qualified" name="searchKey" type="xsd:string" />
+			<xsd:element minOccurs="0" form="qualified" name="searchValue" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="searchDocumentDetailsResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" form="qualified" name="searchDocumentDetailsResult" type="ns0:documentDetailDTO" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="storeDocument">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="storeDocumentDetails" type="ns0:storeDocumentDetails" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="storeDocumentResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="storeDocumentResult" type="ns0:transactionResult" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="documentDetails">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="dataAttributeList" type="ns0:dataAttributeList" />
+			<xsd:element minOccurs="0" name="documentType" type="xsd:string" />
+			<xsd:element name="templateId" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="dataAttributeList">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="dataAttribute" nillable="true" type="ns0:keyValuePair" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="keyValuePair">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="key" type="xsd:string" />
+			<xsd:element minOccurs="0" name="value" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="documentCreationResult">
+		<xsd:complexContent mixed="false">
+			<xsd:extension base="ns0:transactionResult">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" name="documentContent" type="xsd:base64Binary" />
+					<xsd:element minOccurs="0" name="documentType" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="transactionResult">
+		<xsd:sequence>
+			<xsd:element name="isSuccessful" type="xsd:boolean" />
+			<xsd:element minOccurs="0" name="statusCode" type="xsd:string" />
+			<xsd:element minOccurs="0" name="statusDescription" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="getDocumentDetails">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="applicationID" type="xsd:string" />
+			<xsd:element minOccurs="0" name="cabinetName" type="xsd:string" />
+			<xsd:element minOccurs="0" name="documentIDTypeListDTO" type="ns0:documentIDTypeListDTO" />
+			<xsd:element minOccurs="0" name="windowID" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="documentIDTypeListDTO">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="documentIDTypeDTO" nillable="true" type="ns0:documentIDTypeDTO" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="documentIDTypeDTO">
+		<xsd:sequence>
+			<xsd:element name="docID" type="xsd:int" />
+			<xsd:element minOccurs="0" name="docType" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="documentDetailDTO">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" form="qualified" name="docId" type="xsd:string" />
+			<xsd:element minOccurs="0" form="qualified" name="row">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="unbounded" name="entry">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element minOccurs="0" name="key" type="xsd:string" />
+									<xsd:element minOccurs="0" name="value" type="xsd:string" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="storeDocumentDetails">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="applicationID" type="xsd:string" />
+			<xsd:element minOccurs="0" name="cabinetName" type="xsd:string" />
+			<xsd:element minOccurs="0" name="dataAttributeList" type="ns0:dataAttributeList" />
+			<xsd:element minOccurs="0" name="documentContent" type="xsd:base64Binary" />
+			<xsd:element minOccurs="0" name="documentType" type="xsd:string" />
+			<xsd:element minOccurs="0" name="windowID" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="createDocument" type="ns0:createDocument" />
+	<xsd:element name="createDocumentResponse" type="ns0:createDocumentResponse" />
+	<xsd:element name="Exception" type="ns0:Exception" />
+	<xsd:element name="getDocument" type="ns0:getDocument" />
+	<xsd:element name="getDocumentResponse" type="ns0:getDocumentResponse" />
+	<xsd:element name="getDocumentType" type="ns0:getDocumentType" />
+	<xsd:element name="getDocumentTypeResponse" type="ns0:getDocumentTypeResponse" />
+	<xsd:element name="searchDocumentDetails" type="ns0:searchDocumentDetails" />
+	<xsd:element name="searchDocumentDetailsResponse" type="ns0:searchDocumentDetailsResponse" />
+	<xsd:element name="storeDocument" type="ns0:storeDocument" />
+	<xsd:element name="storeDocumentResponse" type="ns0:storeDocumentResponse" />
+	<xsd:element name="keyValuePair" type="ns0:keyValuePair" />
+</xsd:schema>

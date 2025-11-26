@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/CreditCardTransactionInquiryService/CreditCardTransactionInquiryService.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, CreditCardTransactionInquiryServiceReference"
+    ],
+    "outputFile": "CreditCardTransactionInquiryReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

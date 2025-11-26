@@ -1,0 +1,287 @@
+﻿@page "/wizard-ui-fixed"
+@layout BlankLayout
+
+@inherits ApplicationComponent
+
+@using Kfh.Aurora.Blazor.Components.UI.Responsiveness
+
+@* Responsive component *@
+<ScreenSizeTypeProvider BreakingPoints="@_breakingPoints" OnResize="@OnScreenResized"/>
+
+
+<TelerikDialog @bind-Visible="@WizardDialog" Class="KFH-dialog ApprovalModa wizard-dialog" Width="100%" Height="100%" CloseOnOverlayClick="true" @ref="DialogRef">
+
+  <DialogContent>
+      <div class="card-wizard">
+          <div class="wrapper-wizard">
+              <div class="container">
+
+                  <div class="row">
+
+                      @* Your Content You Want to show through all steps - End *@
+
+                      <TelerikWizard  @bind-Value="@StepIndex" StepperPosition="@( !isLargeScreen ? WizardStepperPosition.Top : WizardStepperPosition.Left )" ShowPager="true" Class="full-width-step col" >
+                          <WizardSettings>
+                              <WizardStepperSettings Linear="true" StepType="StepperStepType.Steps"></WizardStepperSettings>
+                          </WizardSettings>
+
+                          <WizardSteps>
+
+                              <WizardStep Label="Merchant Information" Valid="@isValid">
+                                  <Content>
+
+                                      @* Your Content Comes Here *@
+                                      <div class="container">
+
+                                        <div class="row">
+                                          
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+
+                                        </div>
+
+                                      </div>
+                                      @* Your Content Comes Here End *@
+
+
+                                  </Content>
+                              </WizardStep>
+
+                              <WizardStep Label="Calculation Summary" Valid="@isValid">
+                                  <Content>
+
+                                      @* Your Content Comes Here *@
+                                      <div class="container">
+
+                                        <div class="row">
+                                          
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+
+                                        </div>
+
+                                      </div>
+                                      @* Your Content Comes Here End *@
+
+
+                                  </Content>
+                              </WizardStep>
+
+                              
+                              <WizardStep Label="Thank You" Valid="@isValid">
+                                  <Content>
+
+                                      @* Your Content Comes Here *@
+                                      <div class="container">
+
+                                        <div class="row">
+                                          
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-6
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-3
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-4 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-4
+                                            </div>
+                                          </div>
+                                          <div class="col-8 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-8
+                                            </div>
+                                          </div>
+                                          <div class="col-8 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-8
+                                            </div>
+                                          </div>
+                                          <div class="col-lg-4 col-md-6 my-3">
+                                            <div class="section-card bg-grayed">
+                                              Step -> Content --> col-4
+                                            </div>
+                                          </div>
+
+                                        </div>
+
+                                      </div>
+                                      @* Your Content Comes Here End *@
+
+
+                                  </Content>
+                              </WizardStep>
+
+                          </WizardSteps>
+
+                          <WizardButtons>
+                              @{
+                                  var index = context;
+
+                                  <div class="container">
+                                    <div class="row justify-content-end align-items-end">
+                                        
+                                      @if (context != 0)
+                                      {
+                                        <div class="col-auto">
+                                          <Button Type="btn-text btn-l" Label="Back" OnClick="@(() => { StepIndex -= 1; DialogRef.Refresh(); })"></Button>
+                                        </div>
+                                      }
+
+                                      @if (context >= 4)
+                                      {
+                                        <div class="col-auto">
+                                          <Button Type="btn-primary btn-l" Label="Confirm" OnClick="@(() => { WizardDialog = false; StepIndex=0; })"></Button>
+                                        </div>
+                                      }
+                                  
+                                      @if (context >= 0 && context < 4 )
+                                      {
+                                        <div class="col-auto">
+                                          <Button Type="btn-primary btn-l" Label="Continue" OnClick="@(() => { StepIndex += 1; DialogRef.Refresh(); })"></Button>
+                                        </div>
+                                      }         
+                                        
+                                    </div>
+                                  </div>
+                              }
+                          </WizardButtons>
+
+                      </TelerikWizard>
+
+                  </div>
+                  
+                  <div class="custom-steps">
+                      @{
+                        @if (StepIndex <= 4) {
+                          <div class="mt-6">
+                              <Button Type="btn-text btn-l" Label="Cancel" OnClick="() => { WizardDialog = false; StepIndex=0; }"></Button>
+                          </div>
+                        }
+                      }
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </DialogContent>
+
+</TelerikDialog>
+
+
+
+
+@code {
+  
+
+    private TelerikDialog DialogRef { get; set; } = default!;
+    
+    public bool WizardDialog { get; set; } = true;
+
+    public int StepIndex { get; set; }
+
+    public bool isValid { get; set; } = true;
+
+
+    public bool isLargeScreen {get; set;}
+
+    ScreenSizeTypeProvider.ScreenBreakingPoints _breakingPoints = new();
+    ScreenSizeTypeProvider.ScreenSizeType _screenSizeType { get; set; } = ScreenSizeTypeProvider.ScreenSizeType.Small;
+
+    private void OnScreenResized(ScreenSizeTypeProvider.ScreenSizeInformation screenSize)
+    {
+        _screenSizeType = screenSize.ScreenSizeType;
+        DialogRef.Refresh();
+
+
+        if (_screenSizeType == ScreenSizeTypeProvider.ScreenSizeType.XXLarge || _screenSizeType == ScreenSizeTypeProvider.ScreenSizeType.XLarge)
+        {
+            isLargeScreen = true;
+        }
+        else
+        {
+            isLargeScreen = false;
+        }
+
+    }
+}

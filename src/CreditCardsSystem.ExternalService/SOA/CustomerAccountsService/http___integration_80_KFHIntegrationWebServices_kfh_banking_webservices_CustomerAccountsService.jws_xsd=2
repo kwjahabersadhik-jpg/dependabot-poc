@@ -1,0 +1,1 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.kfh.com" targetNamespace="http://www.kfh.com"><xsd:complexType name="Exception"><xsd:sequence><xsd:element name="message" type="xsd:string" minOccurs="0"/></xsd:sequence></xsd:complexType><xsd:element name="Exception" type="ns0:Exception"/></xsd:schema>

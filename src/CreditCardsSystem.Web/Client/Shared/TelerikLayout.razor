@@ -1,0 +1,16 @@
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <TelerikRootComponent>
+            @Body
+        </TelerikRootComponent>
+    </Authorized>
+    <NotAuthorized>
+        @{
+            var returnUrl = Uri.EscapeDataString("/" + NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
+            NavigationManager.NavigateTo($"bff/login?returnUrl={returnUrl}", true);
+        }
+    </NotAuthorized>
+</AuthorizeView>

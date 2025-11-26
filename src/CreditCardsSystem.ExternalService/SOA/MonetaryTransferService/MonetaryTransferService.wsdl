@@ -1,0 +1,595 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="MonetaryTransferService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing
+</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.175_80_KFHIntegrationWebServices_kfh_banking_webservices_MonetaryTransferService.jws_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="http___172.16.123.175_80_KFHIntegrationWebServices_kfh_banking_webservices_MonetaryTransferService.jws_xsd=2"/>
+</xsd:schema>
+  </types>
+  <message name="forceTransferBetweenKDAccounts">
+    <part name="parameters" element="tns:forceTransferBetweenKDAccounts">
+    </part>
+  </message>
+  <message name="performMultiLegKDTransferResponse">
+    <part name="parameters" element="tns:performMultiLegKDTransferResponse">
+    </part>
+  </message>
+  <message name="performOneDebitTwoCreditForceTransferResponse">
+    <part name="parameters" element="tns:performOneDebitTwoCreditForceTransferResponse">
+    </part>
+  </message>
+  <message name="reverseChargeCustomerAccount">
+    <part name="parameters" element="tns:reverseChargeCustomerAccount">
+    </part>
+  </message>
+  <message name="creditCustomerAccountResponse">
+    <part name="parameters" element="tns:creditCustomerAccountResponse">
+    </part>
+  </message>
+  <message name="performTransferBetweenCustomerAccountsResponse">
+    <part name="parameters" element="tns:performTransferBetweenCustomerAccountsResponse">
+    </part>
+  </message>
+  <message name="performFXTransferBetweenCustomerAccounts">
+    <part name="parameters" element="tns:performFXTransferBetweenCustomerAccounts">
+    </part>
+  </message>
+  <message name="performTelexTransferResponse">
+    <part name="parameters" element="tns:performTelexTransferResponse">
+    </part>
+  </message>
+  <message name="performTransferBetweenCustomerAccounts">
+    <part name="parameters" element="tns:performTransferBetweenCustomerAccounts">
+    </part>
+  </message>
+  <message name="performFXTransferBetweenCustomerAccountsResponse">
+    <part name="parameters" element="tns:performFXTransferBetweenCustomerAccountsResponse">
+    </part>
+  </message>
+  <message name="reverseOneDebitTwoCreditTransferResponse">
+    <part name="parameters" element="tns:reverseOneDebitTwoCreditTransferResponse">
+    </part>
+  </message>
+  <message name="reverseOneDebitTwoCreditTransfer">
+    <part name="parameters" element="tns:reverseOneDebitTwoCreditTransfer">
+    </part>
+  </message>
+  <message name="performMultiLegKDTransfer">
+    <part name="parameters" element="tns:performMultiLegKDTransfer">
+    </part>
+  </message>
+  <message name="reverseTransferAfterPostingDayResponse">
+    <part name="parameters" element="tns:reverseTransferAfterPostingDayResponse">
+    </part>
+  </message>
+  <message name="reverseGenericTransactionResponse">
+    <part name="parameters" element="tns:reverseGenericTransactionResponse">
+    </part>
+  </message>
+  <message name="performFXTelexTransferResponse">
+    <part name="parameters" element="tns:performFXTelexTransferResponse">
+    </part>
+  </message>
+  <message name="reverseChargeCustomerAccountResponse">
+    <part name="parameters" element="tns:reverseChargeCustomerAccountResponse">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="chargeCustomerAccount">
+    <part name="parameters" element="tns:chargeCustomerAccount">
+    </part>
+  </message>
+  <message name="performFXTelexTransferByPayeeIDResponse">
+    <part name="parameters" element="tns:performFXTelexTransferByPayeeIDResponse">
+    </part>
+  </message>
+  <message name="reverseForceTransferBetweenKDAccounts">
+    <part name="parameters" element="tns:reverseForceTransferBetweenKDAccounts">
+    </part>
+  </message>
+  <message name="reverseMultiLegKDTransfer">
+    <part name="parameters" element="tns:reverseMultiLegKDTransfer">
+    </part>
+  </message>
+  <message name="performTelexTransfer">
+    <part name="parameters" element="tns:performTelexTransfer">
+    </part>
+  </message>
+  <message name="reverseForceTransferBetweenKDAccountsResponse">
+    <part name="parameters" element="tns:reverseForceTransferBetweenKDAccountsResponse">
+    </part>
+  </message>
+  <message name="creditCustomerAccount">
+    <part name="parameters" element="tns:creditCustomerAccount">
+    </part>
+  </message>
+  <message name="performOneDebitTwoCreditTransfer">
+    <part name="parameters" element="tns:performOneDebitTwoCreditTransfer">
+    </part>
+  </message>
+  <message name="performBulkTransferResponse">
+    <part name="parameters" element="tns:performBulkTransferResponse">
+    </part>
+  </message>
+  <message name="performCharityOrUtilityPaymentResponse">
+    <part name="parameters" element="tns:performCharityOrUtilityPaymentResponse">
+    </part>
+  </message>
+  <message name="forceTransferBetweenKDAccountsResponse">
+    <part name="parameters" element="tns:forceTransferBetweenKDAccountsResponse">
+    </part>
+  </message>
+  <message name="performOneDebitTwoCreditForceTransfer">
+    <part name="parameters" element="tns:performOneDebitTwoCreditForceTransfer">
+    </part>
+  </message>
+  <message name="performFXTelexTransfer">
+    <part name="parameters" element="tns:performFXTelexTransfer">
+    </part>
+  </message>
+  <message name="performCharityOrUtilityPayment">
+    <part name="parameters" element="tns:performCharityOrUtilityPayment">
+    </part>
+  </message>
+  <message name="reverseTransferAfterPostingDay">
+    <part name="parameters" element="tns:reverseTransferAfterPostingDay">
+    </part>
+  </message>
+  <message name="performFXTelexTransferByPayeeID">
+    <part name="parameters" element="tns:performFXTelexTransferByPayeeID">
+    </part>
+  </message>
+  <message name="reverseGenericTransaction">
+    <part name="parameters" element="tns:reverseGenericTransaction">
+    </part>
+  </message>
+  <message name="performBulkTransfer">
+    <part name="parameters" element="tns:performBulkTransfer">
+    </part>
+  </message>
+  <message name="performOneDebitTwoCreditTransferResponse">
+    <part name="parameters" element="tns:performOneDebitTwoCreditTransferResponse">
+    </part>
+  </message>
+  <message name="reverseMultiLegKDTransferResponse">
+    <part name="parameters" element="tns:reverseMultiLegKDTransferResponse">
+    </part>
+  </message>
+  <message name="chargeCustomerAccountResponse">
+    <part name="parameters" element="tns:chargeCustomerAccountResponse">
+    </part>
+  </message>
+  <portType name="MonetaryTransferService">
+    <operation name="reverseChargeCustomerAccount">
+      <input message="tns:reverseChargeCustomerAccount" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseChargeCustomerAccountRequest">
+    </input>
+      <output message="tns:reverseChargeCustomerAccountResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseChargeCustomerAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseChargeCustomerAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="chargeCustomerAccount">
+      <input message="tns:chargeCustomerAccount" wsam:Action="http://www.openuri.org/MonetaryTransferService/chargeCustomerAccountRequest">
+    </input>
+      <output message="tns:chargeCustomerAccountResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/chargeCustomerAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/chargeCustomerAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performTransferBetweenCustomerAccounts">
+      <input message="tns:performTransferBetweenCustomerAccounts" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTransferBetweenCustomerAccountsRequest">
+    </input>
+      <output message="tns:performTransferBetweenCustomerAccountsResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTransferBetweenCustomerAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTransferBetweenCustomerAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reverseForceTransferBetweenKDAccounts">
+      <input message="tns:reverseForceTransferBetweenKDAccounts" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseForceTransferBetweenKDAccountsRequest">
+    </input>
+      <output message="tns:reverseForceTransferBetweenKDAccountsResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseForceTransferBetweenKDAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseForceTransferBetweenKDAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performCharityOrUtilityPayment">
+      <input message="tns:performCharityOrUtilityPayment" wsam:Action="http://www.openuri.org/MonetaryTransferService/performCharityOrUtilityPaymentRequest">
+    </input>
+      <output message="tns:performCharityOrUtilityPaymentResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performCharityOrUtilityPaymentResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performCharityOrUtilityPayment/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="forceTransferBetweenKDAccounts">
+      <input message="tns:forceTransferBetweenKDAccounts" wsam:Action="http://www.openuri.org/MonetaryTransferService/forceTransferBetweenKDAccountsRequest">
+    </input>
+      <output message="tns:forceTransferBetweenKDAccountsResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/forceTransferBetweenKDAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/forceTransferBetweenKDAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performOneDebitTwoCreditTransfer">
+      <input message="tns:performOneDebitTwoCreditTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditTransferRequest">
+    </input>
+      <output message="tns:performOneDebitTwoCreditTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reverseMultiLegKDTransfer">
+      <input message="tns:reverseMultiLegKDTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseMultiLegKDTransferRequest">
+    </input>
+      <output message="tns:reverseMultiLegKDTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseMultiLegKDTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseMultiLegKDTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reverseOneDebitTwoCreditTransfer">
+      <input message="tns:reverseOneDebitTwoCreditTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseOneDebitTwoCreditTransferRequest">
+    </input>
+      <output message="tns:reverseOneDebitTwoCreditTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseOneDebitTwoCreditTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseOneDebitTwoCreditTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reverseGenericTransaction">
+      <input message="tns:reverseGenericTransaction" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseGenericTransactionRequest">
+    </input>
+      <output message="tns:reverseGenericTransactionResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseGenericTransactionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseGenericTransaction/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performTelexTransfer">
+      <input message="tns:performTelexTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTelexTransferRequest">
+    </input>
+      <output message="tns:performTelexTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTelexTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performTelexTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="creditCustomerAccount">
+      <input message="tns:creditCustomerAccount" wsam:Action="http://www.openuri.org/MonetaryTransferService/creditCustomerAccountRequest">
+    </input>
+      <output message="tns:creditCustomerAccountResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/creditCustomerAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/creditCustomerAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="reverseTransferAfterPostingDay">
+      <input message="tns:reverseTransferAfterPostingDay" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseTransferAfterPostingDayRequest">
+    </input>
+      <output message="tns:reverseTransferAfterPostingDayResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseTransferAfterPostingDayResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/reverseTransferAfterPostingDay/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performMultiLegKDTransfer">
+      <input message="tns:performMultiLegKDTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performMultiLegKDTransferRequest">
+    </input>
+      <output message="tns:performMultiLegKDTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performMultiLegKDTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performMultiLegKDTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performOneDebitTwoCreditForceTransfer">
+      <input message="tns:performOneDebitTwoCreditForceTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditForceTransferRequest">
+    </input>
+      <output message="tns:performOneDebitTwoCreditForceTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditForceTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performOneDebitTwoCreditForceTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performFXTransferBetweenCustomerAccounts">
+      <input message="tns:performFXTransferBetweenCustomerAccounts" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTransferBetweenCustomerAccountsRequest">
+    </input>
+      <output message="tns:performFXTransferBetweenCustomerAccountsResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTransferBetweenCustomerAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTransferBetweenCustomerAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performBulkTransfer">
+      <input message="tns:performBulkTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performBulkTransferRequest">
+    </input>
+      <output message="tns:performBulkTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performBulkTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performBulkTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performFXTelexTransferByPayeeID">
+      <input message="tns:performFXTelexTransferByPayeeID" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransferByPayeeIDRequest">
+    </input>
+      <output message="tns:performFXTelexTransferByPayeeIDResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransferByPayeeIDResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransferByPayeeID/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="performFXTelexTransfer">
+      <input message="tns:performFXTelexTransfer" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransferRequest">
+    </input>
+      <output message="tns:performFXTelexTransferResponse" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/MonetaryTransferService/performFXTelexTransfer/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="MonetaryTransferServiceSoapBinding" type="tns:MonetaryTransferService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="reverseChargeCustomerAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="chargeCustomerAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performTransferBetweenCustomerAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reverseForceTransferBetweenKDAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performCharityOrUtilityPayment">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="forceTransferBetweenKDAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performOneDebitTwoCreditTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reverseMultiLegKDTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reverseOneDebitTwoCreditTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reverseGenericTransaction">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performTelexTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="creditCustomerAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="reverseTransferAfterPostingDay">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performMultiLegKDTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performOneDebitTwoCreditForceTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performFXTransferBetweenCustomerAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performBulkTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performFXTelexTransferByPayeeID">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performFXTelexTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_MonetaryTransferService">
+    <port name="MonetaryTransferServiceSoap6" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_MonetaryTransferService/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap7" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/MonetaryTransferService/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_MonetaryTransferService.MonetaryTransferServiceSoap/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap4" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_MonetaryTransferService/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap5" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_MonetaryTransferService.MonetaryTransferServiceSoap/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap2" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_MonetaryTransferService/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap3" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_MonetaryTransferService.MonetaryTransferServiceSoap/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap8" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/MonetaryTransferService/1.0"/>
+    </port>
+    <port name="MonetaryTransferServiceSoap9" binding="tns:MonetaryTransferServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/MonetaryTransferService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

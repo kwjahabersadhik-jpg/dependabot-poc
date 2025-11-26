@@ -1,0 +1,469 @@
+﻿ @page "/statistical-report"
+
+
+@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.Report
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Domain.Models.Request
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@using CreditCardsSystem.Web.Client.Pages.Reports.Components
+@using Exception = System.Exception
+
+
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+<PageTitle> @ReportTitle</PageTitle>
+
+
+
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <Title Text="@ReportTitle"></Title>
+            </div>
+
+            @if (IsAllowedToView)
+            {
+                <div class="d-flex justify-content-between align-items-center gp-16">
+                    <div>
+
+                        <OnClickComponent OnClick="async ()=> { await filterCanvas.ToggleAsync(); }">
+                            <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                        </OnClickComponent>
+                        <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom"></TelerikTooltip>
+
+                    </div>
+                    <div>
+                        @if (IsAllowedToPrint)
+                        {
+                            <OnClickComponent Enabled="!IsProcessing" OnClick="async () => await PrintReport()">
+                                <CircleIcon Icon="icon-File-download" Title="Download Report" Id="BottomTooltip" />
+                            </OnClickComponent>
+                            <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!IsAllowedToView)
+        {
+            <AccessDenied />
+        }
+        else
+        {
+
+            @if (IsNormalReport)
+            {
+                <StatisticalNormalReport @ref=normalReportRef ReportDataItem="ReportDataItem" />
+
+            }
+            else
+            {
+                <StatisticalChangeLimitHistoryReport @ref=changeLimitReportRef ReportDataItem="ChangeLimitReportDataItem" />
+
+            }
+        }
+        @* <div class="d-flex align-items-center justify-content-center">
+        <Button Type="btn-primary btn-sm" Label="Search " Icon="icon-Search" OnClick="async ()=> { await filterCanvas.ToggleAsync(); }"></Button>
+        </div> *@
+
+
+        @if (IsAllowedToView && showSearchButton)
+        {
+            <div class="mt-4">
+                <div class="card-v2">
+                    <OnClickComponent OnClick="async () => { showSearchButton=false; await filterCanvas.ToggleAsync(); }">
+                        <EmptyState VectorName="search" Heading="Search" Description="Search to view Statistical Report"></EmptyState>
+                    </OnClickComponent>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+</div>
+@if (IsAllowedToView)
+{
+    <OffCanvas Title="Filters" @ref=filterCanvas>
+        <OffcanvasContent>
+            <TelerikForm EditContext="editContext">
+                <FormValidation>
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                </FormValidation>
+                <FormItems>
+                    <FormItem>
+                        <Template>
+                            <FormList>
+                                <Form Label="Type">
+                                    <div class="accountStatement-typeFilter">
+                                        <ChipGroup Selected="@ReportType" SelectedChanged="(value)=> {ReportType=value; }">
+                                            <Chip Text="Normal Report" Value="normal"></Chip>
+                                            <Chip Text="Change Limit Report" Value="changeLimit"></Chip>
+                                        </ChipGroup>
+                                    </div>
+                                </Form>
+
+                                <Form Label="@(ReportType.Equals("changeLimit") ? "Log Date" : "Request Date")">
+                                    <TelerikDateRangePicker T="DateTime?" Placeholder="" Format=@ConfigurationBase.ReportDateFormat @bind-StartValue="@filterModel.RequestedDateFrom" @bind-EndValue="@filterModel.RequestedDateTo" Size="small">
+                                    </TelerikDateRangePicker>
+                                </Form>
+
+                                @if (ReportType.Equals("changeLimit"))
+                                {
+                                    <Form Label="Card Number">
+                                        <TelerikTextBox @bind-Value="@filterModel.CardNumber" Placeholder="Enter Card Number..."></TelerikTextBox>
+                                    </Form>
+                                }
+                                else
+                                {
+
+                                    <Form Label="Approve Date">
+                                        <TelerikDateRangePicker T="DateTime?" Placeholder="" Format=@ConfigurationBase.ReportDateFormat @bind-StartValue="@filterModel.ApprovedDateFrom" @bind-EndValue="@filterModel.ApprovedDateTo" Size="small">
+                                        </TelerikDateRangePicker>
+                                    </Form>
+
+
+                                    <Form Label="Branch">
+                                        <TelerikDropDownList Data="@Branches?.Where(x=> (x.Value??"0") !="0").OrderBy(x=> x.Value)" DefaultText="All"
+                                        @bind-Value="@filterModel.BranchId"
+                                        TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                        ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                        Filterable="true">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings Height="300px" MaxHeight="500px" />
+                                            </DropDownListSettings>
+                                            <ItemTemplate>
+                                                @{
+                                                    var item = context as GroupAttributeLookupDto;
+                                                    <div class="card-drop-down-item">
+                                                        <div>
+                                                            <p>@($"({Convert.ToInt16(item.Value ?? "0").ToString("000")}) {item.Attribute}")</p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </ItemTemplate>
+                                        </TelerikDropDownList>
+                                    </Form>
+
+
+                                    <Form Label="Card Status">
+                                        <TelerikDropDownList Filterable="true" FilterOperator="StringFilterOperator.StartsWith" Data="@RequestStatuses" DefaultText="@CreditCardStatus.All.GetDescription()" ValueField="Value" TextField="Text" @bind-Value="@filterModel.CardStatusId">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings Height="300px" MaxHeight="500px" />
+                                            </DropDownListSettings>
+                                        </TelerikDropDownList>
+                                    </Form>
+
+
+                                    <Form Label="Product">
+
+                                        @if (products.Status is DataStatus.Loading)
+                                        {
+                                            <SingleDropdownSkeleton></SingleDropdownSkeleton>
+                                        }
+
+                                        @if (products.Status is DataStatus.Success)
+                                        {
+                                            <TelerikDropDownList Id="ownedCardNumber" @bind-Value="filterModel.ProductId" Data="products.Data" TextField="ProductName" ValueField="ProductID"
+                                            AdaptiveMode="AdaptiveMode.Auto" DefaultText="All"
+                                            Filterable=true FilterOperator="StringFilterOperator.Contains">
+                                                <DropDownListSettings>
+                                                    <DropDownListPopupSettings Height="300px" MaxHeight="500px" />
+                                                </DropDownListSettings>
+                                                <ItemTemplate>
+                                                    @{
+                                                        var _card = context as CardEligiblityMatrixDto;
+                                                        <div>
+                                                            <p>@_card.ProductName</p>
+                                                        </div>
+                                                    }
+                                                </ItemTemplate>
+                                            </TelerikDropDownList>
+                                        }
+                                    </Form>
+
+                                    <Form Label="Customer Class">
+                                        <TelerikDropDownList Data="@CustomerClasses?.OrderBy(x=> x.Value)" DefaultText="All"
+                                        @bind-Value="@filterModel.CustomerClass"
+                                        TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                        ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                        Filterable="true">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings Height="300px" MaxHeight="500px" />
+                                            </DropDownListSettings>
+                                            <ItemTemplate>
+                                                @{
+                                                    var item = context as GroupAttributeLookupDto;
+                                                    <div class="card-drop-down-item">
+                                                        <div>
+                                                            <p>@($"({Convert.ToInt16(item.Value ?? "0").ToString("000")}) {item.Attribute}")</p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </ItemTemplate>
+                                        </TelerikDropDownList>
+                                    </Form>
+
+
+                                    <Form Label="Gender">
+                                        <TelerikDropDownList Data=@Gender DefaultText="All" TextField="Text" ValueField="Value" @bind-Value="@filterModel.Gender">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings MaxHeight="200px" />
+                                            </DropDownListSettings>
+                                        </TelerikDropDownList>
+                                    </Form>
+
+                                    <div class="textfield">
+                                        <div class="d-flex flex-">
+                                            <div class="checkbox clear-both">
+                                                <TelerikCheckBox Id="agreeCloseOldCardNumber" TValue="bool" @bind-Value="@filterModel.IsSupplementaryCard" Size="lg" />
+                                            </div>
+                                            <div>
+                                                <H3 class="ps-2">Supplementary</H3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </FormList>
+                        </Template>
+                    </FormItem>
+
+                </FormItems>
+                <FormButtons></FormButtons>
+            </TelerikForm>
+        </OffcanvasContent>
+        <OffcanvasFooterContent>
+            <div class="drawer-buttons">
+                <Button Type="btn-primary btn-sm" Label="Apply" OnClick="async () => await SearchReport()"></Button>
+            </div>
+        </OffcanvasFooterContent>
+    </OffCanvas>
+}
+
+@code {
+    [Inject] public IGroupsAppService GroupsAppService { get; set; } = default!;
+    [Inject] public ICardIssuanceAppService cardIssueService { get; set; } = default!;
+    [Inject] public IRequestAppService requestService { get; set; } = default!;
+    [Inject] public IStatisticalReportAppService reportService { get; set; } = default!;
+
+    public List<RListItem> Gender { get; set; } = new() {
+        new("Male",1), new("FeMale",2)
+    };
+    public string ReportType { get; set; } = "normal";
+    public bool IsNormalReport { get; set; }
+    private bool showSearchButton { get; set; } = true;
+
+
+    private EditContext editContext { get; set; }
+    private RequestFilter filterModel { get; set; }
+    private DataItem<List<CardEligiblityMatrixDto>> products { get; set; } = new();
+    private IEnumerable<GroupAttributeLookupDto>? Branches { get; set; }
+    private IEnumerable<GroupAttributeLookupDto>? CustomerClasses { get; set; }
+    private ListItem[] RequestStatuses { get; set; } = null!;
+    private DataItem<IEnumerable<StatisticalReportData>> ReportDataItem { get; set; } = new();
+    private DataItem<IEnumerable<StatisticalChangeLimitHistoryData>> ChangeLimitReportDataItem { get; set; } = new();
+
+
+    public StatisticalNormalReport? normalReportRef { get; set; }
+    public StatisticalChangeLimitHistoryReport? changeLimitReportRef { get; set; }
+    private OffCanvas filterCanvas { get; set; } = null!;
+    public string ReportTitle { get; set; } = "Normal Statistical Report";
+    private bool IsAllowedToView => IsAllowTo(Permissions.StatisticalReport.View());
+    private bool IsAllowedToPrint => IsAllowTo(Permissions.StatisticalReport.Print());
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAllowedToView)
+            return;
+
+        await BindEditContext();
+        await PrepareFilterInputs();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            filterModel.RequestedDateFrom = DateTime.Now;
+            filterModel.RequestedDateTo = DateTime.Now;
+            filterModel.ApprovedDateFrom = null;
+            filterModel.ApprovedDateTo = null;
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task PrintReport()
+    {
+        if (!IsAllowedToPrint)
+            return;
+
+        ReportTitle = (IsNormalReport ? "Normal" : "Change Limit") + "Statistical Report";
+
+
+        Notification.Loading($"Downloading report...{ReportTitle}");
+
+        @if (IsNormalReport)
+        {
+            if (ReportDataItem.Data is null)
+            {
+                Notification.Failure("No data to download!");
+                return;
+            }
+
+            await normalReportRef!.ExportExcel();
+        }
+        else
+        {
+            if (ChangeLimitReportDataItem.Data is null)
+            {
+                Notification.Failure("No data to download!");
+                return;
+            }
+
+            await changeLimitReportRef!.PrintReport();
+        }
+
+        Notification.Hide();
+
+    }
+
+    async Task SearchReport()
+    {
+        if (!IsAllowedToPrint || !IsAllowedToView)
+            return;
+
+        IsNormalReport = ReportType.Equals("normal", StringComparison.InvariantCultureIgnoreCase);
+
+        await filterCanvas.ToggleAsync();
+        showSearchButton = false;
+
+        @if (IsNormalReport)
+        {
+            await LoadNormalReport();
+        }
+        else
+        {
+            await LoadChangeLimitReport();
+        }
+
+    }
+
+    async Task LoadChangeLimitReport()
+    {
+        ChangeLimitReportDataItem.Loading();
+        var changeLimitResult = await reportService.GetStatisticalChangeLimitHistory(filterModel);
+
+        Notification.Hide();
+
+        if (!changeLimitResult.IsSuccess)
+        {
+            ChangeLimitReportDataItem.Error(new(changeLimitResult.Message));
+            return;
+        }
+        ChangeLimitReportDataItem.SetData(changeLimitResult.Data);
+
+    }
+
+    async Task LoadNormalReport()
+    {
+
+        ReportDataItem.Loading();
+        var result = await reportService.GetStatisticalReport(filterModel);
+
+        Notification.Hide();
+
+        if (!result.IsSuccess)
+        {
+            ReportDataItem.Error(new(result.Message));
+            return;
+        }
+
+        ReportDataItem.SetData(result.Data);
+    }
+
+    async Task PrepareFilterInputs()
+    {
+
+
+        await Task.WhenAll(new List<Task>()
+        {
+            LoadBranches(),
+            LoadProducts(),
+            LoadRequestStatus(),
+            LoadCustomerClasses()
+        });
+
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+
+    async Task BindEditContext()
+    {
+        filterModel ??= new();
+        editContext = new EditContext(filterModel);
+
+    }
+    async Task LoadRequestStatus()
+    {
+        var requestStatusResult = await requestService.GetAllRequestStatus();
+        if (!requestStatusResult.IsSuccess || !requestStatusResult.Data.AnyWithNull())
+        {
+            return;
+        }
+
+        RequestStatuses = requestStatusResult.Data!.Select(x => new ListItem() { Text = x.EnglishDescription, Value = (int)x.StatusId }).ToArray();
+    }
+    async Task LoadBranches()
+    {
+
+        Branches = await GroupsAppService.GetLocations();
+        Branches = Branches?.Where(x => x.Value != "0")?.OrderBy(x => x.Value) ?? Enumerable.Empty<GroupAttributeLookupDto>();
+    }
+
+    async Task LoadCustomerClasses()
+    {
+
+        CustomerClasses = await GroupsAppService.GetCustomerClass();
+        filterModel.CustomerClass = "";
+    }
+
+
+    async Task LoadProducts()
+    {
+        try
+        {
+            products.Loading();
+            var allCardsResponse = await cardIssueService.GetAllProducts(ProductTypes.All);
+            if (allCardsResponse.IsSuccessWithData)
+            {
+                products.SetData(allCardsResponse.Data!);
+            }
+        }
+        catch (Exception ex)
+        {
+            products.Error(ex);
+        }
+    }
+
+}

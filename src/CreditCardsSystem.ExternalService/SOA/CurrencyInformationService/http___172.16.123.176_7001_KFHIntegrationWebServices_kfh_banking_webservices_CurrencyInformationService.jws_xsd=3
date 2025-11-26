@@ -1,0 +1,1 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.kfh.com/" targetNamespace="http://www.kfh.com/"><xsd:element name="String" type="xsd:string" nillable="true"/></xsd:schema>

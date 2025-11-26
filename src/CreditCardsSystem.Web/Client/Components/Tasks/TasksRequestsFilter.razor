@@ -1,0 +1,281 @@
+﻿<OffCanvas OnDismiss="@(SetFilters)" @ref="@RequestsFilterDrawerRef" @bind-IsOpen="IsOpen" Title="Filters">
+    <OffcanvasContent>
+        <div class="d-flex flex-column gp-16">
+            <div>
+                <H3>Status</H3>
+                <ChipGroup @bind-Selected="@SelectedStatus">
+                    @foreach (var filter in Filter.StatusesFilter)
+                    {
+                        <Chip IsActive="@(filter != SelectedStatus)" Value="@filter" Text="@filter" OnClick="@(() => OnSelectedStatusFilterChange(filter))"></Chip>
+                    }
+
+                </ChipGroup>
+            </div>
+            <Divider />
+            <div>
+                <H3>Task Details</H3>
+                <div class="d-flex flex-column gp-16">
+                    @* <ChipGroup Selected="All"> *@
+                    @*     <Chip Value="All" Text="All"></Chip> *@
+                    @*     <Chip Value="" Text="Assgined to me"></Chip> *@
+                    @*     <Chip Value="" Text="Assgined to my team(s)"></Chip> *@
+                    @* </ChipGroup> *@
+                    <Form Label="Assignees">
+                        <TelerikDropDownList Data="@Filter.AssigneesFilter" Value="@SelectedAssignees"
+                                             TValue="string" TItem="string"
+                                             ValueChanged="@(OnSelectedAssigneesChange)" Filterable="true"
+                                             FilterOperator="@StringFilterOperator.Contains">
+                            <ValueTemplate>
+                                <H3 Class="my-0">
+                                    @context <span>&#183;</span>
+                                </H3>
+                            </ValueTemplate>
+                            <ItemTemplate>
+                                <H3 Class="my-0">
+                                    @context <span>&#183;</span>
+                                </H3>
+                            </ItemTemplate>
+                        </TelerikDropDownList>
+                    </Form>
+                    <Form Label="By Application">
+
+                        <TelerikDropDownList Data="@Filter.ApplicationNamesFilter" TValue="string" TItem="string"
+                                             Value="@SelectedApplication"
+                                             ValueChanged="@OnSelectedApplicationChange"
+                                             ReadOnly="@(!AllowToFilterByApplication())"
+                                             Filterable="true">
+                            <ValueTemplate>
+                                <H3 Class="my-0">@context</H3>
+                                </ValueTemplate>
+                                <ItemTemplate>
+                                    <H3 Class="my-0">@context</H3>
+                                </ItemTemplate>
+
+                            </TelerikDropDownList>
+                        </Form>
+                    </div>
+                </div>
+                <Divider />
+                <div>
+                    <H3>Date & Time</H3>
+                    <div class="d-flex flex-column gp-16">
+                        <Form Label="Creation Date">
+                            <TelerikDatePicker Min="@Min" Max="@MaxDate" Value="@SelectedCreatedDateTime" ValueChanged="@((DateTime? dateTime) => OnSelectedCreatedDateTimeChanged(dateTime))" Class="dateTime-filter" />
+                        </Form>
+                        <Form Label="Completion Date">
+                            <TelerikDatePicker Min="@Min" Max="@MaxDate" Value="@SelectedCompletionDateTime" ValueChanged="@((DateTime? dateTime) => OnSelectedCompletionDateTimeChanged(dateTime))" Class="dateTime-filter" />
+                        </Form>
+                    </div>
+                </div>
+            </div>
+        </OffcanvasContent>
+        <OffcanvasFooterContent>
+            <div class="d-flex justify-content-end">
+                <Button Type="btn-primary btn-sm" Label="Apply" OnClick="@(ApplyFilter)"></Button>
+            </div>
+        </OffcanvasFooterContent>
+    </OffCanvas>
+
+    @code {
+
+    #region Constructor
+
+    protected override void OnInitialized()
+    {
+        SetFilters();
+        base.OnInitialized();
+    }
+
+    #endregion
+
+    #region OffCanvas
+
+    [Parameter]
+    public OffCanvas RequestsFilterDrawerRef { get; set; }
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    #endregion
+
+    #region Assignees
+
+    public string SelectedAssignees { get; set; } = "All";
+
+
+    private void OnSelectedAssigneesChange(string selectedValue)
+    {
+        SelectedAssignees = selectedValue;
+    }
+
+    #endregion
+
+    #region Application Name
+
+    private string SelectedApplication { get; set; } = "";
+
+
+    private void OnSelectedApplicationChange(string selectedFilter)
+    {
+        if (string.IsNullOrEmpty(selectedFilter))
+        {
+            SetApplicationToDefault();
+        }
+        else
+        {
+            SelectedApplication = Filter.ApplicationNamesFilter.FirstOrDefault(e => e.ToLower() == selectedFilter.ToLower()) ?? "";
+        }
+    }
+
+    private void SetApplicationToDefault()
+    {
+        SelectedApplication = string.Empty;
+    }
+
+    private bool AllowToFilterByApplication()
+    {
+        return Filter.ApplicationNamesFilter.Count > 1;
+    }
+
+    private void InitApplicationNamesFilter()
+    {
+        if (!AllowToFilterByApplication())
+        {
+            SelectedApplication = Filter.ApplicationNamesFilter.FirstOrDefault() ?? "";
+        }
+    }
+
+    #endregion
+
+    #region Status
+
+    [Parameter]
+    public string SelectedStatus { get; set; } = string.Empty;
+
+
+    private void OnSelectedStatusFilterChange(string selectedFilter)
+    {
+        if (string.IsNullOrEmpty(selectedFilter))
+        {
+            SetStatusToAll();
+        }
+        else
+        {
+            SelectedStatus = Filter.StatusesFilter.First(e => e.ToLower() == selectedFilter.ToLower());
+        }
+    }
+
+    private void SetStatusToAll()
+    {
+        SelectedStatus = Filter.StatusesFilter.First();
+    }
+
+    private void InitStatusFilter()
+    {
+        if (string.IsNullOrEmpty(SelectedStatus))
+        {
+            SetStatusToAll();
+        }
+    }
+
+    #endregion
+
+    #region Date Time
+
+    private
+        DateTime? SelectedCreatedDateTime
+    { get; set; }
+
+
+    private void OnSelectedCreatedDateTimeChanged(DateTime? createDate)
+    {
+        SelectedCreatedDateTime = createDate;
+    }
+
+    private
+        DateTime? SelectedCompletionDateTime
+    { get; set; }
+
+    private void OnSelectedCompletionDateTimeChanged(DateTime? createDate)
+    {
+        SelectedCompletionDateTime = createDate;
+    }
+
+    #endregion
+
+    [Parameter]
+    public required TaskRequestFilterViewModel Filter { get; set; }
+
+    public
+        DateTime Min = new DateTime(1990, 1, 1, 8, 15, 0);
+
+    public
+        DateTime MaxDate = new DateTime(DateTime.Now.Year + 1, 1, 1, 0, 0, 0);
+
+    [Parameter]
+    public EventCallback<TaskRequestFilterViewModel> OnApplyFilter { get; set; }
+
+
+    public async void ApplyFilter()
+    {
+        IsOpen = false;
+        Filter.SelectedStatus = SelectedStatus;
+        Filter.SelectedAssignees = SelectedAssignees;
+        Filter.SelectedApplication = SelectedApplication;
+        Filter.SelectedCreatedDate = SelectedCreatedDateTime;
+        Filter.SelectedCompletionDate = SelectedCompletionDateTime;
+        StateHasChanged();
+        SetFilters();
+        await IsOpenChanged.InvokeAsync(IsOpen);
+        await OnApplyFilter.InvokeAsync(Filter);
+    }
+
+    public class TaskRequestFilterViewModel
+    {
+        public required string SelectedStatus { get; set; }
+        public required string SelectedApplication { get; set; }
+        public required string SelectedAssignees { get; set; }
+        public required string SelectedAssignmentTo { get; set; }
+        public DateTime? SelectedCreatedDate;
+        public DateTime? SelectedCompletionDate;
+
+        public List<string> StatusesFilter { get; set; } = new()
+        {
+           "All", "Approved","Canceled","Open","Rejected","Returned","Submitted","ReSubmitted"
+        };
+
+        public List<string> AssigneesFilter { get; set; } = new()
+        {
+        };
+
+        public List<string> ApplicationNamesFilter { get; set; } = new()
+        {
+        };
+
+        public static TaskRequestFilterViewModel DefaultFilters()
+        {
+            return new TaskRequestFilterViewModel()
+                {
+                    SelectedStatus = "All",
+                    SelectedApplication = "All",
+                    SelectedAssignees = "All",
+                    SelectedAssignmentTo = "All",
+                    SelectedCreatedDate = null,
+                    SelectedCompletionDate = null
+                };
+        }
+    }
+
+    private void SetFilters()
+    {
+        SelectedStatus = Filter.SelectedStatus;
+        SelectedApplication = Filter.SelectedApplication;
+        SelectedAssignees = Filter.SelectedAssignees;
+        SelectedCreatedDateTime = Filter.SelectedCreatedDate;
+        SelectedCompletionDateTime = Filter.SelectedCompletionDate;
+    }
+
+}

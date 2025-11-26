@@ -1,0 +1,18 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/CreditCardStandingOrderAdd/WLS_AddCreditCardStandingOrder.wsdl"
+    ],
+    "enableDataBinding": true,
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, AddCreditCardStandingOrderServiceReference"
+    ],
+    "outputFile": "AddCreditCardStandingOrderServiceReference.cs",
+    "serializerMode": "XmlSerializer",
+    "targetFramework": "net8.0",
+    "typeReuseMode": "All"
+  }
+}

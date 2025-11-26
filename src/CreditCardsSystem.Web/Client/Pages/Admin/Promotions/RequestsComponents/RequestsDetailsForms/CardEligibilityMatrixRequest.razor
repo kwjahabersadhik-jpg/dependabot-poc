@@ -1,0 +1,98 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+
+@inject RequestStateContainer RequestStateContainer
+@inject IGroupsAppService GroupsAppService
+
+@inherits PromotionsRequestsHelpers
+
+<RequestDetails T="@(CardMatrixDto)"></RequestDetails>
+
+
+@code {
+
+    public List<GroupAttributeLookupDto> CustomerClasses { get; set; } = new();
+    public List<GroupAttributeLookupDto> AllowedBranches { get; set; } = new();
+
+    public string NewClassCodesNames { get; set; } = string.Empty;
+    public string OldClassCodesNames { get; set; } = string.Empty;
+
+    public string NewAllowedBranches { get; set; } = string.Empty;
+    public string OldAllowedBranches { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //await GetAllowedClassCodes();
+        // await GetAllowedBranches();
+    }
+
+    async Task GetAllowedClassCodes()
+    {
+        var lstClassCodesNames = new List<string>();
+
+        CustomerClasses = await GroupsAppService.GetAttributeLookupByType(GroupAttributeLookupDto.GroupAttributeType.CustomerClass);
+
+        var newClassCodes = GetParamValue(RequestStateContainer.RequestDetails, nameof(CardMatrixDto.AllowedClassCode));
+
+        if (!string.IsNullOrEmpty(newClassCodes))
+        {
+            var lstClassCodes = newClassCodes.Split(",").ToList();
+            lstClassCodesNames.AddRange(lstClassCodes.Select(code => CustomerClasses.FirstOrDefault(c => c.Value == code)!.Attribute));
+            NewClassCodesNames = string.Join(" , ", lstClassCodesNames);
+        }
+
+        @if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+        {
+            var oldClassCodes = GetParamValue(RequestStateContainer.RequestDetails, nameof(CardMatrixDto.AllowedClassCode), true);
+
+            if (!string.IsNullOrEmpty(oldClassCodes))
+            {
+                lstClassCodesNames = new List<string>();
+                var lstClassCodes = oldClassCodes.Split(",").ToList();
+                lstClassCodesNames.AddRange(lstClassCodes.Select(code => CustomerClasses.FirstOrDefault(c => c.Value == code)!.Attribute));
+                OldClassCodesNames = string.Join(" , ", lstClassCodesNames);
+            }
+        }
+    }
+
+    async Task GetAllowedBranches()
+    {
+        var lstBranchesNames = new List<string>();
+        AllowedBranches = await GroupsAppService.GetAttributeLookupByType(GroupAttributeLookupDto.GroupAttributeType.BranchNo);
+
+        var newBranches = GetParamValue(RequestStateContainer.RequestDetails, nameof(CardMatrixDto.AllowedBranches));
+        if (!string.IsNullOrEmpty(newBranches))
+        {
+            var lstBranches = newBranches.Split(",").ToList();
+            foreach (var branch in lstBranches)
+            {
+                var re = AllowedBranches.FirstOrDefault(c => c.Value == branch);
+                if (re == null)
+                {
+                    var re1 = string.Empty;
+                }
+            }
+
+            lstBranchesNames.AddRange(lstBranches.Select(branch => AllowedBranches.FirstOrDefault(c => c.Value == branch)!.Attribute));
+            NewAllowedBranches = string.Join(" , ", lstBranchesNames);
+        }
+
+        @if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+        {
+            var oldBranches = GetParamValue(RequestStateContainer.RequestDetails, nameof(CardMatrixDto.AllowedBranches) , true);
+            if (!string.IsNullOrEmpty(oldBranches))
+            {
+                lstBranchesNames = new List<string>();
+                var lstBranches = oldBranches.Split(",").ToList();
+                lstBranchesNames.AddRange(lstBranches.Select(branch => AllowedBranches.FirstOrDefault(c => c.Value == branch)!.Attribute));
+                OldAllowedBranches = string.Join(" , ", lstBranchesNames);
+            }
+
+        }
+    }
+
+}

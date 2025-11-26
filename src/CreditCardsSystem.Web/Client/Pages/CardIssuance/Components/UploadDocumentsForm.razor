@@ -1,0 +1,28 @@
+﻿@page "/upload-doc"
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Models.Reports
+@using Kfh.Aurora.Auth
+@inject IReportAppService reportService;
+@inject IAuthManager authManager;
+@inherits ApplicationComponent;
+
+<div class="d-flex flex-column gp-0" style="margin-block-start: 1.5rem;">
+    <div class="formField">
+        <div class="form-flex gp-8">
+            <FormList Class="d-flex gp-16 mt-0">
+                <Form Label="Documents">
+                    <FileUpload Heading="Upload Document File"
+                                Description="@(IsFileUploaded?"File is uploaded":"You didn't upload any file yet")"
+                                OnSelect="@SelectedFiles"
+                                OnRemove="@ClearData"
+                                AllowedExtensions="@AllowedExtensions"
+                                AllowMultipleFiles="true"></FileUpload>
+                </Form>
+            </FormList>
+        </div>
+        <div class="gp-2 mb-4" style="margin-block-start: 1.5rem;">
+            <Button Type="btn-secondary btn-l" Label="Upload" OnClick="async ()=> {await Submit();}"></Button>
+        </div>
+    </div>
+</div>
+ 

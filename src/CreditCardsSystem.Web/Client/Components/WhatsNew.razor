@@ -1,0 +1,104 @@
+﻿@using Markdig
+
+<div class="w-100">
+    <div class="AO-poststitle--header">
+        <Title Text="What's new"></Title>
+        <DetailsTab HyperLink="#" Label="View all"></DetailsTab>
+    </div>
+    @if (Posts is null)
+    {
+        <div id="skeletonAO21">
+            <TelerikSkeleton Width="564px" Height="376px" ShapeType="@SkeletonShapeType.Rectangle" Visible="@Visible" class="AO-skeleton-rectangle"></TelerikSkeleton>
+            <div class="AO-article--details">
+                <TelerikSkeleton Width="76px" Visible="@Visible" class="AO-skeleton-rectangle"></TelerikSkeleton>
+                <TelerikSkeleton Width="400px" Height="31px" ShapeType="@SkeletonShapeType.Rectangle" Visible="@Visible" class="AO-skeleton-rectangle"></TelerikSkeleton>
+                <TelerikSkeleton Width="500px" Visible="@Visible" class="AO-skeleton-rectangle AO-skeleton--mb"></TelerikSkeleton>
+                <TelerikSkeleton Width="450px" Visible="@Visible" class="AO-skeleton-rectangle AO-skeleton--mb"></TelerikSkeleton>
+                <TelerikSkeleton Width="300px" Visible="@Visible" class="AO-skeleton-rectangle AO-skeleton--mb"></TelerikSkeleton>
+                <TelerikSkeleton Width="100px" Visible="@Visible" class="AO-skeleton-rectangle AO-skeleton--mt"></TelerikSkeleton>
+            </div>
+        </div>
+    }
+    else
+    {
+        <TelerikCarousel Data="@Posts" Arrows="false">
+            <Template>
+                <div class="AO-article--card">
+                    <a href="#" class="AO-thumbnail--wrapper">
+                        <img src=@($"/dist/images/{@context.Id}.jpg") class="AO-thumbnail" alt="@context.Title" />
+                    </a>
+                    <div class="AO-article--details">
+                        <div class="AO-filter--group AO-category--list">
+                            <div class="AO-category--post">
+                                @foreach (var category in context.Categories)
+                                {
+                                    <CategoryTab HyperLink="#" Label="@category.Name"></CategoryTab>
+                                }
+                            </div>
+                        </div>
+                        <h2>@context.Title</h2>
+                        <div class="AO-article--clip"> <p>@((MarkupString)Markdown.ToHtml(context.Content))</p> </div>
+                        <DetailsTab HyperLink="#" Label="Read more"></DetailsTab>
+                    </div>
+                </div>
+            </Template>
+        </TelerikCarousel>
+    }
+</div>
+
+@code
+{
+    private List<PostDto>? Posts { get; set; }
+    private bool _showArrows = false;
+    private bool Visible { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Posts = new()
+        {
+        new()
+        {
+            Id=1,
+        Title="Lorem Ipsum",
+        Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        IsPublished=true,
+        Categories=new(){ new() {  Id=Guid.NewGuid(), Name="Article"} }
+        },
+         new()
+        {
+            Id=1,
+        Title="Lorem Ipsum",
+        Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        IsPublished=true,
+        Categories=new(){ new() {  Id=Guid.NewGuid(), Name="Article"} }
+        }
+
+        }; 
+        _showArrows = Posts.Count > 1;
+    }
+    public class PostDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = default!;
+        public string Content { get; set; } = default!;
+        public DateTimeOffset CreatedOn { get; set; }
+        public string? CategoryList { get; set; }
+        public bool IsPublished { get; set; }
+        public List<CategoryDto> Categories { get; set; } = default!;
+        public List<PostImageDto> Images { get; set; } = default!;
+    }
+    public class CategoryDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = default!;
+    }
+
+    public class PostImageDto
+    {
+        public Guid Id { get; set; }
+        public byte[] ImageContent { get; set; } = default!;
+        public string FileName { get; set; } = default!;
+        public string Extension { get; set; } = default!;
+        public DateTimeOffset UploadedOn { get; set; }
+    }
+}

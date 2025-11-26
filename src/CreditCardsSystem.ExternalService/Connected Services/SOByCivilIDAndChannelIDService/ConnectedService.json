@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/CreditCardStandingOrderByCivilIDAndChannelID/WLS_ViewSOByCivilIDAndChannelID.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, SOByCivilIDAndChannelIDServiceReference"
+    ],
+    "outputFile": "SOByCivilIDAndChannelIDServiceReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

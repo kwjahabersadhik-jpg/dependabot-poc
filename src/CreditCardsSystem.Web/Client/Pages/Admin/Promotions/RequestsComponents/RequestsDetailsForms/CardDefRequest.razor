@@ -1,0 +1,87 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+
+@inherits PromotionsRequestsHelpers
+
+@inject RequestStateContainer RequestStateContainer
+@inject ICardDefsAppService CardDefsAppService
+
+
+<RequestDetails T="@(PostCardDefDto)"></RequestDetails>
+
+<div>
+    <H2 class="ps-2">Card Extensions</H2>
+    <CardExtensions DisplayOnly="true" CardDef="CurrentCardDef"></CardExtensions>
+</div>
+
+@if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+{
+    <div>
+        <H2 class="ps-2">Card Extensions (Old)</H2>
+        <CardExtensions DisplayOnly="true" CardDef="OldCardDef"></CardExtensions>
+    </div>
+}
+
+
+
+
+@code {
+
+    public PostCardDefDto OldCardDef { get; set; } = new();
+    public PostCardDefDto CurrentCardDef { get; set; } = new();
+    public List<CardDefExtDto> ExtensionsList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cardType = GetParamValue(RequestStateContainer.RequestDetails, nameof(PostCardDefDto.CardType));
+
+        if (RequestStateContainer.RequestHeader.ActivityType is ActivityType.Delete)
+        {
+            var cardDefinitionDto = await CardDefsAppService.GetCardTypeById(int.Parse(cardType));
+            CurrentCardDef.CardDefExts = cardDefinitionDto.Data!.CardDefExts;
+        }
+        else if (RequestStateContainer.RequestHeader.ActivityType is ActivityType.Edit)
+        {
+            var cardDefinitionDto = await CardDefsAppService.GetCardTypeById(int.Parse(cardType));
+            OldCardDef.CardDefExts = cardDefinitionDto.Data!.CardDefExts;
+            CurrentCardDef.CardDefExts = GetCardDefExts(RequestStateContainer.RequestDetails);
+        }
+        else if (RequestStateContainer.RequestHeader.ActivityType is ActivityType.Add)
+            CurrentCardDef.CardDefExts = GetCardDefExts(RequestStateContainer.RequestDetails);
+    }
+
+    private List<CardDefExtDto> GetCardDefExts(List<RequestActivityDetailsDto> requestDetails)
+    {
+        var extensionsList = new List<CardDefExtDto>();
+
+        var extensions = requestDetails
+            .Where(r => r.Parameter.Contains("_ext_"))
+            .ToList();
+
+        if (extensions.Any())
+        {
+
+            extensions.RemoveAll(e => e.Parameter.ToLower().Contains("cardtype_ext") ||
+                                      e.Parameter.ToLower().Contains("id_ext"));
+
+            for (var i = 1; i <= extensions.Count / 2; i++)
+            {
+                var extensionObj = extensions
+                    .Where(e => e.Parameter.ToLower().Contains($"_ext_{i}"))
+                    .ToList();
+
+                extensionsList.Add(new CardDefExtDto
+                {
+                    Attribute = extensionObj.FirstOrDefault(e => e.Parameter.ToLower().Contains("attribute"))!.Value,
+                    Value = extensionObj.FirstOrDefault(e => e.Parameter.ToLower().Contains("value"))!.Value,
+                });
+            }
+
+        }
+
+        return extensionsList;
+    }
+
+}

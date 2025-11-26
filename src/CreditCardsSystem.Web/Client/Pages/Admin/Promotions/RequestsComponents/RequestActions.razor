@@ -1,0 +1,160 @@
+﻿@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using Microsoft.Extensions.Caching.Distributed
+
+@inject IRequestsOpsAppService RequestsOpsAppService
+@inject NavigationManager NavigationManager
+@inject RequestStateContainer RequestStateContainer
+
+@if (RequestStateContainer.RequestHeader.ActivityStatus == ActivityStatus.Pending)
+{
+    <div class="d-flex justify-content-end gp-16 mb-6">
+
+        @if (RequestStateContainer.UserId == RequestStateContainer.RequestHeader.MakerId.ToString())
+        {
+            <Button Type="btn-territory btn-sm" Label="Delete" OnClick="@(() => ShowDeleteOrRejectDialog(RequestStatus.Deleted))"></Button>
+        }
+
+        @if (IsAuthorized)
+        {
+            <Button Type="btn-secondary--critical btn-sm" Label="Reject" OnClick="@(() => ShowDeleteOrRejectDialog(RequestStatus.Rejected))"></Button>
+            <Button Type="btn-primary btn-sm" Label="Approve" OnClick="@(() => { ApproveDialogVisible = true; })"></Button>
+        }
+    </div>
+
+}
+
+
+<TelerikDialog @bind-Visible="@DeleteOrRejectDialogVisible"
+               Class="modal-dialog"
+               Width="30%"
+               CloseOnOverlayClick="true"
+               ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <span class="dialog-icon icon-Critical" />
+                <H2>@DeleteRejectDialogTitle</H2>
+            </div>
+            <H4>@DeleteRejectDialogMsg</H4>
+            <TelerikTextBox Placeholder="type a reason" @bind-Value="Reason"></TelerikTextBox>
+            <p class="text-red">@ReasonError</p>
+
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { DeleteOrRejectDialogVisible = false; })" />
+                <Button Type="btn-secondary--critical btn-sm" Label="@DeleteOrRejectBtnLabel" OnClick="DeleteOrReject" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikDialog @bind-Visible="@ApproveDialogVisible"
+               Class="modal-dialog"
+               Width="30%"
+               CloseOnOverlayClick="true"
+               ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Approve Request</H2>
+            </div>
+            <H4>You are about to Approve this service request </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ApproveDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Approve Request" OnClick="@Approve" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+@code {
+
+    [CascadingParameter]
+    public Notification Notification { get; set; } = new();
+
+    [Parameter]
+    public bool IsAuthorized { get; set; }
+
+    public bool DeleteOrRejectDialogVisible { get; set; }
+    public bool ApproveDialogVisible { get; set; }
+    public bool IsShowReasonTxtBox { get; set; }
+
+    public string Reason { get; set; } = string.Empty;
+    public string ReasonError { get; set; } = string.Empty;
+    public string DeleteRejectDialogTitle { get; set; } = string.Empty;
+    public string DeleteRejectDialogMsg { get; set; } = string.Empty;
+    public string DeleteOrRejectBtnLabel { get; set; } = string.Empty;
+
+    public RequestStatus RequestStatus { get; set; }
+
+    async Task Approve()
+    {
+
+        var response = await RequestsOpsAppService.Approve(new ApproveRequestDto()
+            {
+                ActivityType = RequestStateContainer.RequestHeader.ActivityType,
+                ActivityForm = RequestStateContainer.RequestHeader.ActivityForm,
+                RequestDetails = RequestStateContainer.RequestDetails,
+            });
+
+        if (response.IsSuccess)
+        {
+            Notification.Show(AlertType.Success, "request is approved successfully");
+           
+
+
+            NavigationManager.NavigateTo("/requests");
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+    async Task DeleteOrReject()
+    {
+        ReasonError = string.Empty;
+
+        if (string.IsNullOrEmpty(Reason))
+        {
+            ReasonError = "please enter a reason";
+            return;
+        }
+
+        var response = await RequestsOpsAppService.DeleteOrReject(Reason, RequestStatus, RequestStateContainer.RequestHeader.RequestActivityId);
+
+        if (response.IsSuccess)
+        {
+            var message = RequestStatus == RequestStatus.Deleted ? "request is deleted successfully" : "request is rejected successfully";
+            Notification.Show(AlertType.Success, message);
+            NavigationManager.NavigateTo("/requests");
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+    }
+
+
+    private void ShowDeleteOrRejectDialog(RequestStatus requestStatus)
+    {
+        ReasonError = string.Empty;
+        RequestStatus = requestStatus;
+
+        if (requestStatus == RequestStatus.Deleted)
+        {
+            DeleteRejectDialogTitle = "Delete Request";
+            DeleteRejectDialogMsg = "you are about to delete this request";
+            DeleteOrRejectBtnLabel = "Delete";
+        }
+        else if (requestStatus == RequestStatus.Rejected)
+        {
+            DeleteRejectDialogTitle = "Reject Request";
+            DeleteRejectDialogMsg = "you are about to reject this request";
+            DeleteOrRejectBtnLabel = "Reject";
+        }
+
+        DeleteOrRejectDialogVisible = true;
+
+    }
+
+
+}

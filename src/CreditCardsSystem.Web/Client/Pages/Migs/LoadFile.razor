@@ -1,0 +1,305 @@
+﻿@page "/migs"
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Interfaces
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.Migs
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components
+@using Kfh.Aurora.Blazor.Components.UI
+@using Telerik.Blazor.Components
+@using Telerik.FontIcons
+@using Telerik.SvgIcons
+@using H2 = Kfh.Aurora.Blazor.Components.UI.H2
+@using H4 = Kfh.Aurora.Blazor.Components.UI.H4
+@using Humanizer
+@inherits ApplicationComponent
+
+
+
+
+@if (IsAllowTo(Permissions.MigsLoadFile.View()) || IsAllowTo(Permissions.MigsLoadFile.Create()))
+{
+    <div class="main-container">
+        <div class="container-fluid">
+            <div class="table-header mx-0">
+                <div>
+                    <Title Text="MIGS Files"></Title>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <OnClickComponent OnClick="async () => await FiltersDrawerRef.ToggleAsync()">
+                            <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                        </OnClickComponent>
+                        <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                    </div>
+                </div>
+            </div>
+
+            <div class="KFHnopadding">
+                @if (SelectedMasterData.Status is DataStatus.Uninitialized)
+                {
+                    <div class="mt-4">
+                        <div class="card-v2">
+                            <OnClickComponent OnClick="async () => {  await FiltersDrawerRef.ToggleAsync(); }">
+                                <EmptyState VectorName="search" Heading="Search" Description="Search to view summary and generate FDR file"></EmptyState>
+
+                            </OnClickComponent>
+                        </div>
+                    </div>
+                }
+                @if (SelectedMasterData.Status is DataStatus.Loading)
+                {
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+                }
+                else if (SelectedMasterData.Status is DataStatus.Success)
+                {
+                    <div class="card-v2 mt-3">
+                        <H2> Summary </H2>
+                        <ul class="row list-view">
+
+                            <li class="col-3">
+                                <H4>Load Date</H4>
+                                <H3>@filter.LoadDate.ToString(ConfigurationBase.DateFormat)</H3>
+                            </li>
+                            <li class="col-3">
+                                <H4>Load Id</H4>
+                                <H3>@filter.LoadId</H3>
+                            </li>
+
+                            <li class="col-3">
+                                <H4>
+                                    <div class="d-flex">
+                                        Load Status
+                                        @if (SelectedMasterData.Data?.Status is not MasterFileStatus.FDOutputGenerated)
+                                        {
+                                            <IconButton Class="ps-2" Icon="Reset" IsEnabled="true" Title="Reload the status" OnClick="async ()=>{await onClickRefresh(); }"></IconButton>
+                                        }
+                                    </div>
+                                </H4>
+                                <H3>@SelectedMasterData.Data?.Status.GetDescription()</H3>
+
+                            </li>
+
+                            @if (SelectedMasterData.Data?.Status is MasterFileStatus.FDOutputGenerated)
+                            {
+                                <li class="col-3">
+                                    <H4>File Generated On</H4>
+                                    <H3>@SelectedMasterData.Data?.FileCreatedOn?.ToString(ConfigurationBase.DateTimeFormat)</H3>
+                                </li>
+                            }
+                            <li class="col-3">
+                                <H4>Total Debit</H4>
+                                <H3>@SelectedMasterData.Data?.TotalDebitTransactionsAmount</H3>
+                            </li>
+
+                            <li class="col-3">
+                                <H4>Total Debit</H4>
+                                <H3>@SelectedMasterData.Data?.TotalDebitTransactionsAmount</H3>
+                            </li>
+                            <li class="col-3">
+                                <H4>Total Credit</H4>
+                                <H3>@SelectedMasterData.Data?.TotalCreditTransactionsAmount</H3>
+                            </li>
+
+                            <li class="col-3">
+                                <H4>Total Phenonix Rejected Amount</H4>
+                                <H3>@SelectedMasterData.Data?.TotalPHXRejectedTransactionsAmount</H3>
+                            </li>
+                            <li class="col-3">
+                                <H4>Total Phenonix Rejected Count</H4>
+                                <H3>@SelectedMasterData.Data?.PHXRejectedTransactionsCount</H3>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pt-5">
+                        <div class="drawer-buttons">
+                            @if (IsAllowTo(Permissions.MigsLoadFile.Create()))
+                            {
+                                <Button Type="btn-primary btn-md" Label="Generate FDR File" OnClick="async () => await GenerateFile()"></Button>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (SelectedMasterData.Status is DataStatus.Error)
+                {
+                    <TechError Message="@SelectedMasterData.Exception?.Message" />
+                }
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <AccessDenied />
+}
+
+<OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+    <OffcanvasContent>
+        <div class="d-flex flex-column gp-0">
+            <div class="formField">
+                <div class="form-flex gp-8">
+                    <TelerikForm EditContext="formEditContext" ColumnSpacing="10px">
+                        <FormItems>
+                            <FormItem>
+                                <Template>
+                                    <ul class="list">
+                                        <FormList Class="d-flex gp-16 mt-0">
+                                            <Form Label="Load Date">
+                                                <TelerikDatePicker Format="@ConfigurationBase.DateFormat" @bind-Value="@filter.LoadDate" OnChange="OnChangeLoadDate"></TelerikDatePicker>
+                                                <SubH2><ValidationMessage For="()=> filter.LoadDate" class="kfhtexterror text-red"></ValidationMessage></SubH2>
+                                            </Form>
+
+                                            <Form Label="Load Id">
+                                                <TelerikDropDownList Data="@LoadIds" @bind-Value="@filter.LoadId">
+                                                    <DropDownListSettings>
+                                                        <DropDownListPopupSettings MaxHeight="200px" />
+                                                    </DropDownListSettings>
+                                                </TelerikDropDownList>
+                                                <SubH2><ValidationMessage For="()=> filter.LoadId" class="kfhtexterror text-red"></ValidationMessage></SubH2>
+                                            </Form>
+                                        </FormList>
+                                    </ul>
+                                </Template>
+                            </FormItem>
+                        </FormItems>
+                        <FormValidation>
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                        </FormValidation>
+                        <FormButtons>
+                        </FormButtons>
+                    </TelerikForm>
+                </div>
+            </div>
+        </div>
+
+
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-between">
+            <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Reset" OnClick="Reset"></Button>
+            <Button Type="btn-primary" ButtonType="@ButtonType.Submit" Label="View Summary" OnClick="Search"></Button>
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+@code {
+    [Inject] public IMigsAppService migsService { get; set; } = default!;
+
+    public int[] LoadIds { get; set; }
+    public DataItem<List<MasterDto>> MasterListData { get; set; } = new();
+    public DataItem<MasterDto> SelectedMasterData { get; set; } = new();
+    public OffCanvas FiltersDrawerRef { get; set; }
+    public LoadFileFilter filter { get; set; } = new() { LoadDate = DateTime.Today };
+    protected override async Task OnInitializedAsync()
+    {
+
+        await OnChangeLoadDate();
+        BindFormEditContext(filter);
+    }
+
+    async Task Reset()
+    {
+        filter = new();
+        MasterListData = new();
+        SelectedMasterData = new();
+        LoadIds = [];
+    }
+
+
+    async Task onClickRefresh()
+    {
+        var result = await migsService.GetMasterDataById(SelectedMasterData.Data.LoadId);
+
+        SelectedMasterData.SetData(result);
+    }
+
+    async Task Search()
+    {
+        SelectedMasterData.Loading();
+
+        var masterData = MasterListData.Data?.FirstOrDefault(x => x.LoadId == filter.LoadId);
+
+
+        if (masterData != null)
+        {
+            SelectedMasterData?.SetData(masterData);
+            await FiltersDrawerRef.ToggleAsync();
+        }
+        else
+            SelectedMasterData?.Error(new("data not found!"));
+    }
+
+    async Task GenerateFile()
+    {
+        Notification.Processing(new ActionStatus() { Title = "Migs FDR File", Message = "File creation is in progress" });
+        var result = await migsService.GenerateFile(new GenerateFileRequestDto(filter.LoadId, GenerateFileRequestType.F, true));
+        await HandleApiResponse(result, formEditContext, formMessageStore);
+
+    }
+
+    async Task OnChangeLoadDate()
+    {
+        MasterListData.Loading();
+        formMessageStore?.Clear(() => filter.LoadId);
+
+        var result = await migsService.GetLoadIds(filter.LoadDate.ToString());
+
+        if (result.IsSuccess)
+        {
+            MasterListData.SetData(result.Data!.ToList());
+            LoadIds = result.Data?.Select(s => s.LoadId).ToArray() ?? [];
+        }
+        else
+        {
+            MasterListData.Error(new(result.Message));
+            formEditContext?.AddAndNotifyFieldError(formMessageStore!, () => filter.LoadId, message: "No data found!");
+            LoadIds = [];
+        }
+
+        filter.LoadId = LoadIds.Count() > 0 ? LoadIds.FirstOrDefault() : 0;
+
+    }
+
+    public EditContext? formEditContext { get; set; }
+
+    public ValidationMessageStore? formMessageStore { get; set; }
+
+    public void Dispose()
+    {
+        UnBindFormEditContext();
+    }
+
+    public void BindFormEditContext(LoadFileFilter Model)
+    {
+        Model ??= new();
+        formEditContext = new EditContext(Model);
+        formMessageStore = new ValidationMessageStore(formEditContext);
+        formEditContext.OnValidationRequested += (s, e) => formMessageStore?.Clear();
+        formEditContext.OnFieldChanged += (s, e) => formMessageStore?.Clear(e.FieldIdentifier);
+    }
+    public void UnBindFormEditContext()
+    {
+        if (formEditContext == null) return;
+
+        formEditContext.OnValidationRequested -= (s, e) => formMessageStore?.Clear();
+        formEditContext.OnFieldChanged -= (s, e) => formMessageStore?.Clear(e.FieldIdentifier);
+    }
+
+    public async Task<bool> IsFormValid()
+    {
+        if (!formEditContext!.Validate()) return false;
+
+        // Is not valid or not modified
+        if (!formEditContext.Validate() || !formEditContext.IsModified())
+            return false;
+
+        return await Task.FromResult(true);
+    }
+}

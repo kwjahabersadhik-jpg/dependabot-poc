@@ -1,0 +1,91 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.kfh.com/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="InformaticaManagementService" targetNamespace="http://www.kfh.com/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="http___integration_80_KFHCommonBusinessWebservices_InformaticaManagementService_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="getWorkflowStatusDetailsResponse">
+    <part name="parameters" element="tns:getWorkflowStatusDetailsResponse">
+    </part>
+  </message>
+  <message name="startWorkflow">
+    <part name="parameters" element="tns:startWorkflow">
+    </part>
+  </message>
+  <message name="getWorkflowStatusDetails">
+    <part name="parameters" element="tns:getWorkflowStatusDetails">
+    </part>
+  </message>
+  <message name="startWorkflowResponse">
+    <part name="parameters" element="tns:startWorkflowResponse">
+    </part>
+  </message>
+  <portType name="InformaticaManagementService">
+    <operation name="startWorkflow">
+      <input message="tns:startWorkflow" wsam:Action="http://www.kfh.com/InformaticaManagementService/startWorkflowRequest">
+    </input>
+      <output message="tns:startWorkflowResponse" wsam:Action="http://www.kfh.com/InformaticaManagementService/startWorkflowResponse">
+    </output>
+    </operation>
+    <operation name="getWorkflowStatusDetails">
+      <input message="tns:getWorkflowStatusDetails" wsam:Action="http://www.kfh.com/InformaticaManagementService/getWorkflowStatusDetailsRequest">
+    </input>
+      <output message="tns:getWorkflowStatusDetailsResponse" wsam:Action="http://www.kfh.com/InformaticaManagementService/getWorkflowStatusDetailsResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="InformaticaManagementServiceSoapBinding" type="tns:InformaticaManagementService">
+    
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="startWorkflow">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getWorkflowStatusDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_InformaticaManagementService">
+    <port name="InformaticaManagementServiceSoap5" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_InformaticaManagementService.InformaticaManagementServiceSoap/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap4" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_InformaticaManagementService/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap3" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_InformaticaManagementService.InformaticaManagementServiceSoap/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_InformaticaManagementService.InformaticaManagementServiceSoap/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap2" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_InformaticaManagementService/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap9" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/InformaticaManagementService/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap8" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/InformaticaManagementService/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap7" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/InformaticaManagementService/1.0"/>
+    </port>
+    <port name="InformaticaManagementServiceSoap6" binding="tns:InformaticaManagementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_InformaticaManagementService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    
+</definitions>

@@ -1,0 +1,99 @@
+﻿@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile.Components;
+@using CreditCardsSystem.Web.Client.Components.Notificartion;
+@using Kfh.Aurora.Auth;
+@using Kfh.Aurora.Common.Components.UI.Settings
+@layout TelerikLayout
+@inherits LayoutComponentBase
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject INavigationAppService NavigationAppService
+@inject IAuthManager AuthManager
+@inject AppState appState
+@implements IDisposable
+
+
+<UserSettingsProvider>
+    <div class="mainlayout">
+        <CascadingValue IsFixed="true" Value="@Notification">
+            <div class="maincontent">
+                @Body
+            </div>
+        </CascadingValue>
+    </div>
+</UserSettingsProvider>
+
+<NotificationNew @ref="Notification!.Instance"></NotificationNew>
+<Unauthorized IsVisible="@NoPermissionDialog" LogoutUrl="@AuthManager.GetClaim("bff:logout_url")"></Unauthorized>
+
+
+
+@code {
+    public bool ShowSearchDialog { get; set; } = false;
+    // public SearchProfile searchProfileComponent = new();
+    private bool NoPermissionDialog { get; set; }
+    private string SelectedBranchName { get; set; } = string.Empty;
+
+    [CascadingParameter]
+    RouteData? RouteData { get; set; }
+
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string CivilId { get; set; } = string.Empty;
+
+
+    TooltipPosition PositionRight { get; set; } = TooltipPosition.Right;
+
+
+    private string? ClientId { get; set; }
+
+    DrawerItem? SelectedItem { get; set; }
+    Notification? Notification { get; set; } = new();
+
+    private bool IsDark { get; set; }
+    private List<NavigationMenuDto> _menuItems = new();
+
+    private AuroraUser? User { get; set; }
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GettingCivilIdFromUrlAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var isAllowed = AuthManager.HasPermission("creditCards.access");
+        if (!isAllowed)
+        {
+            NoPermissionDialog = true;
+            StateHasChanged();
+            return;
+        }
+
+        await GettingCivilIdFromUrlAsync();
+        User = AuthManager.GetUser();
+    }
+
+    private async Task GettingCivilIdFromUrlAsync()
+    {
+        if ((this.Body!.Target as RouteView)?.RouteData?.RouteValues?.TryGetValue("CivilId", out object? _civilIdFromRoute) == true && _civilIdFromRoute != null)
+            CivilId = _civilIdFromRoute.ToString() ?? "";
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (CivilId == null)
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("CivilId", out var _civilIdFromQuery) == true)
+                CivilId = _civilIdFromQuery.ToString();
+
+        await Task.CompletedTask;
+    }
+
+
+    public void Dispose()
+    {
+    }
+
+}

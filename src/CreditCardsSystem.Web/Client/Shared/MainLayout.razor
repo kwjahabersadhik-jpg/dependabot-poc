@@ -1,0 +1,13 @@
+﻿@using Kfh.Aurora.Common.Components.UI.Layouts
+@layout TelerikLayout
+@inherits LayoutComponentBase
+@implements IDisposable
+
+<CascadingValue IsFixed="true" Value="Notification">
+    <AuroraMainLayout HasSideMenu="true" SideMenuItems="@SideMenuItems" OnResultFound="@OnFoundCustomer">
+        @Body
+    </AuroraMainLayout>
+</CascadingValue>
+
+<NotificationNew @ref="Notification!.Instance" HasOffCanvas="Notification!.HasOffCanvas"></NotificationNew>
+<Unauthorized IsVisible="@NoPermissionDialog" GoBackToDashboard="true" DashboardUrl="@DashboardUrl"></Unauthorized>

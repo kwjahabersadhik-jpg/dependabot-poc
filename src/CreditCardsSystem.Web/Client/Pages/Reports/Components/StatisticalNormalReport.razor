@@ -1,0 +1,187 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Report;
+@using CreditCardsSystem.Utility.Extensions;
+@inherits ApplicationComponent
+
+@if (ReportDataItem.Status is DataStatus.Loading)
+{
+    <div class="KFHnopadding kfh-data-table">
+        <div class="col-12 p-5">
+            <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+        </div>
+    </div>
+    @* <DataTableSkeleton /> *@
+}
+else if (ReportDataItem.Status is DataStatus.Error)
+{
+    <TechError Message="@ReportDataItem.Exception?.Message" />
+}
+else if (ReportDataItem.Status is DataStatus.Success)
+{
+    var statusSummary = ReportDataItem?.Data?.GroupBy(x => x.Status).Select(x => new { Status = x.Key.ToString(), Count = x.Count() });
+
+    <div class="d-flex align-items-center justify-content-end">
+        @if (statusSummary?.Count() > 0)
+        {
+
+            <ActionsMenu IconOrientation="tooltip" Title="Other Information" Class="tooltip-action-menu">
+                <ChildContent>
+
+                    @foreach (var summary in statusSummary)
+                    {
+                        <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+                            <div class="d-flex flex-row gp-16 justify-content-start ">
+                                <div>@summary.Status </div>
+                            </div>
+                            <div>
+                                @summary.Count
+                            </div>
+                        </div>
+                    }
+
+
+                </ChildContent>
+            </ActionsMenu>
+        }
+    </div>
+    <div class="KFHnopadding kfh-data-table">
+        <TelerikGrid Data="@ReportDataItem.Data" PageSize="10" Pageable=true>
+            <GridExport>
+                <GridExcelExport FileName="StatisticNormalReport" AllPages="true" />
+            </GridExport>
+
+            <GridColumns>
+                <GridColumn Title="Detail" OnCellRender="@((e) => e.Class = "col-xl-1 text-start ps-4")" HeaderClass="col-xl-1 text-start ps-4">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+                            <H2 class="text-start my-0">@item.AcctNo</H2>
+                            <H3 class="my-0 text-start text-gray50">@DisplayCardNumber(item.CardNo)</H3>
+                            <H2 class="text-start my-0 ">@item.ProductName - @item.Collateral</H2>
+                            <SubH2 class="text-start my-0 ">@item.CivilID</SubH2>
+                            <SubH2 class="text-start my-0">@item.Branch</SubH2>
+                        }
+                    </Template>
+                </GridColumn>
+
+
+                <GridColumn Title="Seller Detail" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+                            <H3>@item.SellerID</H3>
+                            <SubH2 class="text-center">card with a @(Convert.ToDecimal(item.RequestLimit).ToMoney()) </SubH2>
+                            <SubH2 class="text-center">was requested By @item.TellerID on @item.RequestDate.Formed()</SubH2>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Title="Approver Detail" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+
+                            if (item.ApprovedBy > 0)
+                            {
+                                <H3>@item.ApprovedBy</H3>
+                                <SubH2 class="text-center">card with a @(Convert.ToDecimal(item.ApprovedLimit).ToMoney()) was approved on @item.ApproveDate.Formed()</SubH2>
+                            }
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="@nameof(StatisticalReportData.Status)" Title="Status" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center4">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+
+                            var statusClass = item.Status.ToString() switch
+                            {
+                                "Active" => "blueStatus",
+                                "AccountBoardingStarted" => "grayStatus",
+                                "Open" => "blueStatus",
+                                _ => "grayStatus"
+                            };
+
+                            <Status StatusClass="@statusClass" StatusTitle=@item.Status.ToString()></Status>
+                        }
+                    </Template>
+                </GridColumn>
+
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+
+    <div hidden>
+        <TelerikGrid @ref=ReportGridForPrint Data="@ExportReportDataItem">
+            <GridExport>
+                <GridExcelExport FileName="StatisticNormalReport" AllPages="true" />
+            </GridExport>
+
+            <GridColumns>
+
+                <GridColumn Field="@nameof(StatisticalReportData.Branch)" Title="Branch" />
+                <GridColumn Field="@nameof(StatisticalReportData.ProductName)" Title="Product Name" />
+                <GridColumn Field="@nameof(StatisticalReportData.RequestDate)" Title="Requested Date">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+                            @item.RequestDate.Formed()
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="@nameof(StatisticalReportData.RequestLimit)" Title="Requested Limit" />
+                <GridColumn Field="@nameof(StatisticalReportData.SellerID)" Title="Seller ID" />
+                <GridColumn Field="@nameof(StatisticalReportData.TellerID)" Title="Teller ID" />
+                <GridColumn Field="@nameof(StatisticalReportData.CardNo)" Title="Card Number" />
+                <GridColumn Field="@nameof(StatisticalReportData.ApprovedLimit)" Title="Approved Limit" />
+                <GridColumn Field="@nameof(StatisticalReportData.ApproveDate)" Title="Approve Date">
+                    <Template>
+                        @{
+                            var item = context as StatisticalReportData;
+                            @item.ApproveDate.Formed()
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="@nameof(StatisticalReportData.ApprovedBy)" Title="Approved By" />
+                <GridColumn Field="@nameof(StatisticalReportData.Status)" Title="Status" />
+                <GridColumn Field="@nameof(StatisticalReportData.Collateral)" Title="Collateral" />
+                <GridColumn Field="@nameof(StatisticalReportData.CivilID)" Title="Civil ID" />
+                <GridColumn Field="@nameof(StatisticalReportData.AcctNo)" Title="Account Number" />
+            </GridColumns>
+        </TelerikGrid>
+
+    </div>
+}
+else
+{
+    @* <NoRecordsFound /> *@
+}
+
+@code {
+
+
+
+    [Parameter]
+    public DataItem<IEnumerable<StatisticalReportData>> ReportDataItem { get; set; } = new();
+
+
+    public List<StatisticalReportData> ExportReportDataItem { get; set; } = new();
+
+    public async Task ExportExcel()
+    {
+        ExportReportDataItem = ReportDataItem.Data?.ToList() ?? [];
+
+        ExportReportDataItem.ForEach(r => r.CardNo = r.CardNo.Masked(6, 6));
+        ReportGridForPrint.Rebind();
+
+        await ReportGridForPrint.SaveAsExcelFileAsync();
+    }
+
+
+    TelerikGrid<StatisticalReportData> ReportGridForPrint { get; set; } = null!;
+
+
+
+}

@@ -1,0 +1,178 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Models.Request
+@using CreditCardsSystem.Domain.Shared.Interfaces.Workflow
+@using CreditCardsSystem.Web.Client.Components.Tasks.Model
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime;
+ @inject IWorkflowAppService WorkflowAppService
+ @inject IRequestActivityAppService ActivityAppService
+
+ 
+    @if (Tasks.Status is Domain.Enums.DataStatus.Error)
+    {
+        <EmptyState IconName="tech-error" Heading="Technical Error" Description="@Tasks.Exception?.Message"></EmptyState>
+    }
+    else
+    {
+        <div class="AO-flex--container">
+            <div>
+                @if (Tasks.Status is Domain.Enums.DataStatus.Loading)
+                {    <div class="KFHnopadding kfh-data-table shadow">
+
+                         <DataTableSkeleton />
+                         
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-between align-items-center pt-3">
+                        <div>
+                            <H2>Tasks</H2>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="p-3">
+                                <OnClickComponent OnClick="@(() => OpenFilterOffCanvas = true)">
+                                    <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                                    <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom">
+                                    </TelerikTooltip>
+                                </OnClickComponent>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <TasksDataGrid Data="@FilteredTasks" Claim="ClaimTask" />
+
+                }
+            </div> @*left90 container ends here*@
+        </div> @*flex container ends here*@
+    }
+ 
+
+<TasksRequestsFilter @bind-IsOpen="OpenFilterOffCanvas"
+                     Filter="@Filter"
+                     OnApplyFilter="@(ApplyFilter)" />
+
+<TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom" />
+
+@code {
+
+    #region Parameters
+
+
+    public bool OpenFilterOffCanvas { get; set; } = false;
+
+
+    public DataItem<List<TaskListTileViewModel>> Tasks { get; set; } = new();
+
+    #endregion
+
+    #region Properties
+
+    TasksRequestsFilter.TaskRequestFilterViewModel Filter { get; set; } = TasksRequestsFilter.TaskRequestFilterViewModel.DefaultFilters();
+    List<TaskListTileViewModel> FilteredTasks { get; set; } = new();
+
+    #endregion
+    public DataItem<List<RequestActivityResult>> MissedActivities { get; set; } = new();
+    #region Constructors
+    private async Task SyncWithCCSORequestActivities()
+    {
+        MissedActivities.Loading();
+        var activities = await ActivityAppService.GetNonEnigmaRequestActivities();
+        MissedActivities.SetData(activities.Data);
+        StateHasChanged();
+    }
+
+    private async Task GetTasks()
+    {
+        Tasks.Loading();
+        var myTasks = await WorkflowAppService.GetUserTasks();
+        if (!myTasks.IsSuccess)
+        {
+            Tasks.Error(new(myTasks.Message));
+        }
+        else
+        {
+            var tasks = (myTasks.Data ?? new()).Convert();
+
+            tasks = tasks.OrderByDescending(x => x.CreatedDate).ToList();
+            Tasks.SetData(tasks);
+        }
+        StateHasChanged();
+    }
+
+
+    private async Task ClaimTask(Guid taskId)
+    {
+        await WorkflowAppService.ClaimTask(taskId);
+        await GetTasks();
+    }
+
+    protected override async void OnInitialized()
+    {
+        await GetTasks();
+
+        if (Tasks?.Data is null) return;
+
+        var applications = Tasks?.Data?.Select(e => e.ApplicationName).Distinct().ToList();
+        if (applications?.Count > 1)
+        {
+            applications.Insert(0, "All");
+            Filter.SelectedApplication = applications.First();
+        }
+
+        var assignees = Tasks?.Data?.SelectMany(e => e.Assignees).Select(e => e.Value).Distinct().ToList();
+        if (assignees?.Count > 1)
+        {
+            assignees.Insert(0, "All");
+            Filter.SelectedAssignees = assignees.First();
+        }
+
+        Filter.AssigneesFilter = assignees;
+        Filter.ApplicationNamesFilter = applications;
+        InitOrResetFilter();
+    }
+
+
+
+    private void InitOrResetFilter()
+    {
+        FilteredTasks = Tasks?.Data;
+        ApplyFilter(Filter);
+    }
+
+    #endregion
+
+    private void ApplyFilter(TasksRequestsFilter.TaskRequestFilterViewModel filerSelection)
+    {
+        Filter = filerSelection;
+        FilteredTasks = Tasks?.Data;
+        if (Filter!.SelectedApplication.Any() && Filter.SelectedApplication.ToLower() != "All".ToLower())
+        {
+            FilteredTasks = FilteredTasks.Where(e => e.ApplicationName == Filter.SelectedApplication).ToList();
+        }
+
+        if (Filter!.SelectedStatus.Any() && Filter.SelectedStatus.ToLower() != "All".ToLower())
+        {
+            FilteredTasks = FilteredTasks.Where(e => e.Status.ToLower() == Filter.SelectedStatus.ToLower()).ToList();
+        }
+
+        if (Filter!.SelectedAssignees.Any() && Filter.SelectedAssignees.ToLower() != "All".ToLower())
+        {
+            FilteredTasks = FilteredTasks.Where(e => e.Assignees.Any(e => e.Value == Filter!.SelectedAssignees)).ToList();
+        }
+        if (Filter.SelectedCreatedDate is not null)
+        {
+            FilteredTasks = FilteredTasks.Where(e => e.CreatedDate.Date == Filter!.SelectedCreatedDate?.Date).ToList();
+        }
+        if (Filter.SelectedCompletionDate is not null)
+        {
+            FilteredTasks = FilteredTasks.Where(e => e.CompletedDate?.Date == Filter!.SelectedCompletionDate?.Date).ToList();
+        }
+
+
+        StateHasChanged();
+    }
+
+}

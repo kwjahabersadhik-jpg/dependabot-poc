@@ -1,0 +1,77 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="AddCreditCardStandingOrder" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___integration_80_CreditCardProcesses_kfh_creditcard_standingorder_processes_AddCreditCardStandingOrder.jpd_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="addCreditCardStandingOrder">
+    <part name="parameters" element="tns:addCreditCardStandingOrder">
+    </part>
+  </message>
+  <message name="addCreditCardStandingOrderResponse">
+    <part name="parameters" element="tns:addCreditCardStandingOrderResponse">
+    </part>
+  </message>
+  <portType name="AddCreditCardStandingOrder">
+    <operation name="addCreditCardStandingOrder">
+      <input message="tns:addCreditCardStandingOrder" wsam:Action="http://www.openuri.org/AddCreditCardStandingOrder/addCreditCardStandingOrderRequest">
+    </input>
+      <output message="tns:addCreditCardStandingOrderResponse" wsam:Action="http://www.openuri.org/AddCreditCardStandingOrder/addCreditCardStandingOrderResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="AddCreditCardStandingOrderSoapBinding" type="tns:AddCreditCardStandingOrder">
+    
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="addCreditCardStandingOrder">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_AddCreditCardStandingOrder">
+    <port name="AddCreditCardStandingOrderSoap9" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap10" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6666/kfhsoa/ws/AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap11" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap7" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_AddCreditCardStandingOrder.AddCreditCardStandingOrderSoap/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap8" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap5" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://integration/ws/WLS_AddCreditCardStandingOrder.AddCreditCardStandingOrderSoap/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap6" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://integration/ws/WLS_AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_AddCreditCardStandingOrder.AddCreditCardStandingOrderSoap/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap3" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6666/ws/WLS_AddCreditCardStandingOrder.AddCreditCardStandingOrderSoap/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap12" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap4" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6666/ws/WLS_AddCreditCardStandingOrder/1.0"/>
+    </port>
+    <port name="AddCreditCardStandingOrderSoap2" binding="tns:AddCreditCardStandingOrderSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_AddCreditCardStandingOrder/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    
+</definitions>

@@ -1,0 +1,206 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using Telerik.FontIcons
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.Beneficiaries
+
+@page "/beneficiaries"
+@inject IBeneficiaryAppService BeneficiaryAppService
+
+@inherits ApplicationComponent
+
+<div class="main-container">
+    <div class="container">
+            <div class="table-header mx-0">
+                <Title Text="Beneficiaries"></Title>
+            </div>
+        @if (!IsAllowTo(Permissions.PromotionsBeneficiaries.View()))
+        {
+            <AccessDenied />
+        }
+        else
+        {
+            <div class="KFHnopadding kfh-data-table">
+                <div class="form-flex ps-4 mt-4 mb-5">
+                    <div class="k-form-field-wrap">
+                        <H4>Civil ID</H4>
+                        <div class="d-flex flex-row align-items-start gp-32">
+                            <div class="w-30">
+                                <TelerikTextBox Size="sm" @bind-Value="@CivilId" ></TelerikTextBox>
+                                <SubH2 class="text-red mt-1">@Error</SubH2>
+                            </div>
+                            <div class="mt-1">
+                                <Button Label="Search" OnClick="GetBeneficiaries"></Button>
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @if (BeneficiaryResponse.Status == DataStatus.Success)
+                        {
+                            <TelerikGrid Data="@BeneficiaryResponse.Data"
+                                         EditMode="@GridEditMode.Inline"
+                                         Pageable="true"
+                                         PageSize="10"
+                                         Width="100%"
+                                         OnDelete="@OpenConfirmationDialog">
+
+                                <GridToolBarTemplate>
+
+                                    <span class="k-toolbar-spacer"></span>
+                                    <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                                </GridToolBarTemplate>
+
+                                <GridColumns>
+
+                                    <GridColumn Field="@nameof(BeneficiaryDto.CivilId)" Title="Civil ID" OnCellRender="@((e) => e.Class = "col-xl-1 text-start ")" HeaderClass="col-xl-1 text-start">
+                                        <Template>
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <H4 class="text-start">@item!.CivilId</H4>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                    <GridColumn Field="@nameof(BeneficiaryDto.PromotionName)" Title="Products" OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")" HeaderClass="col-xl-2 text-center">
+                                        <Template>
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <H4>@item!.PromotionName</H4>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                    <GridColumn Field="@nameof(BeneficiaryDto.CardNo)" Title="Card Number " OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                        <Template>
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <H4>@DisplayCardNumber(item!.CardNo)</H4>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                    <GridColumn Field="@nameof(BeneficiaryDto.ApplicationDate)" Title="Application Date" OnCellRender="@((e) => e.Class = "col-xl-1 text-center ")" HeaderClass="col-xl-1 text-center">
+                                        <Template>
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <H4>@item!.ApplicationDate.ToString("MMMM dd, yyyy")</H4>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                    <GridColumn Field="@nameof(BeneficiaryDto.Remarks)" Title="Remarks" OnCellRender="@((e) => e.Class = "col-xl-1 text-center ")" HeaderClass="col-xl-1 text-center">
+                                        <Template>
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <H4>@item!.Remarks</H4>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                    @if (IsAllowTo(Permissions.PromotionsBeneficiaries.Delete()))
+                                    {
+                                        <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center ")" HeaderClass="col-xl-1 text-center">
+
+                                            @{
+                                                var item = context as BeneficiaryDto;
+                                                <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                            }
+                                        </GridCommandColumn>
+                                    }
+
+                                </GridColumns>
+
+                                <NoDataTemplate>
+                                    <NoRecordsFound />
+                                </NoDataTemplate>
+
+                            </TelerikGrid>
+
+                        }
+                        else if (BeneficiaryResponse.Status == DataStatus.Loading)
+                        {   
+                            
+                            <div class="col-12 p-5">
+                                <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                            </div>
+                            @* <DataTableSkeleton /> *@
+
+                        }
+                        else if (BeneficiaryResponse.Status == DataStatus.Error)
+                        {
+                            <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+
+
+@code {
+ 
+
+    public Domain.Models.ApiResponseModel<List<BeneficiaryDto>> BeneficiariesListResponse { get; set; } = new();
+    public DataItem<List<BeneficiaryDto>> BeneficiaryResponse { get; } = new();
+    public BeneficiaryDto SelectedBeneficiary { get; set; } = new();
+    public bool ShowConfirmationDig { get; set; }
+    public string CivilId { get; set; } = string.Empty;
+    public string Error { get; set; } = string.Empty;
+
+    async Task GetBeneficiaries()
+    {
+        Error = string.Empty;
+
+        if (string.IsNullOrEmpty(CivilId))
+        {
+            Error = "please enter civil id";
+            return;
+        }
+
+        BeneficiaryResponse.Loading();
+        BeneficiariesListResponse = await BeneficiaryAppService.Get(CivilId);
+        if (BeneficiariesListResponse.IsSuccess)
+            BeneficiaryResponse.SetData(BeneficiariesListResponse.Data!);
+        else
+            BeneficiaryResponse.Error(new Exception(BeneficiariesListResponse.Message));
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var beneficiary = (BeneficiaryDto)args.Item;
+        SelectedBeneficiary = beneficiary;
+        ShowConfirmationDig = true;
+    }
+
+
+    async Task DeleteHandler()
+    {
+
+        var response = await BeneficiaryAppService.Delete(SelectedBeneficiary);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Beneficiary Deleted Successfully");
+            await GetBeneficiaries();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

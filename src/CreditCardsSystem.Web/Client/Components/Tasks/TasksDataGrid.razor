@@ -1,0 +1,173 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Shared.Interfaces.Workflow
+@using CreditCardsSystem.Web.Client.Components.Tasks.Model
+
+@inject IJSRuntime JsRunTime
+@inject NavigationManager NavManager
+
+<div class="kfh-data-table d-flex ps-5">
+    <TelerikGrid Data="Data" Pageable="true" PageSize="10">
+        <GridColumns>
+            <GridColumn Title="Task Details" OnCellRender="@((e) => e.Class = "Cell23 AO-detailed--cell")" HeaderClass="Cell23 AO-detailed--cell ps-5">
+                <Template>
+                    @{
+                        TaskListTileViewModel item = (context as TaskListTileViewModel)!;
+                        <OnClickComponent OnClick="@(() => NavigateToUrl(item.ActionUrl))">
+                            <div id="BottomTooltip" title="Click for more details">
+                                <TaskListTile Item="item" />
+                            </div>
+                        </OnClickComponent>
+                        <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom" />
+                    }
+                </Template>
+            </GridColumn>
+            @*       <GridColumn Title="Assignees" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+            <Template>
+            @{
+            TaskListTileViewModel item = (context as TaskListTileViewModel)!;
+            <AvatarStack>
+            <AvatarItems TeamInitial="U" TeamName="UXUI" MemberCount="7">
+            <AvatarMembers MemberId="81265" MemberName="Dalal Aljassem Aljassem Aljassem "></AvatarMembers>
+            <AvatarMembers MemberId="8172" MemberName="Sara Abu Salem Aljassem Aljassem"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            </AvatarItems>
+            <AvatarItems TeamInitial="F" TeamName="Full-Stack" MemberCount="3">
+            <AvatarMembers MemberId="81265" MemberName="Dalal Aljassem"></AvatarMembers>
+            <AvatarMembers MemberId="8172" MemberName="Sara Abu Salem"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            </AvatarItems>
+            <AvatarItems TeamInitial="U" TeamName="UXUI" MemberCount="6">
+            <AvatarMembers MemberId="81265" MemberName="Dalal Aljassem"></AvatarMembers>
+            <AvatarMembers MemberId="8172" MemberName="Sara Abu Salem"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            <AvatarMembers MemberId="5272" MemberName="Lulu Aldyouli"></AvatarMembers>
+            </AvatarItems>
+            <AvatarItems TeamCount="9">
+            <AvatarMembers TeamCount="9"></AvatarMembers>
+            </AvatarItems>
+            </AvatarStack>
+            }
+            </Template>
+            </GridColumn> *@
+            <GridColumn Title="Created On" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                <Template>
+                    @{
+                        TaskListTileViewModel item = (context as TaskListTileViewModel)!;
+                        <H4>@item.CreatedDate.ToString(ConfigurationBase.DateTimeFormat)</H4>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Title="Status" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                <Template>
+                    @{
+                        TaskListTileViewModel item = (context as TaskListTileViewModel)!;
+                        <div>
+                            @if (item.Status.ToLower() == "In Progress".ToLower())
+                            {
+                                <Status StatusClass="orangeStatus" StatusTitle=@item.Status></Status>
+                            }
+                            else if (item.Status.ToLower() == "Done".ToLower())
+                            {
+                                <Status StatusClass="greenStatus" StatusTitle=@item.Status></Status>
+                            }
+                            else if (item.Status.ToLower() == "Open".ToLower())
+                            {
+                                <Status StatusClass="blueStatus " StatusTitle=@item.Status></Status>
+                            }
+                            else if (!string.IsNullOrEmpty(item.Status))
+                            {
+                                <Status StatusClass="grayStatus " StatusTitle=@item.Status></Status>
+                            }
+                        </div>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                <Template>
+                    @{
+                        TaskListTileViewModel item = (context as TaskListTileViewModel)!;
+                        <ActionsMenu>
+                            <ActionMenuItem ItemText="Assign to Me" OnClickAction="async()=>{ await AssignToMeNotifcation(item);  }"></ActionMenuItem>
+                            <ActionMenuItem ItemText="View Details" OnClickAction="(() => NavigateToUrl(item.ActionUrl))"></ActionMenuItem>
+                            @* <ActionMenuItem ItemText="Assign to Me" ItemIcon="icon-Reply"></ActionMenuItem>
+                        <ActionMenuItem ItemText="View Details" ItemIcon="icon-Information"></ActionMenuItem> *@
+                        </ActionsMenu>
+                    }
+                </Template>
+            </GridColumn>
+        </GridColumns>
+        <NoDataTemplate>
+            <NoRecordsFound />
+        </NoDataTemplate>
+    </TelerikGrid>
+</div>
+
+<TelerikNotification @ref="NotificationReference" Class="MyTelerikNotification"
+                     VerticalPosition="NotificationVerticalPosition.Bottom" HorizontalPosition="NotificationHorizontalPosition.Center">
+    <Template>
+        <div class="d-flex flex-column">
+            <div class="d-flex align-items-center gp-8">
+                <span class="icon-Circle-check"></span>
+                <H4 Class="my-0">@context.Text</H4>
+                </div>
+            </div>
+        </Template>
+    </TelerikNotification>
+
+    <OffCanvas @ref="MembersDrawerRef" Title="Team Members">
+
+        <OffcanvasContent>
+            <div class="d-flex flex-column gp-16">
+                <GridSearchBox Placeholder="Search Member"></GridSearchBox>
+                <div class="d-flex flex-row gp-16 align-items-center">
+                    <CircleIcon Icon="icon-Callcenter" Class="circle-btn" />
+                    <H3>Dalal Aljassem Aljassem Aljassem <b>(81265)</b></H3>
+                </div>
+                <div class="d-flex flex-row gp-16 align-items-center">
+                    <CircleIcon Icon="icon-Callcenter" Class="circle-btn" />
+                    <H3>Dalal Aljassem Aljassem Aljassem<b>(81265)</b></H3>
+                </div>
+                <div class="d-flex flex-row gp-16 align-items-center">
+                    <CircleIcon Icon="icon-Callcenter" Class="circle-btn" />
+                    <H3>Dalal Aljassem  <b>(81265)</b></H3>
+                </div>
+                <div class="d-flex flex-row gp-16 align-items-center">
+                    <CircleIcon Icon="icon-Callcenter" Class="circle-btn" />
+                    <H3>Dalal Aljassem <b>(81265)</b></H3>
+                </div>
+                <div class="d-flex flex-row gp-16 align-items-center">
+                    <CircleIcon Icon="icon-Callcenter" Class="circle-btn" />
+                    <H3>Dalal Aljassem <b>(81265)</b></H3>
+                </div>
+            </div>
+        </OffcanvasContent>
+    </OffCanvas>
+
+    @code {
+
+    [Parameter]
+    public List<TaskListTileViewModel> Data { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<Guid> Claim { get; set; }
+
+
+    public OffCanvas MembersDrawerRef { get; set; } = default!;
+    public TelerikNotification? NotificationReference { get; set; }
+
+    private async void NavigateToUrl(Uri url)
+    {
+        NavManager.NavigateTo(url.ToString(), replace: true);
+    }
+
+    private async Task AssignToMeNotifcation(TaskListTileViewModel item)
+    {
+
+        await Claim.InvokeAsync(item.Id);
+    }
+
+}

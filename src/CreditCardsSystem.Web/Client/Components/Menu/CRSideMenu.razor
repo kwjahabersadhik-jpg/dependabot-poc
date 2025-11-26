@@ -1,0 +1,72 @@
+﻿@using Kfh.Aurora.Blazor.Components.ViewModels
+@using Kfh.Aurora.Blazor.Components.ViewModels.NavigationBar
+@inject NavigationManager NavigationManager
+<nav class="Leftnav @NavClass">
+    <div class="nav-container">
+        @{
+            foreach (var sideMenuItem in Items)
+            {
+                var stateCss = sideMenuItem.IsSelected ? "selectedSideMenuItem" : "sideMenuItem";
+                <OnClickComponent OnClick="@(() => Navigate(sideMenuItem))">
+                    <div class="@stateCss">
+                        @sideMenuItem.Text
+                    </div>
+                </OnClickComponent>
+
+                foreach (var subemenu in sideMenuItem.Items)
+                {
+                    var subemenuState = subemenu.IsSelected ? "selectedSideMenuItem selectedSubMenu" : "sideMenuItem";
+                    <OnClickComponent OnClick="@(() => SubMenuNavigate(sideMenuItem,subemenu))">
+                        <div class="subMenuItem @subemenuState">
+                            @subemenu.Text
+                        </div>
+                    </OnClickComponent>
+                }
+
+            }
+        }
+    </div>
+</nav>
+
+@code {
+
+    [Parameter]
+    public List<SideMenuItem> Items { get; set; } = new();
+
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
+    [Parameter]
+    public MenuOrientation Orientation { get; set; } = MenuOrientation.Vertical;
+
+    [Parameter]
+    public bool CloseOnClick { get; set; } = true;
+
+    private string NavClass => IsExpanded ? "Leftnav-Expanded" : "Leftnav-Collapsed";
+
+    private void Navigate(SideMenuItem item)
+    {
+        Items.SetSelected(item.Id);
+        StateHasChanged();
+        NavigationManager.NavigateTo(item.Url);
+    }
+
+    private void SubMenuNavigate(SideMenuItem mainMenu, SideMenuItem subMenu)
+    {
+        Items.SetSelected(mainMenu.Id);
+        mainMenu.Items.SetSelected(subMenu.Id);
+        StateHasChanged();
+        NavigationManager.NavigateTo(subMenu.Url);
+    }
+
+}
+<style>
+    .subMenuItem{
+        margin-inline-start:1rem !important;
+    }
+
+    .selectedSubMenu{
+        background: unset !important;
+        font-weight: 600 !important;
+    }
+</style>

@@ -1,0 +1,867 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="StandingOrderServiceV2" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing
+</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_v2_StandingOrderService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="issueRecurringByNumberOfTransfersToNonKFHAccountResponse">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToNonKFHAccountResponse">
+    </part>
+  </message>
+  <message name="issueSweepResponse">
+    <part name="parameters" element="tns:issueSweepResponse">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByNumberOfTransfersToProviderResponse">
+    <part name="parameters" element="tns:issueSalaryTriggeredByNumberOfTransfersToProviderResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByNumberOfTransfersToAccountResponse">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToAccountResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByNumberOfTransfersToNonKFHAccount">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToNonKFHAccount">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByNumberOfTransfersToAccountResponse">
+    <part name="parameters" element="tns:issueSalaryTriggeredByNumberOfTransfersToAccountResponse">
+    </part>
+  </message>
+  <message name="listByRimResponse">
+    <part name="parameters" element="tns:listByRimResponse">
+    </part>
+  </message>
+  <message name="viewStandingOrderPaymentDetailsResponse">
+    <part name="parameters" element="tns:viewStandingOrderPaymentDetailsResponse">
+    </part>
+  </message>
+  <message name="updateSOToNonKFHAccount">
+    <part name="parameters" element="tns:updateSOToNonKFHAccount">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByNumberOfTransfersToProvider">
+    <part name="parameters" element="tns:issueSalaryTriggeredByNumberOfTransfersToProvider">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByNumberOfTransfersToAccount">
+    <part name="parameters" element="tns:issueSalaryTriggeredByNumberOfTransfersToAccount">
+    </part>
+  </message>
+  <message name="listClosedByRim">
+    <part name="parameters" element="tns:listClosedByRim">
+    </part>
+  </message>
+  <message name="inquiry">
+    <part name="parameters" element="tns:inquiry">
+    </part>
+  </message>
+  <message name="listSoScheduleBySoID">
+    <part name="parameters" element="tns:listSoScheduleBySoID">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToNonKFHAccount">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToNonKFHAccount">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="updateSOResponse">
+    <part name="parameters" element="tns:updateSOResponse">
+    </part>
+  </message>
+  <message name="listSoByRimResponse">
+    <part name="parameters" element="tns:listSoByRimResponse">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByExpiryDateToAccountResponse">
+    <part name="parameters" element="tns:issueSalaryTriggeredByExpiryDateToAccountResponse">
+    </part>
+  </message>
+  <message name="listByAcctResponse">
+    <part name="parameters" element="tns:listByAcctResponse">
+    </part>
+  </message>
+  <message name="viewStandingOrderPaymentDetails">
+    <part name="parameters" element="tns:viewStandingOrderPaymentDetails">
+    </part>
+  </message>
+  <message name="scheduleCustomSoTransactionResponse">
+    <part name="parameters" element="tns:scheduleCustomSoTransactionResponse">
+    </part>
+  </message>
+  <message name="issueSweep">
+    <part name="parameters" element="tns:issueSweep">
+    </part>
+  </message>
+  <message name="issueRecurringByNumberOfTransfersToProvider">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToProvider">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToNonKFHAccountResponse">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToNonKFHAccountResponse">
+    </part>
+  </message>
+  <message name="listSoByRim">
+    <part name="parameters" element="tns:listSoByRim">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByExpiryDateToProviderResponse">
+    <part name="parameters" element="tns:issueSalaryTriggeredByExpiryDateToProviderResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByNumberOfTransfersToAccount">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToAccount">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByExpiryDateToAccount">
+    <part name="parameters" element="tns:issueSalaryTriggeredByExpiryDateToAccount">
+    </part>
+  </message>
+  <message name="listSoByRimAndServiceName">
+    <part name="parameters" element="tns:listSoByRimAndServiceName">
+    </part>
+  </message>
+  <message name="listSOByAccounts">
+    <part name="parameters" element="tns:listSOByAccounts">
+    </part>
+  </message>
+  <message name="issueUnscheduledCustomSo">
+    <part name="parameters" element="tns:issueUnscheduledCustomSo">
+    </part>
+  </message>
+  <message name="listSOByAccountsResponse">
+    <part name="parameters" element="tns:listSOByAccountsResponse">
+    </part>
+  </message>
+  <message name="scheduleCustomSoTransaction">
+    <part name="parameters" element="tns:scheduleCustomSoTransaction">
+    </part>
+  </message>
+  <message name="updateScheduleCustomSoTransactionResponse">
+    <part name="parameters" element="tns:updateScheduleCustomSoTransactionResponse">
+    </part>
+  </message>
+  <message name="deleteSO">
+    <part name="parameters" element="tns:deleteSO">
+    </part>
+  </message>
+  <message name="issueUnscheduledCustomSoResponse">
+    <part name="parameters" element="tns:issueUnscheduledCustomSoResponse">
+    </part>
+  </message>
+  <message name="inquiryResponse">
+    <part name="parameters" element="tns:inquiryResponse">
+    </part>
+  </message>
+  <message name="listClosedByAcct">
+    <part name="parameters" element="tns:listClosedByAcct">
+    </part>
+  </message>
+  <message name="updateSOToNonKFHAccountResponse">
+    <part name="parameters" element="tns:updateSOToNonKFHAccountResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToProvider">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToProvider">
+    </part>
+  </message>
+  <message name="deleteSOResponse">
+    <part name="parameters" element="tns:deleteSOResponse">
+    </part>
+  </message>
+  <message name="listSoByRimAndServiceNameResponse">
+    <part name="parameters" element="tns:listSoByRimAndServiceNameResponse">
+    </part>
+  </message>
+  <message name="inquiryClosedStadningOrderDetails">
+    <part name="parameters" element="tns:inquiryClosedStadningOrderDetails">
+    </part>
+  </message>
+  <message name="listClosedByAcctResponse">
+    <part name="parameters" element="tns:listClosedByAcctResponse">
+    </part>
+  </message>
+  <message name="listByAcct">
+    <part name="parameters" element="tns:listByAcct">
+    </part>
+  </message>
+  <message name="inquiryClosedStadningOrderDetailsResponse">
+    <part name="parameters" element="tns:inquiryClosedStadningOrderDetailsResponse">
+    </part>
+  </message>
+  <message name="updateScheduleCustomSoTransaction">
+    <part name="parameters" element="tns:updateScheduleCustomSoTransaction">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToAccountResponse">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToAccountResponse">
+    </part>
+  </message>
+  <message name="issueMinBalanceResponse">
+    <part name="parameters" element="tns:issueMinBalanceResponse">
+    </part>
+  </message>
+  <message name="listClosedByRimResponse">
+    <part name="parameters" element="tns:listClosedByRimResponse">
+    </part>
+  </message>
+  <message name="issueSalaryTriggeredByExpiryDateToProvider">
+    <part name="parameters" element="tns:issueSalaryTriggeredByExpiryDateToProvider">
+    </part>
+  </message>
+  <message name="listSoScheduleBySoIDResponse">
+    <part name="parameters" element="tns:listSoScheduleBySoIDResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToAccount">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToAccount">
+    </part>
+  </message>
+  <message name="listByRim">
+    <part name="parameters" element="tns:listByRim">
+    </part>
+  </message>
+  <message name="updateSO">
+    <part name="parameters" element="tns:updateSO">
+    </part>
+  </message>
+  <message name="issueMinBalance">
+    <part name="parameters" element="tns:issueMinBalance">
+    </part>
+  </message>
+  <message name="issueRecurringByExpiryDateToProviderResponse">
+    <part name="parameters" element="tns:issueRecurringByExpiryDateToProviderResponse">
+    </part>
+  </message>
+  <message name="issueRecurringByNumberOfTransfersToProviderResponse">
+    <part name="parameters" element="tns:issueRecurringByNumberOfTransfersToProviderResponse">
+    </part>
+  </message>
+  <portType name="StandingOrderService">
+    <operation name="issueSalaryTriggeredByNumberOfTransfersToProvider">
+      <input message="tns:issueSalaryTriggeredByNumberOfTransfersToProvider" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToProviderRequest">
+    </input>
+      <output message="tns:issueSalaryTriggeredByNumberOfTransfersToProviderResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToProviderResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToProvider/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateSO">
+      <input message="tns:updateSO" wsam:Action="http://www.openuri.org/StandingOrderService/updateSORequest">
+    </input>
+      <output message="tns:updateSOResponse" wsam:Action="http://www.openuri.org/StandingOrderService/updateSOResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/updateSO/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueSweep">
+      <input message="tns:issueSweep" wsam:Action="http://www.openuri.org/StandingOrderService/issueSweepRequest">
+    </input>
+      <output message="tns:issueSweepResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueSweepResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueSweep/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listByAcct">
+      <input message="tns:listByAcct" wsam:Action="http://www.openuri.org/StandingOrderService/listByAcctRequest">
+    </input>
+      <output message="tns:listByAcctResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listByAcctResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listByAcct/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="inquiry">
+      <input message="tns:inquiry" wsam:Action="http://www.openuri.org/StandingOrderService/inquiryRequest">
+    </input>
+      <output message="tns:inquiryResponse" wsam:Action="http://www.openuri.org/StandingOrderService/inquiryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/inquiry/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteSO">
+      <input message="tns:deleteSO" wsam:Action="http://www.openuri.org/StandingOrderService/deleteSORequest">
+    </input>
+      <output message="tns:deleteSOResponse" wsam:Action="http://www.openuri.org/StandingOrderService/deleteSOResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/deleteSO/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueMinBalance">
+      <input message="tns:issueMinBalance" wsam:Action="http://www.openuri.org/StandingOrderService/issueMinBalanceRequest">
+    </input>
+      <output message="tns:issueMinBalanceResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueMinBalanceResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueMinBalance/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listByRim">
+      <input message="tns:listByRim" wsam:Action="http://www.openuri.org/StandingOrderService/listByRimRequest">
+    </input>
+      <output message="tns:listByRimResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listByRimResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listByRim/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listSoByRim">
+      <input message="tns:listSoByRim" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRimRequest">
+    </input>
+      <output message="tns:listSoByRimResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRimResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRim/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listClosedByRim">
+      <input message="tns:listClosedByRim" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByRimRequest">
+    </input>
+      <output message="tns:listClosedByRimResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByRimResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByRim/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listClosedByAcct">
+      <input message="tns:listClosedByAcct" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByAcctRequest">
+    </input>
+      <output message="tns:listClosedByAcctResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByAcctResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listClosedByAcct/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listSOByAccounts">
+      <input message="tns:listSOByAccounts" wsam:Action="http://www.openuri.org/StandingOrderService/listSOByAccountsRequest">
+    </input>
+      <output message="tns:listSOByAccountsResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listSOByAccountsResponse">
+    </output>
+    </operation>
+    <operation name="listSoScheduleBySoID">
+      <input message="tns:listSoScheduleBySoID" wsam:Action="http://www.openuri.org/StandingOrderService/listSoScheduleBySoIDRequest">
+    </input>
+      <output message="tns:listSoScheduleBySoIDResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listSoScheduleBySoIDResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listSoScheduleBySoID/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewStandingOrderPaymentDetails">
+      <input message="tns:viewStandingOrderPaymentDetails" wsam:Action="http://www.openuri.org/StandingOrderService/viewStandingOrderPaymentDetailsRequest">
+    </input>
+      <output message="tns:viewStandingOrderPaymentDetailsResponse" wsam:Action="http://www.openuri.org/StandingOrderService/viewStandingOrderPaymentDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/viewStandingOrderPaymentDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="listSoByRimAndServiceName">
+      <input message="tns:listSoByRimAndServiceName" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRimAndServiceNameRequest">
+    </input>
+      <output message="tns:listSoByRimAndServiceNameResponse" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRimAndServiceNameResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/listSoByRimAndServiceName/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateSOToNonKFHAccount">
+      <input message="tns:updateSOToNonKFHAccount" wsam:Action="http://www.openuri.org/StandingOrderService/updateSOToNonKFHAccountRequest">
+    </input>
+      <output message="tns:updateSOToNonKFHAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/updateSOToNonKFHAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/updateSOToNonKFHAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="scheduleCustomSoTransaction">
+      <input message="tns:scheduleCustomSoTransaction" wsam:Action="http://www.openuri.org/StandingOrderService/scheduleCustomSoTransactionRequest">
+    </input>
+      <output message="tns:scheduleCustomSoTransactionResponse" wsam:Action="http://www.openuri.org/StandingOrderService/scheduleCustomSoTransactionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/scheduleCustomSoTransaction/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueUnscheduledCustomSo">
+      <input message="tns:issueUnscheduledCustomSo" wsam:Action="http://www.openuri.org/StandingOrderService/issueUnscheduledCustomSoRequest">
+    </input>
+      <output message="tns:issueUnscheduledCustomSoResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueUnscheduledCustomSoResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueUnscheduledCustomSo/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToProvider">
+      <input message="tns:issueRecurringByExpiryDateToProvider" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToProviderRequest">
+    </input>
+      <output message="tns:issueRecurringByExpiryDateToProviderResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToProviderResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToProvider/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToNonKFHAccount">
+      <input message="tns:issueRecurringByExpiryDateToNonKFHAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToNonKFHAccountRequest">
+    </input>
+      <output message="tns:issueRecurringByExpiryDateToNonKFHAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToNonKFHAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToNonKFHAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToNonKFHAccount">
+      <input message="tns:issueRecurringByNumberOfTransfersToNonKFHAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToNonKFHAccountRequest">
+    </input>
+      <output message="tns:issueRecurringByNumberOfTransfersToNonKFHAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToNonKFHAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToNonKFHAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="inquiryClosedStadningOrderDetails">
+      <input message="tns:inquiryClosedStadningOrderDetails" wsam:Action="http://www.openuri.org/StandingOrderService/inquiryClosedStadningOrderDetailsRequest">
+    </input>
+      <output message="tns:inquiryClosedStadningOrderDetailsResponse" wsam:Action="http://www.openuri.org/StandingOrderService/inquiryClosedStadningOrderDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/inquiryClosedStadningOrderDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByExpiryDateToAccount">
+      <input message="tns:issueSalaryTriggeredByExpiryDateToAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToAccountRequest">
+    </input>
+      <output message="tns:issueSalaryTriggeredByExpiryDateToAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByExpiryDateToProvider">
+      <input message="tns:issueSalaryTriggeredByExpiryDateToProvider" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToProviderRequest">
+    </input>
+      <output message="tns:issueSalaryTriggeredByExpiryDateToProviderResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToProviderResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByExpiryDateToProvider/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToProvider">
+      <input message="tns:issueRecurringByNumberOfTransfersToProvider" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToProviderRequest">
+    </input>
+      <output message="tns:issueRecurringByNumberOfTransfersToProviderResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToProviderResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToProvider/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToAccount">
+      <input message="tns:issueRecurringByNumberOfTransfersToAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToAccountRequest">
+    </input>
+      <output message="tns:issueRecurringByNumberOfTransfersToAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByNumberOfTransfersToAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByNumberOfTransfersToAccount">
+      <input message="tns:issueSalaryTriggeredByNumberOfTransfersToAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToAccountRequest">
+    </input>
+      <output message="tns:issueSalaryTriggeredByNumberOfTransfersToAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueSalaryTriggeredByNumberOfTransfersToAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToAccount">
+      <input message="tns:issueRecurringByExpiryDateToAccount" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToAccountRequest">
+    </input>
+      <output message="tns:issueRecurringByExpiryDateToAccountResponse" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/issueRecurringByExpiryDateToAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateScheduleCustomSoTransaction">
+      <input message="tns:updateScheduleCustomSoTransaction" wsam:Action="http://www.openuri.org/StandingOrderService/updateScheduleCustomSoTransactionRequest">
+    </input>
+      <output message="tns:updateScheduleCustomSoTransactionResponse" wsam:Action="http://www.openuri.org/StandingOrderService/updateScheduleCustomSoTransactionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StandingOrderService/updateScheduleCustomSoTransaction/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="StandingOrderServiceSoapV2Binding" type="tns:StandingOrderService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="issueSalaryTriggeredByNumberOfTransfersToProvider">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateSO">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueSweep">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listByAcct">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="inquiry">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteSO">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueMinBalance">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listByRim">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listSoByRim">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listClosedByRim">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listClosedByAcct">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listSOByAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="listSoScheduleBySoID">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewStandingOrderPaymentDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listSoByRimAndServiceName">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateSOToNonKFHAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="scheduleCustomSoTransaction">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueUnscheduledCustomSo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToProvider">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToNonKFHAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToNonKFHAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="inquiryClosedStadningOrderDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByExpiryDateToAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByExpiryDateToProvider">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToProvider">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByNumberOfTransfersToAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueSalaryTriggeredByNumberOfTransfersToAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="issueRecurringByExpiryDateToAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateScheduleCustomSoTransaction">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_StandingOrderService">
+    <port name="StandingOrderServiceSoapV23" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://soa_apigw/ws/WLS_StandingOrderService.StandingOrderServiceSoapV2/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV22" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV25" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://integration/ws/WLS_StandingOrderService.StandingOrderServiceSoapV2/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV24" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://soa_apigw/ws/WLS_StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV27" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV26" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://integration/ws/WLS_StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV29" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="https://integration/kfhsoa/ws/StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV28" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/StandingOrderService/2.0"/>
+    </port>
+    <port name="StandingOrderServiceSoapV2" binding="tns:StandingOrderServiceSoapV2Binding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_StandingOrderService.StandingOrderServiceSoapV2/2.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

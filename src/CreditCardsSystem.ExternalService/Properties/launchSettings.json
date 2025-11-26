@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CreditCardsSystem.ExternalService": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:55090;http://localhost:55091"
+    }
+  }
+}

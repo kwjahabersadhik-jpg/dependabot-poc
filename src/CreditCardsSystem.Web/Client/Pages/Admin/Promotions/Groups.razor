@@ -1,0 +1,374 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.Promotions
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using Telerik.FontIcons
+
+@page "/groups"
+@inject IPromotionsAppService PromotionsAppService
+@inject IGroupsAppService GroupsAppService
+@inject ILogger<Groups> Logger
+
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+@if (!IsAllowTo(Permissions.PromotionGroup.View()))
+{
+    <AccessDenied />
+}
+else
+{
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="Groups"></Title>
+            </div>
+            <div class="kfh-data-table">
+                @if (GroupsResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@GroupsResponse.Data"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%"
+                                 OnDelete="@OpenConfirmationDialog"
+                                 OnCreate="@AddRequest"
+                                 OnUpdate="@AddRequest">
+
+                        <GridToolBarTemplate>
+                            @if (IsAllowTo(Permissions.PromotionGroup.Create()))
+                            {
+                                <GridCommandButton Command="Add" Class="btn-secondary">Add Group</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(PromotionGroupDto.GroupID)" Title="Group ID" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as PromotionGroupDto;
+                                        <H4>@item!.GroupID</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+
+                             <GridColumn Field="@nameof(PromotionGroupDto.PromotionName)" Title="Promotion"  OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                <Template>
+                                    @{
+                                        var item = context as PromotionGroupDto;
+                                        <H4>@item!.PromotionName</H4>
+                                        // <H3>@item!.Description</H3>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as PromotionGroupDto;
+
+                                        <TelerikDropDownList Data="@Promotions"
+                                                             TextField="@nameof(PromotionDto.PromotionName)"
+                                                             ValueField="@nameof(PromotionDto.PromotionId)"
+                                                             @bind-Value="@item!.PromotionId"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+                            
+                            <GridColumn Field="@nameof(PromotionGroupDto.Description)" Title="Description" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as PromotionGroupDto;
+                                        <H4>@item!.Description</H4>
+                                    }
+
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as PromotionGroupDto;
+                                        <TelerikTextArea @bind-Value="@item!.Description"></TelerikTextArea>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PromotionGroupDto.IsLocked)" Title="Record Status" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as PromotionGroupDto;
+                                        
+                                        @if (item!.IsLocked == true)
+                                        {
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Record is locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PromotionGroupDto.Status)" Title="Status" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+                                    @{ 
+                                        var item = context as PromotionGroupDto;
+                                        @if (@item!.Status == "Active")
+                                        {       
+                                                <H4 class="text-green">Active</H4>
+                                                @* <div class="d-flex justify-content-center">
+                                                     <Pulsing Color="green" Dimensions="12px" Label="Active" ></Pulsing>
+                                                </div> *@
+                                            
+                                        }
+                                        else 
+                                        {        
+                                             <H4 class="text-red">Closed</H4>
+                                                @* <Status StatusClass="redStatus" StatusTitle="Closed"> </Status> *@
+                                                @* <div class="d-flex justify-content-center">
+                                                    <Pulsing Color="red" Dimensions="12px" Label="Closed" ></Pulsing>
+                                                </div> *@
+                                            
+
+                                        }
+                                        @* <H4>@item!.Status</H4> *@
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as PromotionGroupDto;
+
+                                        <TelerikDropDownList Data="@Statuses"
+                                                             TextField="Name"
+                                                             ValueField="Value"
+                                                             @bind-Value="@item!.Status">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+                         
+                            <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+                                @{
+                                    var item = context as PromotionGroupDto;
+                                    if (!item!.IsLocked.HasValue || !item.IsLocked.Value)
+                                    {
+
+                                        @if (IsAllowTo(Permissions.PromotionGroup.Edit()))
+                                        {
+                                            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                        }
+                                        @if (IsAllowTo(Permissions.PromotionGroup.Delete()))
+                                        {
+                                            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                        }
+                                        <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                                    }
+                                    else
+                                    {
+                                        @* <H4>record is locked</H4> *@
+                                    }
+                                }
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (GroupsResponse.Status == DataStatus.Loading)
+                {
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (GroupsResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+ 
+
+    public class GroupsStatus
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+    }
+    public List<GroupsStatus> Statuses { get; set; } = new()
+    {
+        new () { Name = "Active", Value = "Active" },
+        new () { Name = "Closed", Value = "Closed" }
+    };
+    public List<string> Errors { get; set; } = new();
+    public List<PromotionDto> Promotions { get; set; } = new();
+    public DataItem<List<PromotionGroupDto>> GroupsResponse { get; } = new();
+    public List<PromotionGroupDto> GroupsBackup { get; set; } = new();
+    public PromotionGroupDto SelectedGroup { get; set; } = new();
+    public bool ShowConfirmationDig { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        GroupsResponse.Loading();
+        await GetPromotions();
+        await GetGroups();
+    }
+
+    async Task GetPromotions()
+    {
+        Promotions = (await PromotionsAppService.GetPromotions()).Data!;
+    }
+
+    private async Task GetGroups()
+    {
+        var response = await GroupsAppService.GetGroups();
+        if (response.IsSuccess)
+        {
+            GroupsResponse.SetData(response.Data!);
+
+            GroupsBackup = new();
+            GroupsBackup.AddRange(response.Data!);
+        }
+        else
+            GroupsResponse.Error(new Exception(response.Message));
+
+    }
+
+    async Task<bool> ValidateGroup(PromotionGroupDto group)
+    {
+        Errors = new List<string>();
+
+        if (group.PromotionId == 0)
+            Errors.Add("promotion is required");
+
+        if (string.IsNullOrEmpty(group.Description))
+            Errors.Add("group description is required");
+
+        if (string.IsNullOrEmpty(group.Status))
+            Errors.Add("group status is required");
+
+        var isGroupDescExist = await GroupsAppService.ValidateGroupDesc(group);
+
+        if (isGroupDescExist)
+            Errors.Add("group description is duplicated");
+
+        return !Errors.Any();
+    }
+
+
+    void SetGroupPromotionName(PromotionGroupDto group)
+    {
+        group.PromotionName = Promotions.FirstOrDefault(p => p.PromotionId == group.PromotionId)!.PromotionName;
+    }
+
+
+    async Task AddRequest(GridCommandEventArgs args)
+    {
+        try
+        {
+            var group = (PromotionGroupDto)args.Item;
+
+            var isValid = await ValidateGroup(group);
+
+            if (!isValid) return;
+
+            SetGroupPromotionName(group);
+
+            var request = new RequestDto<PromotionGroupDto>
+                {
+                    ActivityForm = (int)ActivityForm.PromotionGroup,
+                    NewData = (PromotionGroupDto)args.Item,
+                    OldData = group.GroupID > 0 ? GroupsBackup!.FirstOrDefault(p => p.GroupID == group.GroupID)! : null!,
+                    ActivityType = group.GroupID > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await GroupsAppService.AddGroupRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (group.GroupID > 0)
+                    await GetGroups();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var group = (PromotionGroupDto)args.Item;
+        SelectedGroup = group;
+        ShowConfirmationDig = true;
+    }
+
+
+    async Task DeleteHandler()
+    {
+
+        var request = new RequestDto<PromotionGroupDto>
+            {
+                ActivityForm = (int)ActivityForm.PromotionGroup,
+                NewData = SelectedGroup,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await GroupsAppService.AddGroupRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedGroup.GroupID > 0)
+                await GetGroups();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

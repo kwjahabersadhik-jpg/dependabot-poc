@@ -1,0 +1,282 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="StaticDataInquiriesService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___integration_80_KFHCommonBusinessWebservices_kfh_common_webservices_StaticDataInquiriesService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="getTransactionMatrixValue">
+    <part name="parameters" element="tns:getTransactionMatrixValue">
+    </part>
+  </message>
+  <message name="getTransactionMatrixValueResponse">
+    <part name="parameters" element="tns:getTransactionMatrixValueResponse">
+    </part>
+  </message>
+  <message name="clearIntegrationCacheResponse">
+    <part name="parameters" element="tns:clearIntegrationCacheResponse">
+    </part>
+  </message>
+  <message name="translateTextResponse">
+    <part name="parameters" element="tns:translateTextResponse">
+    </part>
+  </message>
+  <message name="translateText">
+    <part name="parameters" element="tns:translateText">
+    </part>
+  </message>
+  <message name="getChargeByServiceAndCategory">
+    <part name="parameters" element="tns:getChargeByServiceAndCategory">
+    </part>
+  </message>
+  <message name="getAccountDefinitions">
+    <part name="parameters" element="tns:getAccountDefinitions">
+    </part>
+  </message>
+  <message name="getValueByClientAndServiceAndAttributeResponse">
+    <part name="parameters" element="tns:getValueByClientAndServiceAndAttributeResponse">
+    </part>
+  </message>
+  <message name="getChargeByServiceAndCategoryResponse">
+    <part name="parameters" element="tns:getChargeByServiceAndCategoryResponse">
+    </part>
+  </message>
+  <message name="getValueByServiceAndAttribute">
+    <part name="parameters" element="tns:getValueByServiceAndAttribute">
+    </part>
+  </message>
+  <message name="getValueByServiceAndAttributeResponse">
+    <part name="parameters" element="tns:getValueByServiceAndAttributeResponse">
+    </part>
+  </message>
+  <message name="getAccountDefinitionsResponse">
+    <part name="parameters" element="tns:getAccountDefinitionsResponse">
+    </part>
+  </message>
+  <message name="getChargeAmountByServiceName">
+    <part name="parameters" element="tns:getChargeAmountByServiceName">
+    </part>
+  </message>
+  <message name="getAppConfigByKeyResponse">
+    <part name="parameters" element="tns:getAppConfigByKeyResponse">
+    </part>
+  </message>
+  <message name="clearIntegrationCache">
+    <part name="parameters" element="tns:clearIntegrationCache">
+    </part>
+  </message>
+  <message name="getValueByClientAndServiceAndAttribute">
+    <part name="parameters" element="tns:getValueByClientAndServiceAndAttribute">
+    </part>
+  </message>
+  <message name="getChargeAmountByServiceNameResponse">
+    <part name="parameters" element="tns:getChargeAmountByServiceNameResponse">
+    </part>
+  </message>
+  <message name="getAppConfigByKey">
+    <part name="parameters" element="tns:getAppConfigByKey">
+    </part>
+  </message>
+  <portType name="StaticDataInquiriesService">
+    <operation name="translateText">
+      <input message="tns:translateText" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/translateTextRequest">
+    </input>
+      <output message="tns:translateTextResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/translateTextResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/translateText/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getValueByClientAndServiceAndAttribute">
+      <input message="tns:getValueByClientAndServiceAndAttribute" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByClientAndServiceAndAttributeRequest">
+    </input>
+      <output message="tns:getValueByClientAndServiceAndAttributeResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByClientAndServiceAndAttributeResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByClientAndServiceAndAttribute/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAccountDefinitions">
+      <input message="tns:getAccountDefinitions" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getAccountDefinitionsRequest">
+    </input>
+      <output message="tns:getAccountDefinitionsResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getAccountDefinitionsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getAccountDefinitions/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getChargeAmountByServiceName">
+      <input message="tns:getChargeAmountByServiceName" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeAmountByServiceNameRequest">
+    </input>
+      <output message="tns:getChargeAmountByServiceNameResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeAmountByServiceNameResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeAmountByServiceName/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getTransactionMatrixValue">
+      <input message="tns:getTransactionMatrixValue" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getTransactionMatrixValueRequest">
+    </input>
+      <output message="tns:getTransactionMatrixValueResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getTransactionMatrixValueResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getTransactionMatrixValue/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getValueByServiceAndAttribute">
+      <input message="tns:getValueByServiceAndAttribute" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByServiceAndAttributeRequest">
+    </input>
+      <output message="tns:getValueByServiceAndAttributeResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByServiceAndAttributeResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getValueByServiceAndAttribute/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAppConfigByKey">
+      <input message="tns:getAppConfigByKey" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getAppConfigByKeyRequest">
+    </input>
+      <output message="tns:getAppConfigByKeyResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getAppConfigByKeyResponse">
+    </output>
+    </operation>
+    <operation name="getChargeByServiceAndCategory">
+      <input message="tns:getChargeByServiceAndCategory" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeByServiceAndCategoryRequest">
+    </input>
+      <output message="tns:getChargeByServiceAndCategoryResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeByServiceAndCategoryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/getChargeByServiceAndCategory/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="clearIntegrationCache">
+      <input message="tns:clearIntegrationCache" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/clearIntegrationCacheRequest">
+    </input>
+      <output message="tns:clearIntegrationCacheResponse" wsam:Action="http://www.openuri.org/StaticDataInquiriesService/clearIntegrationCacheResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="StaticDataInquiriesServiceSoapBinding" type="tns:StaticDataInquiriesService">
+    
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="translateText">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getValueByClientAndServiceAndAttribute">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAccountDefinitions">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getChargeAmountByServiceName">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getTransactionMatrixValue">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getValueByServiceAndAttribute">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAppConfigByKey">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getChargeByServiceAndCategory">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="clearIntegrationCache">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_StaticDataInquiriesService">
+    <port name="StaticDataInquiriesServiceSoap2" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_StaticDataInquiriesService/1.0"/>
+    </port>
+    <port name="StaticDataInquiriesServiceSoap5" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/StaticDataInquiriesService/1.0"/>
+    </port>
+    <port name="StaticDataInquiriesServiceSoap6" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/StaticDataInquiriesService/1.0"/>
+    </port>
+    <port name="StaticDataInquiriesServiceSoap3" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_StaticDataInquiriesService.StaticDataInquiriesServiceSoap/1.0"/>
+    </port>
+    <port name="StaticDataInquiriesServiceSoap4" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_StaticDataInquiriesService/1.0"/>
+    </port>
+    <port name="StaticDataInquiriesServiceSoap" binding="tns:StaticDataInquiriesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_StaticDataInquiriesService.StaticDataInquiriesServiceSoap/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    
+</definitions>

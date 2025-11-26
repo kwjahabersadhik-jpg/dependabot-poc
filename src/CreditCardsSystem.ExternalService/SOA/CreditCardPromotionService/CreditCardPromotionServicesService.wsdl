@@ -1,0 +1,161 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CreditCardPromotionServicesService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="be0bd844-b6e8-4024-b542-9b6d60f13338?xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="addPromotionBeneficiaryResponse">
+    <part name="parameters" element="tns:addPromotionBeneficiaryResponse">
+    </part>
+  </message>
+  <message name="getAvailablepromotions">
+    <part name="parameters" element="tns:getAvailablepromotions">
+    </part>
+  </message>
+  <message name="deletePromotionBeneficiary">
+    <part name="parameters" element="tns:deletePromotionBeneficiary">
+    </part>
+  </message>
+  <message name="getAvailablepromotionsResponse">
+    <part name="parameters" element="tns:getAvailablepromotionsResponse">
+    </part>
+  </message>
+  <message name="deletePromotionBeneficiaryResponse">
+    <part name="parameters" element="tns:deletePromotionBeneficiaryResponse">
+    </part>
+  </message>
+  <message name="getAvailablepromotionsWithAcct">
+    <part name="parameters" element="tns:getAvailablepromotionsWithAcct">
+    </part>
+  </message>
+  <message name="addPromotionBeneficiary">
+    <part name="parameters" element="tns:addPromotionBeneficiary">
+    </part>
+  </message>
+  <message name="getAvailablepromotionsWithAcctResponse">
+    <part name="parameters" element="tns:getAvailablepromotionsWithAcctResponse">
+    </part>
+  </message>
+  <portType name="CreditCardPromotionServicesService">
+    <operation name="addPromotionBeneficiary">
+      <input message="tns:addPromotionBeneficiary" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/addPromotionBeneficiaryRequest">
+    </input>
+      <output message="tns:addPromotionBeneficiaryResponse" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/addPromotionBeneficiaryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/addPromotionBeneficiary/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deletePromotionBeneficiary">
+      <input message="tns:deletePromotionBeneficiary" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/deletePromotionBeneficiaryRequest">
+    </input>
+      <output message="tns:deletePromotionBeneficiaryResponse" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/deletePromotionBeneficiaryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/deletePromotionBeneficiary/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAvailablepromotions">
+      <input message="tns:getAvailablepromotions" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotionsRequest">
+    </input>
+      <output message="tns:getAvailablepromotionsResponse" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotionsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotions/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAvailablepromotionsWithAcct">
+      <input message="tns:getAvailablepromotionsWithAcct" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotionsWithAcctRequest">
+    </input>
+      <output message="tns:getAvailablepromotionsWithAcctResponse" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotionsWithAcctResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardPromotionServicesService/getAvailablepromotionsWithAcct/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CreditCardPromotionServicesServiceSoapBinding" type="tns:CreditCardPromotionServicesService">
+    
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="addPromotionBeneficiary">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deletePromotionBeneficiary">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAvailablepromotions">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAvailablepromotionsWithAcct">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_CreditCardPromotionServicesService">
+    <port name="CreditCardPromotionServicesServiceSoap4" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardPromotionServicesService/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap5" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardPromotionServicesService.CreditCardPromotionServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardPromotionServicesService.CreditCardPromotionServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap6" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardPromotionServicesService/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap7" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/CreditCardPromotionServicesService/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap2" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardPromotionServicesService/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap3" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardPromotionServicesService.CreditCardPromotionServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap8" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CreditCardPromotionServicesService/1.0"/>
+    </port>
+    <port name="CreditCardPromotionServicesServiceSoap9" binding="tns:CreditCardPromotionServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CreditCardPromotionServicesService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    
+</definitions>

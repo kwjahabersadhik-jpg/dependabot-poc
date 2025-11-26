@@ -1,0 +1,14 @@
+global using CreditCardsSystem.Domain.Interfaces;
+global using CreditCardsSystem.Domain.Models;
+global using CreditCardsSystem.Domain.Models.Options;
+global using Mapster;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Caching.Distributed;
+global using Microsoft.Extensions.Options;
+global using System.Collections.Generic;
+global using System.Globalization;
+global using System.Linq;
+global using System.Text;
+global using System.Threading;
+global using System.Threading.Tasks;

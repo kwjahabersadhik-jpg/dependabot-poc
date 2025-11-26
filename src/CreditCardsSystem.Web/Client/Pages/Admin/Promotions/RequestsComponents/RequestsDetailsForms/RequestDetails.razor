@@ -1,0 +1,80 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using System.Text.RegularExpressions
+
+@inherits PromotionsRequestsHelpers
+@inject RequestStateContainer RequestStateContainer
+@typeparam T
+
+<div class="row justify-content-between align-items-center gp-16 mt-2">
+
+    @foreach (var parameterDetails in RequestStateContainer.RequestDetails.Where(rd => rd.Parameter != "Title" && rd.Parameter != "Description"))
+    {
+        var parameterCurrentValue = parameterDetails.Value;
+
+        if (!parameterDetails.Parameter.Contains("Old_") && !parameterDetails.Parameter.Contains("_ext_"))
+        {
+            //get the old value of the current parameter in the loop if it's exist'
+            var oldParameterDetails = RequestStateContainer.RequestDetails
+            .FirstOrDefault(r => r.Parameter == "Old_" + parameterDetails.Parameter);
+
+            var oldParameterValue = oldParameterDetails != null ?
+            !string.IsNullOrEmpty(oldParameterDetails.Value) ?
+            oldParameterDetails.Value :
+            string.Empty :
+            string.Empty;
+
+            <div class="@((oldParameterValue != string.Empty && oldParameterValue != parameterCurrentValue) ?
+                            "d-flex justify-content-between align-items-center w-100" :
+                            "d-flex justify-content-between align-items-center w-100")">
+
+                <div class="col-4 my-0 text-gray">
+                    <H4 Class="my-0">@(GetDisplayName<T>(parameterDetails.Parameter))</H4>
+                </div>
+
+                <div class="col-8 my-0">
+
+
+
+                    @if (oldParameterValue != string.Empty &&
+                   Regex.Replace(oldParameterValue, @"\s*,\s*", ",") != Regex.Replace(parameterCurrentValue!, @"\s*,\s*", ","))
+                    {
+                        <div class="request-wrap-text">
+                            @foreach (var singleValue in Regex.Replace(parameterCurrentValue!, @"\s*,\s*", ",").Split(","))
+                            {
+                                <Status StatusClass="greenStatus me-2 ps-2 pe-2 mb-2" StatusTitle="@singleValue" />
+                            }
+
+                            @* <H4 Class="text-green my-2">@parameterCurrentValue</H4> *@
+                        </div>
+
+                        <div style="line-height: 1.5rem;" class="mt-2">
+                            @foreach (var singleValue in Regex.Replace(oldParameterValue!, @"\s*,\s*", ",").Split(","))
+                            {
+                                <Status StatusClass="grayStatus k-text-line-through mb-2 me-2 pe-2 ps-2" StatusTitle="@singleValue" />
+                            }
+
+                            @* <H4 Class="text-gray my-2 k-text-line-through">@oldParameterValue</H4> *@
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <H3 Class="text-gray my-2">@parameterCurrentValue</H3>
+                        </div>
+                    }
+
+
+                </div>
+
+            </div>
+
+            <Divider />
+        }
+
+    }
+
+</div>
+
+@code {
+
+}

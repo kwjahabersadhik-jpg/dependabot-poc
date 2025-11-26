@@ -1,0 +1,363 @@
+﻿@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Domain.Shared.Interfaces.Workflow
+@using CreditCardsSystem.Web.Client.Components.Dialog;
+@using System.ComponentModel;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Domain.Shared.Interfaces;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardRequest;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using Kfh.Aurora.Blazor.Components.UI.Responsiveness
+@inject ICustomerProfileAppService CustomerProfileAppService;
+@inject IRequestAppService RequestAppService;
+@inject IReportAppService ReportService;
+@inject ICardDetailsAppService CardDetailsAppService;
+@inject IRequestActivityAppService RequestActivityAppService;
+
+
+@inject IJSRuntime Js;
+@inject IWorkflowAppService WorkflowAppService
+
+@inherits CancellableComponent
+@if (State?.CreditCards.Status == DataStatus.Success)
+{
+    <div class="table-header  mx-0">
+        <Title Text="Owned Credit Cards"></Title>
+        <div class="table-selectedFilters">
+            <SingleDropdown Type="Status" SourceData=@StatusValue SelectedValue="@FilterCardStatus" SelectedValueChanged="@OnChangeCardStatus"></SingleDropdown>
+            <SingleDropdown Type="Category" SourceData=@CardCategories SelectedValue="@FilterCardCategory" SelectedValueChanged="@OnChangeCardCategory"></SingleDropdown>
+            <OnClickComponent OnClick=GoToNewIssuePage>
+                <CircleIcon Icon="icon-Plus" Id="opennewacc" Title="Issue New Card" />
+            </OnClickComponent>
+            <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+        </div>
+    </div>
+
+
+    <div class="kfh-data-table p-0 mt-4">
+        <TelerikGrid Data="@FilteredCards" @ref=CardgridRef EditMode="@GridEditMode.Inline"
+                     Pageable="true" PageSize="20" Resizable="false" Reorderable="false"
+                     Groupable="true"
+                     EnableLoaderContainer="false"
+                     Sortable="false" SortMode="@SortMode.Multiple"
+                     Width="@( !isLargeScreen ? "100%" : "150%" )"
+                     Class="special-table no-top-padding-table">
+
+            <GridColumns>
+             
+                <GridColumn Field="Card Details" OnCellRender="@((e) => e.Class = "col-4 ps-4 text-start")" HeaderClass="col-4 ps-4 text-start">
+                    <Template>
+                        <div class="details-col">
+
+                            @{
+                                var item = context as CreditCardDto;
+                                bool isCardFound = item?.CardBalance?.Data?.IsCardNotFound is null or false;
+
+                                string cardFoundCss = isCardFound ? "cardFoundCss text-start my-1" : "text-red text-start my-1";
+                                string? cardNumber = DisplayCardNumber(item?.AUBCardNumberDto ?? item?.CardNumberDto);
+
+                                <div>
+                                    <img src=@GetCreditCardImage(item?.CardType.ToInt()) width="65px" />
+                                </div>
+
+                                if (isCardFound)
+                                {
+                                    if (IsAllowTo(Permissions.CreditCardStatement.View()))
+                                    {
+                                        <div>
+                                            <div class="d-flex flex-column text-start">
+                                                <a onclick="@(()=>  @GoToStatementPage(item!))">
+                                                    <H2 Class="@cardFoundCss">@cardNumber</H2>
+                                                    <H3 Class="my-0 text-start text-gray50">@item?.ProductType</H3>
+                                                    <SubH1 Class="my-0 text-start text-gray">@(item?.BranchName)</SubH1>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        string blockCss = cardFoundCss + " notAuthorizedCursor text-start my-1";
+                                        <TelerikTooltip Id="unAuthorizedCard" TargetSelector="#unAuthorizedCard" ShowOn="@TooltipShowEvent.Hover" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                        <H2 Id="unAuthorizedCard" Title="@(GlobalResources.UnAuthorized+ " to view card statement")" Class="@blockCss">@cardNumber</H2>
+                                    }
+                                }
+                                else
+                                {
+                                    <TelerikTooltip Id="invalidCardT" TargetSelector="#invalidCard" ShowOn="@TooltipShowEvent.Hover" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                    <H2 Id="invalidCard" Title="@GlobalResources.CardNotFoundInRemoteHost" Class="@cardFoundCss">@cardNumber</H2>
+                                }
+ 
+
+                                <div>
+                                    <div class="d-flex flex-column">
+                                  
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </Template>
+                </GridColumn>
+
+           
+
+                <GridColumn Field="Card Limit" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <H3>@(item?.CardLimit?.ToString("n3") ?? "0.000") <SubH2>@item?.CurrencyISO</SubH2></H3>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Current Balance" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <H2Wait Status=@(item!.CardBalance.Status)>@item.CardBalance.Data?.Balance.ToMoney(" ")<SubH2>@item.CurrencyISO</SubH2> </H2Wait>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Available Credit" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <H2Wait Status=@(item!.CardBalance.Status)>@item.CardBalance.Data?.AvailableLimit.ToMoney(" ")<SubH2>@item.CurrencyISO</SubH2></H2Wait>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Expiry Date" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <H4>@(item?.ExpirationDate?.ToString("MMMM d, yyyy"))</H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Issuing Option" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <H4>@(item?.Collateral)</H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+
+                <GridColumn Field="Card Status" OnCellRender="@((e) => e.Class = "col-2")" HeaderClass="col-2">
+                    <Template>
+                        @{
+                            var item = context as CreditCardDto;
+                            <Status StatusClass="@StatusClass(item!.StatusId)" StatusTitle="@item.Status"></Status>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="" OnCellRender="@((e) => e.Class = "col-1")" HeaderClass="col-1">
+                    <Template>
+
+                        @{
+                            var item = context as CreditCardDto;
+                            bool isCardFound = item?.CardBalance?.Data?.IsCardNotFound is null or false;
+                            @if (isCardFound)
+                            {
+                                <EligibleCardActions RefreshData="RefreshData" Data="@item" IgnoredItems="@(new(){ RequestType.Detail })" LoadForm="OnChangeAction" />
+                            }
+
+                        }
+                    </Template>
+                </GridColumn>
+
+            </GridColumns>
+
+            <NoDataTemplate>
+                <NoRecordsFound Message="@(FilterCardStatus!="All"? $"No {FilterCardStatus.ToLower()} cards available"  : null)" />
+            </NoDataTemplate>
+        </TelerikGrid>
+    </div>
+
+    <TelerikDialog @bind-Visible="@CardDetails" class="KFH-dialog ApprovalModal" CloseOnOverlayClick="true">
+        <DialogContent>
+            <div class="p-2 bd-highlight dialog-content AO-list--card">
+                <div class="AO-card--header">
+                    <picture>
+                        <source srcset="" />
+                        <img class="" src=@GetCreditCardImage(_selectedCard?.CardType.ToInt()) />
+                    </picture>
+                    <div class="AO-card--basicInfo">
+                        <h5>@DisplayCardNumber(_selectedCard?.CardNumberDto)</h5>
+                        <p>@_selectedCard?.ProductType</p>
+                    </div>
+                </div>
+                <ul>
+                    <li>
+                        <h6>Account Number</h6>
+                        <p>@_selectedCard?.AccountNumber</p>
+                    </li>
+                    <li>
+                        <h6>Status</h6>
+                        <p>@_selectedCard?.Status</p>
+                    </li>
+                    <li>
+                        <h6>Opened Date</h6>
+                        <p>@_selectedCard?.OpenedDate.ToString("MMMM d, yyyy")</p>
+                    </li>
+                    <li>
+                        <h6>Expiry Date</h6>
+                        <p>@_selectedCard?.ExpirationDate?.ToString("MMMM d, yyyy")</p>
+                    </li>
+                    <li>
+                        <h6>Available Limit</h6>
+                        @if (_selectedCard?.AvailableLimit != null)
+                        {
+                            <p>@_selectedCard?.AvailableLimit <span class="currency2X">@_selectedCard?.CurrencyISO</span></p>
+                        }
+
+                    </li>
+                    <li>
+                        <h6>Card Limit</h6>
+                        <p>@(_selectedCard?.CardLimit?.ToString("n3") ?? "0.000") <span class="currency2X">@_selectedCard?.CurrencyISO</span></p>
+                    </li>
+                </ul>
+            </div>
+        </DialogContent>
+    </TelerikDialog>
+
+}
+else if (State?.CreditCards.Status == DataStatus.Loading)
+
+{
+    <div class="table-header  mx-0">
+        <Title Text="Owned Credit Cards"></Title>
+        <div class="table-selectedFilters">
+            <SingleDropdown Type="Status" DropDownData="@StatusValue" SelectedValue="@FilterCardStatus" SelectedValueChanged="@OnChangeCardStatus"></SingleDropdown>
+            <SingleDropdown Type="Category" DropDownData="@CardCategories" SelectedValue="@FilterCardCategory" SelectedValueChanged="@OnChangeCardCategory"></SingleDropdown>
+            <OnClickComponent OnClick=GoToNewIssuePage>
+                <CircleIcon Icon="icon-Plus" Id="opennewacc" Title="Issue New Card" />
+            </OnClickComponent>
+            <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+        </div>
+    </div>
+    <div class="kfh-data-table ">
+        <div class="col-12 p-5">
+            <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+        </div>
+        @* <DataTableSkeleton /> *@
+    </div>
+}
+else if (State?.CreditCards.Status == DataStatus.Error)
+{
+    <EmptyState Class="hadmptystates-profile" IconName="tech-error" Heading="Technical Error"></EmptyState>
+ 
+}
+
+
+
+<OffCanvas @ref="CreditCarDetailsDrawerRef" Title="Credit card details">
+    <OffcanvasContent>
+        
+        <CardDetailHeader SelectedCard="new CardDetailsResponse(){
+CardType = _selectedCard?.CardType.ToInt()??0,
+CardNumber=_selectedCard.CardNumberDto,
+ProductName=_selectedCard.ProductType,
+CardStatus = Enum.Parse<CreditCardStatus>(_selectedCard?.Status??CreditCardStatus.None.ToString())}"></CardDetailHeader>
+
+        <ul class="offcanvas-list">
+            <li>
+                <H5>Account Number</H5>
+                <H3>@_selectedCard?.AccountNumber</H3>
+            </li>
+            <li>
+                <H5>Status</H5>
+                <H3>@_selectedCard?.Status</H3>
+            </li>
+            <li>
+                <H5>Opened Date</H5>
+                <H3>@_selectedCard?.OpenedDate.ToString("MMMM d, yyyy")</H3>
+            </li>
+            <li>
+                <H5>Expiry Date</H5>
+                <H4>@_selectedCard?.ExpirationDate?.ToString("MMMM d, yyyy")</H4>
+            </li>
+            <li>
+                <H5>Available Limit</H5>
+                @if (_selectedCard?.AvailableLimit != null)
+                {
+                    <H3>@_selectedCard?.AvailableLimit <span class="currency2X">@_selectedCard?.CurrencyISO</span></H3>
+                }
+
+            </li>
+            <li>
+                <H5>Card Limit</H5>
+                <H3>@(_selectedCard?.CardLimit?.ToString("n3") ?? "0.000") <span class="currency2X">@_selectedCard?.CurrencyISO</span></H3>
+            </li>
+        </ul>
+    </OffcanvasContent>
+</OffCanvas>
+
+<RequestMakerPage @ref=cardRequestFormRef IsFromCardSummary="true" ReloadStandingOrders="ReloadStandingOrders" RemoveFromList="RemoveFromList" ReloadCardData="LoadSingleCardBalance" ReloadData="LoadCreditCards" ReflectCardStatus="(async (newCardStatus)=>{ await ReflectCardStatus(newCardStatus);})" />
+
+@code {
+    public TelerikGrid<CreditCardDto> CardgridRef { get; set; } = null!;
+    public async Task ReflectCardStatus(NewCardStatus newCardStatus)
+    {
+
+        var cardData = CardgridRef.Data.FirstOrDefault(x => x.RequestId == newCardStatus.RequestId);
+
+        if (cardData != null)
+        {
+            cardData.StatusId = (int)newCardStatus.Status;
+            cardData.Status = newCardStatus.Status.GetDescription();
+        }
+
+        CardgridRef.Rebind();
+        await Task.CompletedTask;
+    }
+
+    public async Task RemoveFromList(decimal requestId)
+    {
+        CardgridRef.Data = CardgridRef.Data.Where(x => x.RequestId != requestId);
+        CardgridRef.Rebind();
+        await Task.CompletedTask;
+    }
+
+    async Task OnChangeAction(CardRequestFormRequest selectedRequestType)
+    {
+        cardRequestFormRef!.SelectedCard = selectedRequestType!.Card;
+        await cardRequestFormRef!.OnChangeAction(selectedRequestType.RequestType);
+    }
+
+    public async Task RefreshData()
+    {
+        StateHasChanged();
+    }
+    public bool isLargeScreen { get; set; }
+
+    ScreenSizeTypeProvider.ScreenBreakingPoints _breakingPoints = new();
+    ScreenSizeTypeProvider.ScreenSizeType _screenSizeType { get; set; } = ScreenSizeTypeProvider.ScreenSizeType.Small;
+
+    private void OnScreenResized(ScreenSizeTypeProvider.ScreenSizeInformation screenSize)
+    {
+        _screenSizeType = screenSize.ScreenSizeType;
+
+
+        if (_screenSizeType == ScreenSizeTypeProvider.ScreenSizeType.XXLarge || _screenSizeType == ScreenSizeTypeProvider.ScreenSizeType.XLarge)
+        {
+            isLargeScreen = true;
+        }
+        else
+        {
+            isLargeScreen = false;
+        }
+
+    }
+
+}

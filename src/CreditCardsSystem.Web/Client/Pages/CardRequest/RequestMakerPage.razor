@@ -1,0 +1,141 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using Newtonsoft.Json;
+
+
+@inherits WorkflowComponent
+@inject IJSRuntime Js;
+@{
+    var footerClass = ViewOnly ? "display:none" : "";
+}
+
+<OffCanvas @ref=canvasRef Title="@Title">
+    <OffcanvasContent>
+
+        @if (options.ShowCardDetail || ShowCardDetail)
+        {
+            @if (options.SelectedCard is not null)
+            {
+                <CardDetailHeader SelectedCard="cardInfo"> </CardDetailHeader>
+            }
+        }
+
+        @if (actionStatus.IsAccessDenied)
+        {
+            <Unauthorized />
+        }
+        else
+        {
+            @if (activityComponentType is not null)
+            {
+                @if (PendingRequests.AnyWithNull())
+                {
+                    <Alert Type="alert-warning" Message="@GlobalResources.PendingRequest" ActionLabel=""></Alert>
+                }
+
+                <DynamicComponent Type="@activityComponentType" Parameters="@components[SelectedRequestType].Parameters" @ref="dynamicComponent" />
+            }
+        }
+
+
+
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        
+
+            @if (actionMessageStatus.ProcessStatus is DataStatus.Processing)
+            {
+                <Pulsing Color="orange" class="pb-2" Dimensions="12px"><H5 Class="my-0">@actionMessageStatus.Message</H5></Pulsing>
+            }
+
+            @if (actionMessageStatus.ProcessStatus is DataStatus.Error)
+            {
+            <span class="text-red pb-2">@actionMessageStatus.Message</span>
+
+                @* <Button Type="btn-sm" Label="Reload" OnClick="@(()=> actionMessageStatus.Action?.InvokeAsync()!)"></Button> *@
+            }
+
+        <div class="drawer-buttons justify-content-between align-items-end">
+
+            @* Need to hide cancel button as per dashboard standards *@
+            @* <Button Type="btn-text btn-sm" OnClick=@(async()=>await CancelProcess()) Label="Cancel" /> *@
+
+            @if (ViewOnly == false && !actionStatus.IsAccessDenied)
+            {
+                @if (!string.IsNullOrEmpty(options.ExtraButtonLabel))
+                {
+                    <Button Type="btn-secondary btn-sm" Enabled="isReadyForAction" Icon="icon-File-download" ButtonType="@ButtonType.Button" Label="@options.ExtraButtonLabel" OnClick="@(()=> PrintApplication())"></Button>
+
+                }
+                <div>
+                    @if (PendingRequests.AnyWithNull())
+                    {
+                        <Button Type="btn-sm" ButtonType="@ButtonType.Button" Label="Close" OnClick="@(()=> canvasRef.ToggleAsync())"></Button>
+                    }
+                    else
+                    {
+                        <Button Type="@( $"{(string.IsNullOrEmpty(options.ConfirmClass) ? "btn-primary":options.ConfirmClass)} btn-sm")" Enabled="@(isReadyForAction && !IsProcessing)" Loader="IsProcessing" ButtonType="@ButtonType.Button" Label="@options.ConfirmLabel" OnClick="()=>{ConfirmDialogVisible= true;}"></Button>
+                    }
+                </div>
+            }
+
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+<TelerikDialog @bind-Visible="@ConfirmDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Submit Request</H2>
+            </div>
+            <H4>Are you sure ? </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ConfirmDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Yes" OnClick="@SubmitRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+@if (SelectedCard is not null)
+{
+    <TelerikDialog @bind-Visible="@DialogFormVisible" Class="modal-dialog" CloseOnOverlayClick="true" ShowCloseButton="false">
+        <DialogContent>
+            <div class="dialog-content">
+                <div class="dialog-header">
+                    <span class="dialog-icon icon-Critical" />
+                    <H2> @options.Title </H2>
+                </div>
+                <H4>@options.Message </H4>
+
+                @if (TayseerCardList is not null)
+                {
+                    <div class="row">
+                        <H2>Tasyseer Cards</H2>
+                        <TelerikDropDownList Data="@(TayseerCardList)" TextField="Text" ValueField="Value" @bind-Value="@IsMasterCard">
+                            <DropDownListSettings>
+                                <DropDownListPopupSettings MaxHeight="200px" />
+                            </DropDownListSettings>
+                        </TelerikDropDownList>
+                    </div>
+                }
+
+                <H4><b>@(SelectedCard?.ProductType)</b></H4>
+
+                <div class="dialog-buttons">
+                    @if (!IsProcessing)
+                    {
+                        <Button Type="btn-text btn-sm" Label="Keep it" OnClick="@(() => { DialogFormVisible = false; })" />
+                    }
+                    <Button Type="btn-secondary--critical btn-sm" Enabled=@(!IsProcessing) Label="@options.ConfirmLabel" OnClick="@(()=> options.ConfirmCallback.InvokeAsync())" />
+                </div>
+            </div>
+        </DialogContent>
+    </TelerikDialog>
+}
+

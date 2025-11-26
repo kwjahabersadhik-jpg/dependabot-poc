@@ -1,0 +1,942 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CustomerAccountsService" targetNamespace="http://www.openuri.org/">
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___integration_80_KFHIntegrationWebServices_kfh_banking_webservices_CustomerAccountsService.jws_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com" schemaLocation="http___integration_80_KFHIntegrationWebServices_kfh_banking_webservices_CustomerAccountsService.jws_xsd=2"/>
+</xsd:schema>
+  </types>
+  <message name="getSpecialInstructionsResponse">
+    <part name="parameters" element="tns:getSpecialInstructionsResponse">
+    </part>
+  </message>
+  <message name="viewAccountsListByAccountJointFilterClosedFilter">
+    <part name="parameters" element="tns:viewAccountsListByAccountJointFilterClosedFilter">
+    </part>
+  </message>
+  <message name="getAccountBalanceByDate">
+    <part name="parameters" element="tns:getAccountBalanceByDate">
+    </part>
+  </message>
+  <message name="viewTcdDetails">
+    <part name="parameters" element="tns:viewTcdDetails">
+    </part>
+  </message>
+  <message name="validateAccountsAsArrayResponse">
+    <part name="parameters" element="tns:validateAccountsAsArrayResponse">
+    </part>
+  </message>
+  <message name="viewAccountsListByRimResponse">
+    <part name="parameters" element="tns:viewAccountsListByRimResponse">
+    </part>
+  </message>
+  <message name="getAccountRelationsResponse">
+    <part name="parameters" element="tns:getAccountRelationsResponse">
+    </part>
+  </message>
+  <message name="getDepositAcctDefinitionsResponse">
+    <part name="parameters" element="tns:getDepositAcctDefinitionsResponse">
+    </part>
+  </message>
+  <message name="viewHoldDetailsResponse">
+    <part name="parameters" element="tns:viewHoldDetailsResponse">
+    </part>
+  </message>
+  <message name="viewAccountsListByAccountJointFilterClosedFilterResponse">
+    <part name="parameters" element="tns:viewAccountsListByAccountJointFilterClosedFilterResponse">
+    </part>
+  </message>
+  <message name="validateTCDBalanceTransfer">
+    <part name="parameters" element="tns:validateTCDBalanceTransfer">
+    </part>
+  </message>
+  <message name="viewAccountsListByCivilIdResponse">
+    <part name="parameters" element="tns:viewAccountsListByCivilIdResponse">
+    </part>
+  </message>
+  <message name="updateOverdraftAccount">
+    <part name="parameters" element="tns:updateOverdraftAccount">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="viewHoldDetails">
+    <part name="parameters" element="tns:viewHoldDetails">
+    </part>
+  </message>
+  <message name="getTCDMaturityRateResponse">
+    <part name="parameters" element="tns:getTCDMaturityRateResponse">
+    </part>
+  </message>
+  <message name="addOverdraftAccountResponse">
+    <part name="parameters" element="tns:addOverdraftAccountResponse">
+    </part>
+  </message>
+  <message name="validateAccountsResponse">
+    <part name="parameters" element="tns:validateAccountsResponse">
+    </part>
+  </message>
+  <message name="getDepositAcctDefinitions">
+    <part name="parameters" element="tns:getDepositAcctDefinitions">
+    </part>
+  </message>
+  <message name="viewAccountsListWithJointsByCivilId">
+    <part name="parameters" element="tns:viewAccountsListWithJointsByCivilId">
+    </part>
+  </message>
+  <message name="viewAccountBalanceDetails">
+    <part name="parameters" element="tns:viewAccountBalanceDetails">
+    </part>
+  </message>
+  <message name="validateAccounts">
+    <part name="parameters" element="tns:validateAccounts">
+    </part>
+  </message>
+  <message name="viewAccountsListByRim">
+    <part name="parameters" element="tns:viewAccountsListByRim">
+    </part>
+  </message>
+  <message name="updateMaturityDateResponse">
+    <part name="parameters" element="tns:updateMaturityDateResponse">
+    </part>
+  </message>
+  <message name="viewLGDetailsResponse">
+    <part name="parameters" element="tns:viewLGDetailsResponse">
+    </part>
+  </message>
+  <message name="getAccountBalanceByDateResponse">
+    <part name="parameters" element="tns:getAccountBalanceByDateResponse">
+    </part>
+  </message>
+  <message name="deleteOverdraftAccount">
+    <part name="parameters" element="tns:deleteOverdraftAccount">
+    </part>
+  </message>
+  <message name="createCustomerAccountResponse">
+    <part name="parameters" element="tns:createCustomerAccountResponse">
+    </part>
+  </message>
+  <message name="validateIBAN">
+    <part name="parameters" element="tns:validateIBAN">
+    </part>
+  </message>
+  <message name="getSpecialInstructions">
+    <part name="parameters" element="tns:getSpecialInstructions">
+    </part>
+  </message>
+  <message name="validateCustomerAccountCreationResponse">
+    <part name="parameters" element="tns:validateCustomerAccountCreationResponse">
+    </part>
+  </message>
+  <message name="createCustomerAccount">
+    <part name="parameters" element="tns:createCustomerAccount">
+    </part>
+  </message>
+  <message name="viewAccountBalanceDetailsResponse">
+    <part name="parameters" element="tns:viewAccountBalanceDetailsResponse">
+    </part>
+  </message>
+  <message name="getRelatedAccountsResponse">
+    <part name="parameters" element="tns:getRelatedAccountsResponse">
+    </part>
+  </message>
+  <message name="getAccountRelations">
+    <part name="parameters" element="tns:getAccountRelations">
+    </part>
+  </message>
+  <message name="getRelatedAccounts">
+    <part name="parameters" element="tns:getRelatedAccounts">
+    </part>
+  </message>
+  <message name="updateTCDResponse">
+    <part name="parameters" element="tns:updateTCDResponse">
+    </part>
+  </message>
+  <message name="viewAccountDetails">
+    <part name="parameters" element="tns:viewAccountDetails">
+    </part>
+  </message>
+  <message name="getOverdraftAccounts">
+    <part name="parameters" element="tns:getOverdraftAccounts">
+    </part>
+  </message>
+  <message name="viewAccountsExtendedDetails">
+    <part name="parameters" element="tns:viewAccountsExtendedDetails">
+    </part>
+  </message>
+  <message name="updateOverdraftAccountResponse">
+    <part name="parameters" element="tns:updateOverdraftAccountResponse">
+    </part>
+  </message>
+  <message name="viewAccountsListWithJointsByCivilIdResponse">
+    <part name="parameters" element="tns:viewAccountsListWithJointsByCivilIdResponse">
+    </part>
+  </message>
+  <message name="updateTCD">
+    <part name="parameters" element="tns:updateTCD">
+    </part>
+  </message>
+  <message name="viewAccountsListByAccountResponse">
+    <part name="parameters" element="tns:viewAccountsListByAccountResponse">
+    </part>
+  </message>
+  <message name="viewAccountsListByAccount">
+    <part name="parameters" element="tns:viewAccountsListByAccount">
+    </part>
+  </message>
+  <message name="checkKYC">
+    <part name="parameters" element="tns:checkKYC">
+    </part>
+  </message>
+  <message name="viewTcdDetailsResponse">
+    <part name="parameters" element="tns:viewTcdDetailsResponse">
+    </part>
+  </message>
+  <message name="checkKYCResponse">
+    <part name="parameters" element="tns:checkKYCResponse">
+    </part>
+  </message>
+  <message name="viewHoldsListResponse">
+    <part name="parameters" element="tns:viewHoldsListResponse">
+    </part>
+  </message>
+  <message name="getTCDMaturityRate">
+    <part name="parameters" element="tns:getTCDMaturityRate">
+    </part>
+  </message>
+  <message name="viewHoldsList">
+    <part name="parameters" element="tns:viewHoldsList">
+    </part>
+  </message>
+  <message name="createTCD">
+    <part name="parameters" element="tns:createTCD">
+    </part>
+  </message>
+  <message name="validateCustomerAccountCreation">
+    <part name="parameters" element="tns:validateCustomerAccountCreation">
+    </part>
+  </message>
+  <message name="deleteOverdraftAccountResponse">
+    <part name="parameters" element="tns:deleteOverdraftAccountResponse">
+    </part>
+  </message>
+  <message name="addOverdraftAccount">
+    <part name="parameters" element="tns:addOverdraftAccount">
+    </part>
+  </message>
+  <message name="createTCDResponse">
+    <part name="parameters" element="tns:createTCDResponse">
+    </part>
+  </message>
+  <message name="updateMaturityDate">
+    <part name="parameters" element="tns:updateMaturityDate">
+    </part>
+  </message>
+  <message name="viewAccountsListByCivilId">
+    <part name="parameters" element="tns:viewAccountsListByCivilId">
+    </part>
+  </message>
+  <message name="validateTCDBalanceTransferResponse">
+    <part name="parameters" element="tns:validateTCDBalanceTransferResponse">
+    </part>
+  </message>
+  <message name="viewAccountsExtendedDetailsResponse">
+    <part name="parameters" element="tns:viewAccountsExtendedDetailsResponse">
+    </part>
+  </message>
+  <message name="validateIBANResponse">
+    <part name="parameters" element="tns:validateIBANResponse">
+    </part>
+  </message>
+  <message name="validateAccountsAsArray">
+    <part name="parameters" element="tns:validateAccountsAsArray">
+    </part>
+  </message>
+  <message name="viewLGDetails">
+    <part name="parameters" element="tns:viewLGDetails">
+    </part>
+  </message>
+  <message name="getOverdraftAccountsResponse">
+    <part name="parameters" element="tns:getOverdraftAccountsResponse">
+    </part>
+  </message>
+  <message name="viewAccountDetailsResponse">
+    <part name="parameters" element="tns:viewAccountDetailsResponse">
+    </part>
+  </message>
+  <portType name="CustomerAccountsService">
+    <operation name="viewAccountDetails">
+      <input message="tns:viewAccountDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountDetailsRequest">
+    </input>
+      <output message="tns:viewAccountDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsListByRim">
+      <input message="tns:viewAccountsListByRim" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByRimRequest">
+    </input>
+      <output message="tns:viewAccountsListByRimResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByRimResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByRim/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="validateAccountsAsArray">
+      <input message="tns:validateAccountsAsArray" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccountsAsArrayRequest">
+    </input>
+      <output message="tns:validateAccountsAsArrayResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccountsAsArrayResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccountsAsArray/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="addOverdraftAccount">
+      <input message="tns:addOverdraftAccount" wsam:Action="http://www.openuri.org/CustomerAccountsService/addOverdraftAccountRequest">
+    </input>
+      <output message="tns:addOverdraftAccountResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/addOverdraftAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/addOverdraftAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsExtendedDetails">
+      <input message="tns:viewAccountsExtendedDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsExtendedDetailsRequest">
+    </input>
+      <output message="tns:viewAccountsExtendedDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsExtendedDetailsResponse">
+    </output>
+    </operation>
+    <operation name="updateMaturityDate">
+      <input message="tns:updateMaturityDate" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateMaturityDateRequest">
+    </input>
+      <output message="tns:updateMaturityDateResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateMaturityDateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateMaturityDate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="validateCustomerAccountCreation">
+      <input message="tns:validateCustomerAccountCreation" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateCustomerAccountCreationRequest">
+    </input>
+      <output message="tns:validateCustomerAccountCreationResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateCustomerAccountCreationResponse">
+    </output>
+    </operation>
+    <operation name="validateTCDBalanceTransfer">
+      <input message="tns:validateTCDBalanceTransfer" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateTCDBalanceTransferRequest">
+    </input>
+      <output message="tns:validateTCDBalanceTransferResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateTCDBalanceTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateTCDBalanceTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getTCDMaturityRate">
+      <input message="tns:getTCDMaturityRate" wsam:Action="http://www.openuri.org/CustomerAccountsService/getTCDMaturityRateRequest">
+    </input>
+      <output message="tns:getTCDMaturityRateResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getTCDMaturityRateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getTCDMaturityRate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateOverdraftAccount">
+      <input message="tns:updateOverdraftAccount" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateOverdraftAccountRequest">
+    </input>
+      <output message="tns:updateOverdraftAccountResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateOverdraftAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateOverdraftAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="deleteOverdraftAccount">
+      <input message="tns:deleteOverdraftAccount" wsam:Action="http://www.openuri.org/CustomerAccountsService/deleteOverdraftAccountRequest">
+    </input>
+      <output message="tns:deleteOverdraftAccountResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/deleteOverdraftAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/deleteOverdraftAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getOverdraftAccounts">
+      <input message="tns:getOverdraftAccounts" wsam:Action="http://www.openuri.org/CustomerAccountsService/getOverdraftAccountsRequest">
+    </input>
+      <output message="tns:getOverdraftAccountsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getOverdraftAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getOverdraftAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="checkKYC">
+      <input message="tns:checkKYC" wsam:Action="http://www.openuri.org/CustomerAccountsService/checkKYCRequest">
+    </input>
+      <output message="tns:checkKYCResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/checkKYCResponse">
+    </output>
+    </operation>
+    <operation name="validateIBAN">
+      <input message="tns:validateIBAN" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateIBANRequest">
+    </input>
+      <output message="tns:validateIBANResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateIBANResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateIBAN/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewHoldDetails">
+      <input message="tns:viewHoldDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldDetailsRequest">
+    </input>
+      <output message="tns:viewHoldDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewLGDetails">
+      <input message="tns:viewLGDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewLGDetailsRequest">
+    </input>
+      <output message="tns:viewLGDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewLGDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewLGDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="validateAccounts">
+      <input message="tns:validateAccounts" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccountsRequest">
+    </input>
+      <output message="tns:validateAccountsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/validateAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewTcdDetails">
+      <input message="tns:viewTcdDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewTcdDetailsRequest">
+    </input>
+      <output message="tns:viewTcdDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewTcdDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewTcdDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewHoldsList">
+      <input message="tns:viewHoldsList" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldsListRequest">
+    </input>
+      <output message="tns:viewHoldsListResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldsListResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewHoldsList/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="createTCD">
+      <input message="tns:createTCD" wsam:Action="http://www.openuri.org/CustomerAccountsService/createTCDRequest">
+    </input>
+      <output message="tns:createTCDResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/createTCDResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/createTCD/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsListByCivilId">
+      <input message="tns:viewAccountsListByCivilId" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByCivilIdRequest">
+    </input>
+      <output message="tns:viewAccountsListByCivilIdResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByCivilIdResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByCivilId/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getSpecialInstructions">
+      <input message="tns:getSpecialInstructions" wsam:Action="http://www.openuri.org/CustomerAccountsService/getSpecialInstructionsRequest">
+    </input>
+      <output message="tns:getSpecialInstructionsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getSpecialInstructionsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getSpecialInstructions/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountBalanceDetails">
+      <input message="tns:viewAccountBalanceDetails" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountBalanceDetailsRequest">
+    </input>
+      <output message="tns:viewAccountBalanceDetailsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountBalanceDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountBalanceDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAccountRelations">
+      <input message="tns:getAccountRelations" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountRelationsRequest">
+    </input>
+      <output message="tns:getAccountRelationsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountRelationsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountRelations/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="createCustomerAccount">
+      <input message="tns:createCustomerAccount" wsam:Action="http://www.openuri.org/CustomerAccountsService/createCustomerAccountRequest">
+    </input>
+      <output message="tns:createCustomerAccountResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/createCustomerAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/createCustomerAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsListByAccount">
+      <input message="tns:viewAccountsListByAccount" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccountRequest">
+    </input>
+      <output message="tns:viewAccountsListByAccountResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccountResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccount/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getDepositAcctDefinitions">
+      <input message="tns:getDepositAcctDefinitions" wsam:Action="http://www.openuri.org/CustomerAccountsService/getDepositAcctDefinitionsRequest">
+    </input>
+      <output message="tns:getDepositAcctDefinitionsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getDepositAcctDefinitionsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getDepositAcctDefinitions/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAccountBalanceByDate">
+      <input message="tns:getAccountBalanceByDate" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountBalanceByDateRequest">
+    </input>
+      <output message="tns:getAccountBalanceByDateResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountBalanceByDateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getAccountBalanceByDate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getRelatedAccounts">
+      <input message="tns:getRelatedAccounts" wsam:Action="http://www.openuri.org/CustomerAccountsService/getRelatedAccountsRequest">
+    </input>
+      <output message="tns:getRelatedAccountsResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/getRelatedAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/getRelatedAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsListByAccountJointFilterClosedFilter">
+      <input message="tns:viewAccountsListByAccountJointFilterClosedFilter" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccountJointFilterClosedFilterRequest">
+    </input>
+      <output message="tns:viewAccountsListByAccountJointFilterClosedFilterResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccountJointFilterClosedFilterResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListByAccountJointFilterClosedFilter/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="viewAccountsListWithJointsByCivilId">
+      <input message="tns:viewAccountsListWithJointsByCivilId" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListWithJointsByCivilIdRequest">
+    </input>
+      <output message="tns:viewAccountsListWithJointsByCivilIdResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListWithJointsByCivilIdResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/viewAccountsListWithJointsByCivilId/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateTCD">
+      <input message="tns:updateTCD" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateTCDRequest">
+    </input>
+      <output message="tns:updateTCDResponse" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateTCDResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerAccountsService/updateTCD/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CustomerAccountsServiceSoapBinding" type="tns:CustomerAccountsService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="viewAccountDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsListByRim">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="validateAccountsAsArray">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="addOverdraftAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsExtendedDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateMaturityDate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="validateCustomerAccountCreation">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="validateTCDBalanceTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getTCDMaturityRate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateOverdraftAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="deleteOverdraftAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getOverdraftAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="checkKYC">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="validateIBAN">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewHoldDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewLGDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="validateAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewTcdDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewHoldsList">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="createTCD">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsListByCivilId">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getSpecialInstructions">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountBalanceDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAccountRelations">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="createCustomerAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsListByAccount">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getDepositAcctDefinitions">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAccountBalanceByDate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getRelatedAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsListByAccountJointFilterClosedFilter">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="viewAccountsListWithJointsByCivilId">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateTCD">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_CustomerAccountsService">
+    <port name="CustomerAccountsServiceSoap2" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_CustomerAccountsService/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap3" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustomerAccountsService.CustomerAccountsServiceSoap/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_CustomerAccountsService.CustomerAccountsServiceSoap/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap4" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustomerAccountsService/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap5" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustomerAccountsService.CustomerAccountsServiceSoap/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap6" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustomerAccountsService/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap7" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/CustomerAccountsService/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap8" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CustomerAccountsService/1.0"/>
+    </port>
+    <port name="CustomerAccountsServiceSoap9" binding="tns:CustomerAccountsServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CustomerAccountsService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

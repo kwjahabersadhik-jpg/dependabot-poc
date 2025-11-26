@@ -1,0 +1,413 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.Promotions
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.CardIssuance
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.Collaterals
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.EligiblePromotions
+@using Telerik.FontIcons
+
+@page "/eligible/promotions"
+@inject IPromotionsAppService PromotionsAppService
+@inject IEligiblePromotionsAppService EligiblePromotionsAppService
+@inject IPctAppService PctAppService
+@inject ICardDefsAppService CardDefsAppService
+@inject ICollateralAppService CollateralAppService
+@inject ILogger<EligiblePromotionDto> Logger
+
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+@if (!IsAllowTo(Permissions.EligiblePromotions.View()))
+{
+    <AccessDenied />
+}
+else
+{
+
+
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="Eligible Promotions"></Title>
+            </div>
+            <div class="kfh-data-table p-0 mt-0">
+                @if (PromotionsResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@PromotionsResponse.Data"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%"
+                                 OnDelete="@OpenConfirmationDialog"
+                                 OnCreate="@AddRequest"
+                                 OnUpdate="@AddRequest">
+
+                        <GridToolBarTemplate>
+                            @if (IsAllowTo(Permissions.EligiblePromotions.Create()))
+                            {
+                                <GridCommandButton Command="Add" Class="btn-secondary">Add Eligible Promotion</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.PromotionCardId)" Title="ID" Editable="false" OnCellRender="@((e) => e.Class = "text-center")" HeaderClass="text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                        <H4>@item!.PromotionCardId</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.PromotionName)" Title="Promotion" OnCellRender="@((e) => e.Class = "text-center")" HeaderClass="text-center">
+                                <Template>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                        <H4 class="text-center">@item!.PromotionName</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+
+                                        <TelerikDropDownList Data="@Promotions"
+                                                             TextField="@nameof(PromotionDto.PromotionName)"
+                                                             ValueField="@nameof(PromotionDto.PromotionId)"
+                                                             @bind-Value="@item!.PromotionID"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.CardType)" Title="Card Type">
+                                <Template>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                        <H4>@item!.CardTypeName</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+
+                                        <TelerikDropDownList Data="@CardDefs"
+                                                             TextField="@nameof(CardDefinitionDto.Name)"
+                                                             ValueField="@nameof(CardDefinitionDto.CardType)"
+                                                             @bind-Value="@item!.CardType"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.PCTName)" Title="PCT">
+                                <Template>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                        <H4>@item!.PCTName</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+
+                                        <TelerikDropDownList Data="@Pcts"
+                                                             TextField="@nameof(PctDto.Description)"
+                                                             ValueField="@nameof(PctDto.PctId)"
+                                                             @bind-Value="@item!.PCTID"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.CollateralName)" Title="Issue Against">
+                                <Template>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                        <H4>@item!.CollateralName</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+
+                                        <TelerikDropDownList Data="@Collaterals"
+                                                             TextField="@nameof(CollateralDto.Descriptionen)"
+                                                             ValueField="@nameof(CollateralDto.Collateralid)"
+                                                             @bind-Value="@item!.CollateralID"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(EligiblePromotionDto.IsLocked)" Title="Record Status" Editable="false">
+                                <Template>
+
+                                    @{
+                                        var item = context as EligiblePromotionDto;
+                                       
+                                        @if (item!.IsLocked == true)
+                                        {
+                                             <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Record is locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+
+                                        }
+
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridCommandColumn  OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+                                @{
+                                    var item = context as EligiblePromotionDto;
+                                    if (!item!.IsLocked.HasValue || !item.IsLocked.Value)
+                                    {
+                                        @if (IsAllowTo(Permissions.EligiblePromotions.Edit()))
+                                        {
+                                            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                            if (IsAllowTo(Permissions.EligiblePromotions.Create()))
+                                            {
+                                                <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                            }
+                                        }
+
+                                     
+                                        @if (IsAllowTo(Permissions.EligiblePromotions.Delete()))
+                                        {
+                                            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                        }
+                                        <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                                    }
+                                    else
+                                    {
+                                        @* <H4>record is locked</H4> *@
+
+                                    }
+                                }
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (PromotionsResponse.Status == DataStatus.Loading)
+                {   
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (PromotionsResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+ 
+    public List<string> Errors { get; set; } = new();
+    public List<PromotionDto> Promotions { get; set; } = new();
+    public List<PctDto> Pcts { get; set; } = new();
+    public List<CardDefinitionDto> CardDefs { get; set; } = new();
+    public List<CollateralDto> Collaterals { get; set; } = new();
+    public DataItem<List<EligiblePromotionDto>> PromotionsResponse { get; } = new();
+    public List<EligiblePromotionDto> PromotionsBackup { get; set; } = new();
+    public EligiblePromotionDto SelectedPromotion { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        PromotionsResponse.Loading();
+        await GetPromotions();
+        await GetCardDefs();
+        await GetPcts();
+        await GetCollaterals();
+        await GetEligiblePromotions();
+    }
+
+
+    async Task GetPromotions()
+    {
+        Promotions = (await PromotionsAppService.GetPromotions()).Data!;
+    }
+
+    async Task GetPcts()
+    {
+        Pcts = (await PctAppService.GetPcts()).Data!;
+    }
+
+    async Task GetCardDefs()
+    {
+        CardDefs = (await CardDefsAppService.GetCardsTypes()).Data!;
+    }
+
+    async Task GetCollaterals()
+    {
+        Collaterals = (await CollateralAppService.GetCollaterls()).Data!;
+    }
+
+
+    async Task GetEligiblePromotions()
+    {
+        var response = (await EligiblePromotionsAppService.GetEligibleProducts());
+        if (response.IsSuccess)
+        {
+            PromotionsResponse.SetData(response.Data!);
+
+            PromotionsBackup = new();
+            PromotionsBackup.AddRange(response.Data!);
+        }
+        else
+            PromotionsResponse.Error(new Exception(response.Message));
+    }
+
+    async Task<bool> ValidatePromotion(EligiblePromotionDto promotion)
+    {
+        Errors = new List<string>();
+
+        if (promotion.PromotionID == 0)
+        {
+            Errors.Add("promotion is required");
+        }
+
+        if (promotion.CardType == 0)
+        {
+            Errors.Add("card type is required");
+        }
+
+        if (promotion.PCTID == 0)
+        {
+            Errors.Add("PCT is required");
+        }
+
+        var isPromotionExist = await EligiblePromotionsAppService.IsPromotionExist(promotion);
+
+        if (isPromotionExist)
+            Errors.Add("eligible promotion is duplicated");
+
+        return !Errors.Any();
+    }
+
+    void SetEligiblePromotionNames(EligiblePromotionDto promotion)
+    {
+        promotion.CardTypeName = CardDefs.FirstOrDefault(c => c.CardType == promotion.CardType)!.Name;
+        promotion.CollateralName = Collaterals.FirstOrDefault(c => c.Collateralid == promotion.CollateralID)!.Descriptionen!;
+        promotion.PCTName = Pcts.FirstOrDefault(c => c.PctId == promotion.PCTID)!.Description!;
+        promotion.PromotionName = Promotions.FirstOrDefault(p => p.PromotionId == promotion.PromotionID)!.PromotionName;
+    }
+
+    async Task AddRequest(GridCommandEventArgs args)
+    {
+        try
+        {
+            var promotion = (EligiblePromotionDto)args.Item;
+
+            var isValid = await ValidatePromotion(promotion);
+
+            if (!isValid) return;
+
+            SetEligiblePromotionNames(promotion);
+
+            var request = new RequestDto<EligiblePromotionDto>
+                {
+                    ActivityForm = (int)ActivityForm.EligiblePromotions,
+                    NewData = (EligiblePromotionDto)args.Item,
+                    OldData = promotion.PromotionCardId > 0 ? PromotionsBackup!.FirstOrDefault(p => p.PromotionCardId == promotion.PromotionCardId)! : null!,
+                    ActivityType = promotion.PromotionCardId > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await EligiblePromotionsAppService.AddRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (promotion.PromotionID > 0)
+                    await GetEligiblePromotions();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var promotion = (EligiblePromotionDto)args.Item;
+        SelectedPromotion = promotion;
+        ShowConfirmationDig = true;
+    }
+
+    public bool ShowConfirmationDig { get; set; }
+
+    async Task DeleteHandler()
+    {
+        SetEligiblePromotionNames(SelectedPromotion);
+
+        var request = new RequestDto<EligiblePromotionDto>
+            {
+                ActivityForm = (int)ActivityForm.EligiblePromotions,
+                NewData = SelectedPromotion,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await EligiblePromotionsAppService.AddRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedPromotion.PromotionCardId > 0)
+                await GetEligiblePromotions();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

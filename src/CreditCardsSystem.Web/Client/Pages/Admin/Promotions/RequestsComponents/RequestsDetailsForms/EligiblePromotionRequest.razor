@@ -1,0 +1,110 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.EligiblePromotions
+
+@inject RequestStateContainer RequestStateContainer
+@inherits PromotionsRequestsHelpers
+
+<H2>Eligible Promotion (@RequestStateContainer.RequestHeader.ActivityType.ToString())</H2>
+
+<style>
+    .content {
+        padding-right: 40px;
+    }
+</style>
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+
+    </tr>
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Card Type</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.CardTypeName))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Collateral</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails ,nameof(EligiblePromotionDto.CollateralName))</H5>
+            </div>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <div class="content">
+                <Label>PCT</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.PCTName))</H5>
+            </div>
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Promotion</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.PromotionName))</H5>
+            </div>
+        </td>
+    </tr>
+</table>
+
+@if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+{
+
+    <H2>Eligible Promotion (Old)</H2>
+
+    <table>
+        <tr>
+            <th></th>
+            <th></th>
+
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Card Type</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.CardTypeName) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Collateral</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails ,nameof(EligiblePromotionDto.CollateralName) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>PCT</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.PCTName) , true)</H5>
+                </div>
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Promotion</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(EligiblePromotionDto.PromotionName) , true)</H5>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+}
+
+
+@code {
+
+
+}

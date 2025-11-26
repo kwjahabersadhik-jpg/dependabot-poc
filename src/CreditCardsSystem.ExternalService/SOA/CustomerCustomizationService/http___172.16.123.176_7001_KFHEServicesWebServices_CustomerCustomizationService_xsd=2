@@ -1,0 +1,1 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.openuri.org/" targetNamespace="http://www.openuri.org/"><xsd:element name="isSuccessful" type="xsd:boolean"/><xsd:element name="status" type="xsd:string"/><xsd:element name="description" type="xsd:string"/></xsd:schema>

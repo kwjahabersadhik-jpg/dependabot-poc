@@ -1,0 +1,43 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Web.Client.Pages.CardDetails;
+
+@inject IRequestAppService _requestAppService;
+@inherits WorkflowComponent
+
+
+
+@* <H3 class="mt-6">@Title</H3>
+<div class="divider"></div> *@
+
+<div class="d-flex flex-column gp-8">
+    <div class="mt-4">
+        <H5>Current Status</H5>
+        <Status StatusClass="@Helpers.GetStatusClass(SelectedCard.CardStatus)" StatusTitle="@SelectedCard.CardStatus.ToString()"></Status>
+    </div>
+
+    <div class="mt-4">
+        <H5>New Status</H5>
+        <TelerikDropDownList Filterable="true" FilterOperator="StringFilterOperator.StartsWith" Data="@RequestStatuses" Enabled=@isAllowToChange DefaultText=@defaultText ValueField="Value" TextField="Text" @bind-Value="@SelectedStatus" OnChange="OnChangeRequestHandler">
+        </TelerikDropDownList>
+    </div>
+</div>
+
+<div class="mt-4">
+    @if (!isAllowToChange)
+    {
+        <div class='@($"alert alert-info")'>
+            <div class="alert-icon">
+                <span class="icon-Information"></span>
+            </div>
+            <div class="alert-content">
+                <H3>We cannot change the current status @SelectedCard.CardStatus.ToString()</H3>
+            </div>
+        </div>
+    }
+
+</div>
+
+ 

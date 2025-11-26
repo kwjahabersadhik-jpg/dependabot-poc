@@ -10,7 +10,6 @@ using CreditCardsSystem.Domain.Models.Reports;
 using CreditCardsSystem.Domain.Models.RequestActivity;
 using CreditCardsSystem.Domain.Shared.Interfaces.Workflow;
 using CreditCardsSystem.Utility.Extensions;
-using Kfh.Aurora.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,7 +19,7 @@ namespace CreditCardsSystem.API.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
     [Authorize(AuthorizationConstants.Policies.ApiPolicy)]
-    public class CardsController(ILogger<CardsController> logger, IConfiguration configuration, IWorkflowAppService workflowAppService, IRequestActivityAppService requestActivityAppService, ICustomerProfileAppService customerProfileAppService, ILookupAppService lookupAppService, ICardDetailsAppService cardDetailsAppService, ICardPaymentAppService cardPaymentAppService, IReportAppService reportAppService, IStopAndReportAppService stopAndReportAppService, IReplacementAppService replacementAppService, ICreditCardArtworkAppService creditCardArtworkAppService, ICardInquiryAppService cardInquiryAppService, IActivationAppService activationAppService, IAuditLogger<CardsController> auditLogger) : ControllerBase
+    public class CardsController(ILogger<CardsController> logger, IConfiguration configuration, IWorkflowAppService workflowAppService, IRequestActivityAppService requestActivityAppService, ICustomerProfileAppService customerProfileAppService, ILookupAppService lookupAppService, ICardDetailsAppService cardDetailsAppService, ICardPaymentAppService cardPaymentAppService, IReportAppService reportAppService, IStopAndReportAppService stopAndReportAppService, IReplacementAppService replacementAppService, ICreditCardArtworkAppService creditCardArtworkAppService, ICardInquiryAppService cardInquiryAppService, IActivationAppService activationAppService) : ControllerBase
     {
         private readonly ICustomerProfileAppService _customerProfileAppService = customerProfileAppService;
         private readonly ILookupAppService _lookupAppService = lookupAppService;
@@ -31,7 +30,6 @@ namespace CreditCardsSystem.API.Controllers
         private readonly ICreditCardArtworkAppService _creditCardArtworkAppService = creditCardArtworkAppService;
         private readonly ICardInquiryAppService _cardInquiryAppService = cardInquiryAppService;
         private readonly ILogger<CardsController> _logger = logger;
-        private readonly IAuditLogger<CardsController> _auditLogger = auditLogger;
         private readonly IConfiguration configuration = configuration;
         private readonly IWorkflowAppService _workflowAppService = workflowAppService;
         private readonly IRequestActivityAppService _requestActivityAppService = requestActivityAppService;
@@ -103,7 +101,6 @@ namespace CreditCardsSystem.API.Controllers
         [HttpPost(Name = "ExecuteCardPayment")]
         public async Task<IActionResult> ExecuteCardPayment(CardPaymentRequest request)
         {
-            await request.ModelValidationAsync();
             var paymentResult = await _cardPaymentAppService.ExecuteCardPayment(request);
             return Ok(paymentResult);
         }
@@ -143,13 +140,11 @@ namespace CreditCardsSystem.API.Controllers
             var response = new ApiResponseModel<string>();
             try
             {
-                _auditLogger.LogWithEvent(nameof(UpdateRequestWithTaskId)).Information("Update request from SSO. task Id {TaskId} , RequestActivityID {RequestActivityID}", request.TaskId, request.RequestActivityId);
                 await _requestActivityAppService.UpdateSingleRequestActivityDetail(request.RequestActivityId, "TaskId", request.TaskId.ToString());
                 return Ok(response.Success(""));
             }
             catch (Exception ex)
             {
-                _auditLogger.LogWithEvent(nameof(UpdateRequestWithTaskId)).Error(ex, "failed UpdateRequestWithTaskId task Id {TaskId} , RequestActivityID {RequestActivityID}", request.TaskId, request.RequestActivityId);
                 return Ok(response.Fail(new(ex.Message)));
             }
         }
@@ -160,8 +155,6 @@ namespace CreditCardsSystem.API.Controllers
         [HttpPost(Name = "UpdateWorkFlowWithTaskId")]
         public async Task<IActionResult> UpdateWorkFlowWithTaskId(ActivityProcessRequest request)
         {
-            await request.ModelValidationAsync();
-
             var response = new ApiResponseModel<string>();
             try
             {
@@ -173,7 +166,7 @@ namespace CreditCardsSystem.API.Controllers
                     return Ok(response.Fail(new("Un-Authorized!")));
                 }
 
-                _auditLogger.LogWithEvent(nameof(UpdateWorkFlowWithTaskId)).Information("Update WorkFlow With TaskId {TaskId}, RequestActivityId {RequestActivityId}",  request.TaskId,request.RequestActivityId);
+                _logger.LogInformation("Update WorkFlow With TaskId request json {request}", JsonConvert.SerializeObject(request));
 
                 await _requestActivityAppService.ValidateActivityWithWorkflow(request);
 
@@ -183,7 +176,7 @@ namespace CreditCardsSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                _auditLogger.LogWithEvent(nameof(UpdateWorkFlowWithTaskId)).Error(ex, "Unable to Update WorkFlow With {TaskId}, RequestActivityId {RequestActivityId}", request.TaskId, request.RequestActivityId);
+                _logger.LogError(ex, "Unable to Update WorkFlow With TaskId");
                 return Ok(response.Fail(new(ex.Message)));
             }
         }

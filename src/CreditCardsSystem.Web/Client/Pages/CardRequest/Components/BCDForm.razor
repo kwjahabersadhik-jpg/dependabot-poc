@@ -1,0 +1,134 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.CardOperation
+@using CreditCardsSystem.Utility.Extensions
+@inherits ApplicationComponent
+<TelerikForm EditContext="EditFormContext">
+    <FormValidation>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+    </FormValidation>
+    <FormItems>
+        <FormItem>
+            <Template>
+
+                <div class="form-flex">
+                    <ul class="list">
+                        @if (CardStatus is CreditCardStatus.AccountBoardingStarted or CreditCardStatus.CardUpgradeStarted)
+                        {
+                            <li>
+                                <div class="mt-4">
+                                    <H5>New Status</H5>
+                                    <TelerikDropDownList Filterable="true" FilterOperator="StringFilterOperator.StartsWith" Data="@RequestStatuses" Enabled=@isAllowToChange DefaultText=@defaultText ValueField="Value" TextField="Text" @bind-Value="@Model.NewStatus">
+                                    </TelerikDropDownList>
+                                </div>
+                            </li>
+
+                            @if (CardStatus is CreditCardStatus.CardUpgradeStarted)
+                            {
+                                <li>
+                                    <div class="mt-4">
+                                        <H5>Old Card Number</H5>
+                                        <H3>@DisplayCardNumber(Model.OldCardNumber)</H3>
+                                            <div class="checkbox clear-both">
+                                                <TelerikCheckBox Id="agreeCloseOldCardNumber" TValue="bool" @bind-Value="@Model.CloseOldCardNumber" Size="lg" />
+                                                <label for="agreeCloseOldCardNumber">Close Old Card Number</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                            }
+
+                            <li>
+                                <div class="mt-4">
+                                    <H5>Card Number</H5>
+                                    <TelerikTextBox Class="shadow-sm textfield-input" @bind-Value="@Model.CardNumber"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class=" kfhtexterror text-red" For="@(() => Model.CardNumber)"></ValidationMessage></SubH2>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mt-4">
+                                    <H5>Master Card Number</H5>
+                                    <TelerikTextBox Class="shadow-sm textfield-input" @bind-Value="@Model.MasterCardNumber"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class=" kfhtexterror text-red" For="@(() => Model.MasterCardNumber)"></ValidationMessage></SubH2>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mt-4">
+                                    <H5>FD Account Number</H5>
+                                    <TelerikTextBox Class="shadow-sm textfield-input" @bind-Value="@Model.FdrAccountNumber"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.FdrAccountNumber)"></ValidationMessage></SubH2>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mt-4">
+                                    <H5>Customer Number</H5>
+                                    <TelerikTextBox Class="shadow-sm textfield-input" @bind-Value="@Model.CustomerNumber"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.CustomerNumber)"></ValidationMessage></SubH2>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </Template>
+        </FormItem>
+    </FormItems>
+    <FormButtons>
+    </FormButtons>
+</TelerikForm>
+
+@code {
+    [Parameter]
+    public CreditCardStatus CardStatus { get; set; }
+
+    [Parameter]
+    public BCDParameters Model { get; set; }
+
+
+    [Parameter]
+    public EventCallback<bool> ReadyForAction { get; set; }
+
+    private bool isAllowToChange = true;
+    private string defaultText = "Loading..";
+    private ListItem[] RequestStatuses { get; set; } = null!;
+
+    public EditContext? EditFormContext { get; set; }
+
+    public ValidationMessageStore? MessageStore { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BindDropDownItems();
+        await BindEditContext();
+    }
+
+    private async Task BindDropDownItems()
+    {
+        CreditCardStatus[] validstatus = new CreditCardStatus[] { CreditCardStatus.Pending, CreditCardStatus.Approved, CreditCardStatus.Rejected, CreditCardStatus.CreditCheckingReviewed };
+
+        RequestStatuses = Enum.GetValues(typeof(CreditCardStatus)).Cast<CreditCardStatus>().Select(x => new ListItem()
+            {
+                Text = x.GetDescription(),
+                Value = (int)x
+            }).Where(x => validstatus.Any(s => (int)s == x.Value)).ToArray();
+
+        isAllowToChange = RequestStatuses.Any();
+        defaultText = isAllowToChange ? "Select Status" : "N/A";
+        await ReadyForAction.InvokeAsync(isAllowToChange);
+    }
+
+    async Task BindEditContext()
+    {
+
+        EditFormContext = new EditContext(Model);
+        MessageStore = new(EditFormContext);
+        //EditContextRequest.OnValidationRequested += (s, e) => validationMessageStore?.Clear();
+        EditFormContext.OnFieldChanged += (s, e) =>
+        {
+            MessageStore?.Clear(e.FieldIdentifier);
+        };
+
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+}

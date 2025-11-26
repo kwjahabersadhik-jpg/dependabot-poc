@@ -1,0 +1,71 @@
+﻿@using CreditCardsSystem.Domain.Models.Workflow
+@using CreditCardsSystem.Domain.Shared.Interfaces.Workflow
+
+@page "/workflow-cases"
+@inject IWorkflowAppService WorkflowAppService
+
+@inherits ApplicationComponent
+
+<div class="kfh-data-table my-4">
+    <h3 class="mx-2">Cases</h3>
+
+    <TelerikLoaderContainer Visible="@(IsProcessing)" Text="" LoaderType="LoaderType.ConvergingSpinner" />
+    <TelerikGrid Class="display"
+                 Data="@Cases"
+                 Pageable="true"
+                 ShowColumnMenu="true">
+        <GridToolBarTemplate>
+            <span class="k-toolbar-spacer"></span>
+            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" Width="100%" />
+        </GridToolBarTemplate>
+        <GridColumns>
+            <GridColumn Field="@(nameof(CaseDto.Title))" Width="450px"></GridColumn>
+            <GridColumn Field="InitiatingUser.Name" Title="Requested By">
+                <Template>
+                    @{
+                        var item = (context as CaseDto)!;
+                        <span>@item.InitiatingUser?.Name (@item.InitiatingUser?.KfhId)</span>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="@(nameof(CaseDto.CreatedOn))" Title="Created On" DisplayFormat="{0:dd-MM-yyyy hh:mm tt}"></GridColumn>
+            <GridColumn>
+                <Template>
+                    @{
+                        var item = (context as CaseDto)!;
+                        <TelerikButton Class="btn-secondary btn-s" OnClick="@(() => ViewCaseDetail(item.Id))">Details</TelerikButton>
+                    }
+                </Template>
+            </GridColumn>
+        </GridColumns>
+        <NoDataTemplate>
+            <NoRecordsFound Message="No case found" />
+        </NoDataTemplate>
+    </TelerikGrid>
+</div>
+
+@code {
+    private List<CaseDto>? Cases { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Cases != null)
+            return;
+
+        // IsLoading = true;
+        Notification.Loading("");
+        StateHasChanged();
+
+        Cases = await WorkflowAppService.GetCases();
+
+        Notification.Hide();
+    }
+
+    private void ViewCaseDetail(string instanceId)
+    {
+        if (string.IsNullOrEmpty(instanceId))
+            return;
+
+        NavigationManager.NavigateTo($"/cases?instanceId={instanceId}");
+    }
+}

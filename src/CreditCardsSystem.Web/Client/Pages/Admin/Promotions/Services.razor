@@ -1,0 +1,312 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using Telerik.FontIcons
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Services
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+
+
+@page "/services"
+@inject IServicesAppService ServicesAppService
+@inject ILogger<Services> Logger
+
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+@if (!IsAllowTo(Permissions.Services.View()))
+{
+    <AccessDenied />
+}
+else
+{
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="Services"></Title>
+
+            </div>
+            <div class="KFHnopadding kfh-data-table nosvgIcon">
+                @if (ServicesResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@ServicesResponse.Data"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%"
+                                 OnDelete="@OpenConfirmationDialog"
+                                 OnCreate="@AddRequest"
+                                 OnUpdate="@AddRequest">
+
+                        <GridToolBarTemplate>
+                            @if (IsAllowTo(Permissions.Services.Create()))
+                            {
+                                <GridCommandButton Command="Add" Class="btn-secondary">Add Service</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(ServiceDto.ServiceId)" Title="Service ID" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ServiceDto;
+                                        <H4>@item!.ServiceId</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(ServiceDto.ServiceNo)" Title="Service No" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ServiceDto;
+                                        <H4>@item!.ServiceNo</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(ServiceDto.ServiceDescription)" Title="Service Description" OnCellRender="@((e) => e.Class = "col-xl-3 text-center")" HeaderClass="col-xl-3 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ServiceDto;
+                                        <H4>@item!.ServiceDescription</H4>
+                                        @* <TelerikTextArea @bind-Value="item!.ServiceDescription" Enabled="false"></TelerikTextArea> *@
+                                    }
+
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as ServiceDto;
+                                        <TelerikTextArea @bind-Value="item!.ServiceDescription"></TelerikTextArea>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+
+                            <GridColumn Field="@nameof(ServiceDto.NoOfMonths)" Title="No of Months" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ServiceDto;
+                                        <H4>@item!.NoOfMonths</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+                          
+                            <GridColumn Field="@nameof(ServiceDto.IsLocked)" Title="Record Status" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ServiceDto;
+                                       
+                                        @if (item!.IsLocked == true)
+                                        {
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Record is locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+
+                                        }
+
+                                    }
+                                </Template>
+                            </GridColumn>
+
+
+                            <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+                                @{
+                                    var item = context as ServiceDto;
+                                    if (!item!.IsLocked.HasValue || !item.IsLocked.Value)
+                                    {
+                                        @if (IsAllowTo(Permissions.Services.Edit()))
+                                        {
+                                            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                        }
+                                        @if (IsAllowTo(Permissions.Services.Delete()))
+                                        {
+                                            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                        }
+                                        <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                                    }
+                                    else
+                                    {
+                                        @* <H4>record is locked</H4> *@
+                                    }
+                                }
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (ServicesResponse.Status == DataStatus.Loading)
+                {
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (ServicesResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+    public List<string> Errors { get; set; } = new();
+    public DataItem<List<ServiceDto>> ServicesResponse { get; } = new();
+    public List<ServiceDto> ServicesBackup { get; set; } = new();
+    public ServiceDto SelectedService { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetServices();
+    }
+
+    async Task GetServices()
+    {
+        ServicesResponse.Loading();
+        var response = await ServicesAppService.GetServices();
+        if (response.IsSuccess)
+        {
+            ServicesResponse.SetData(response.Data!);
+
+            ServicesBackup = new();
+            ServicesBackup.AddRange(response.Data!);
+        }
+        else
+            ServicesResponse.Error(new Exception(response.Message));
+    }
+
+    bool ValidateService(ServiceDto service)
+    {
+        Errors = new List<string>();
+
+        if (string.IsNullOrEmpty(service.ServiceDescription))
+        {
+            Errors.Add("service description is required");
+        }
+
+        if (service.ServiceNo <= 0)
+        {
+            Errors.Add("service No is required");
+        }
+        else
+        {
+            if(ServicesResponse.Data!.Any(s => s.ServiceNo == service.ServiceNo && s.ServiceId != service.ServiceId))
+                Errors.Add("service No is duplicated");
+        }
+
+        if (service.NoOfMonths <= 0)
+        {
+            Errors.Add("number of months is required");
+        }
+
+        return !Errors.Any();
+    }
+
+    async Task AddRequest(GridCommandEventArgs args)
+    {
+        try
+        {
+            var service = (ServiceDto)args.Item;
+
+            var isValid = ValidateService(service);
+
+            if (!isValid) return;
+
+            var request = new RequestDto<ServiceDto>
+                {
+                    ActivityForm = (int)ActivityForm.Services,
+                    NewData = (ServiceDto)args.Item,
+                    OldData = service.ServiceId > 0 ? ServicesResponse.Data!.FirstOrDefault(s => s.ServiceId == service.ServiceId)! : null!,
+                    ActivityType = service.ServiceId > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await ServicesAppService.AddRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (service.ServiceId > 0)
+                    await GetServices();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var service = (ServiceDto)args.Item;
+        SelectedService = service;
+        ShowConfirmationDig = true;
+    }
+
+    public bool ShowConfirmationDig { get; set; }
+
+    async Task DeleteHandler()
+    {
+        var request = new RequestDto<ServiceDto>
+            {
+                ActivityForm = (int)ActivityForm.Services,
+                NewData = SelectedService,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await ServicesAppService.AddRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedService.ServiceId > 0)
+                await GetServices();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

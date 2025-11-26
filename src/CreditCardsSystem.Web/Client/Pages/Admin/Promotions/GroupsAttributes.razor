@@ -1,0 +1,481 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using Telerik.FontIcons
+@using Attribute = CreditCardsSystem.Domain.Models.BCDPromotions.Groups.Attribute
+
+
+@page "/group/attributes"
+@inject IGroupsAppService GroupsAppService
+@inject ILogger<Groups> Logger
+
+
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+@if (!IsAllowTo(Permissions.GroupAttributes.View()))
+{
+    <AccessDenied />
+}
+else
+{
+
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="Groups Attributes"></Title>
+
+            </div>
+            <div class="KFHnopadding kfh-data-table">
+                @if (GroupsAttributesResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@GroupsAttributesResponse.Data"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%"
+                                 OnDelete="@OpenConfirmationDialog"
+                                 OnCreate="@AddRequest"
+                                 OnUpdate="@AddRequest">
+
+                        <GridToolBarTemplate>
+                            @if (IsAllowTo(Permissions.GroupAttributes.Create()))
+                            {
+                                <GridCommandButton Command="Add" Class="btn-secondary">Add Class</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(GroupAttributeDto.AttributeID)" Title="Class ID" Visible="false" Editable="false">
+                                <Template>
+
+                                    @{
+                                        var item = context as GroupAttributeDto;
+                                        <H4>@item!.AttributeID</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(GroupAttributeDto.GroupName)" Title="Group" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                <Template>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+                                        <H4 >@item!.GroupName</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+
+                                        <TelerikDropDownList Data="@Groups"
+                                                             TextField="@nameof(PromotionGroupDto.Description)"
+                                                             ValueField="@nameof(PromotionGroupDto.GroupID)"
+                                                             @bind-Value="@item!.GroupID"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(GroupAttributeDto.AttributeType)" Title="Attribute" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                <Template>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+                                        <H4>@GetAttributeTypeText(item!.AttributeType)</H4>
+                                    }
+                                </Template>
+
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+
+                                        <TelerikDropDownList Data="@Attributes"
+                                                             TextField="@nameof(Attribute.DisplayedName)"
+                                                             ValueField="@nameof(Attribute.Type)"
+                                                             @bind-Value="@item!.AttributeType"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(GroupAttributeDto.AttributeValue)" Title="Value" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+
+                                        if (item!.AttributeType is "Supplementary_Charge_Card")
+                                        {
+                                            @if (item!.AttributeValue == "1")
+                                            {
+                                                <H4>Yes</H4>
+                                            }
+                                            else
+                                            {
+                                                <H4>No</H4>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var attributeTxt = AttributesLookups
+                                            .Where(a => a.CodeType == item.AttributeType)
+                                            .ToList()
+                                            .FirstOrDefault(a => a.Value == item.AttributeValue)?.Attribute;
+
+                                            if (string.IsNullOrEmpty(attributeTxt))
+                                            {
+                                                <H4>@item.AttributeValue</H4>
+                                            }
+                                            else
+                                            {
+                                                <H4>@attributeTxt</H4>
+                                            }
+                                        }
+
+                                    }
+                                </Template>
+
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as GroupAttributeDto;
+
+                                        if (item!.AttributeType is "Supplementary_Charge_Card")
+                                        {
+                                            var values = new List<GroupAttributeLookupDto>()
+                            {
+                            new() { Attribute = "Yes", Value = "1" },
+                            new() { Attribute = "No", Value = "0" }
+                            };
+
+                                            <TelerikDropDownList Data="@values"
+                                                                 TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                                                 ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                                                 @bind-Value="@item!.AttributeValue"
+                                                                 Filterable="true">
+                                            </TelerikDropDownList>
+                                        }
+                                        else if (item.AttributeType is "min_age" or "max_age" or "min_open_date" || item.AttributeType == "max_open_date" || item.AttributeType == "open_date_period"
+                                        || item.AttributeType == "min_total_balance" || item.AttributeType == "max_total_balance"
+                                        || item.AttributeType == "min_available_balance" || item.AttributeType == "max_available_balance"
+                                        || item.AttributeType == "BCD_FLAG")
+                                        {
+                                            <TelerikTextBox @bind-Value="@item.AttributeValue"></TelerikTextBox>
+                                        }
+
+                                        else
+                                        {
+                                            var values = AttributesLookups
+                                            .Where(a => a.CodeType == item.AttributeType)
+                                            .ToList();
+
+                                            <TelerikDropDownList Data="@values"
+                                                                 TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                                                 ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                                                 @bind-Value="@item!.AttributeValue"
+                                                                 Filterable="true">
+                                            </TelerikDropDownList>
+                                        }
+
+                                    }
+                                </EditorTemplate>
+
+
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(GroupAttributeDto.IsLocked)" Title="Record Status" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as GroupAttributeDto;
+                                        
+                                        @if (item!.IsLocked == true)
+                                        {
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Record is locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+                                @{
+                                    var item = context as GroupAttributeDto;
+                                    if (!item!.IsLocked.HasValue || !item.IsLocked.Value)
+                                    {
+                                        @if (IsAllowTo(Permissions.GroupAttributes.Edit()))
+                                        {
+                                            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                        }
+                                        @if (IsAllowTo(Permissions.GroupAttributes.Delete()))
+                                        {
+                                            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                        }
+                                        <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                                    }
+                                    else
+                                    {
+                                        @* <H4>record is locked</H4> *@
+                                    }
+                                }
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (GroupsAttributesResponse.Status == DataStatus.Loading)
+                {   
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (GroupsAttributesResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+}
+ 
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+ 
+
+    public List<string> Errors { get; set; } = new();
+    public List<PromotionGroupDto> Groups { get; set; } = new();
+    public List<Attribute> Attributes { get; set; } = new();
+    public List<GroupAttributeLookupDto> AttributesLookups { get; set; } = new();
+    public Domain.Models.ApiResponseModel<List<GroupAttributeDto>> GroupsAttributesList { get; set; } = new();
+    public List<GroupAttributeDto> BackupGroupsAttributesList { get; set; } = new();
+    public GroupAttributeDto SelectedGroupAttribute { get; set; } = new();
+    public DataItem<List<GroupAttributeDto>> GroupsAttributesResponse { get; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        GroupsAttributesResponse.Loading();
+        await GetGroups();
+        await GetAttributesLookup();
+        await GetAttributeValues();
+        await GetGroupsWithAttributes();
+    }
+
+    string GetAttributeTypeText(string type)
+    {
+        var attributeDisplayName = type switch
+        {
+            "rim_type" => "Customer Rim Type",
+            "race_id" => "Customer Nationality",
+            "risk_code" => "Customer Religion",
+            "sex" => "Customer Sex",
+            "class_code" => "Customer Class",
+            "sic_code" => "Customer Type",
+            "min_age" => "Min. Age",
+            "max_age" => "Max. Age",
+            "min_open_date" => "Min. Account Open Date",
+            "max_open_date" => "Max. Account Open Date",
+            "open_date_period" => "Account Open Date Period",
+            "appl_type" => "Account Application Type",
+            "acct_type" => "Account Type",
+            "min_total_balance" => "Min. Account Total Balance",
+            "max_total_balance" => "Max. Account Total Balance",
+            "min_available_balance" => "Min. Account Available Balance",
+            "max_available_balance" => "Max. Account Available Balance",
+            "status" => "Account Status",
+            "crncy_id" => "Account Currency",
+            "branch_no" => "Account Branch",
+            "joint" => "Joint Account",
+            "Prerequisite_Card" => "Prerequisite Card",
+            "User_Branch" => "User Branch",
+            "BCD_FLAG" => "BCD Flag",
+            "Supplementary_Charge_Card" => "Supplementary Charge Card",
+            _ => ""
+        };
+
+
+        var attr = Attributes.FirstOrDefault(a => a.DisplayedName == attributeDisplayName);
+        attr!.Type = type;
+
+        return attributeDisplayName;
+    }
+
+    async Task GetGroupsWithAttributes()
+    {
+        GroupsAttributesList = await GroupsAppService.GetGroupsWithAttributes();
+
+        if (GroupsAttributesList.IsSuccess)
+        {
+            GroupsAttributesResponse.SetData(GroupsAttributesList.Data!);
+
+            BackupGroupsAttributesList = new();
+            BackupGroupsAttributesList.AddRange(GroupsAttributesList.Data!);
+        }
+        else
+            GroupsAttributesResponse.Error(new Exception(GroupsAttributesList.Message));
+
+    }
+
+    async Task GetGroups()
+    {
+        Groups = (await GroupsAppService.GetGroups()).Data!;
+    }
+
+    async Task GetAttributesLookup()
+    {
+        Attributes = await GroupsAppService.GetAttributesList();
+    }
+
+    async Task GetAttributeValues()
+    {
+        AttributesLookups = await GroupsAppService.GetAllAttributesLookups();
+        AttributesLookups.Where(a => a.AttributeType != GroupAttributeLookupDto.GroupAttributeType.NotSet)
+                         .ToList()
+                         .ForEach(a => a.CodeType = Attributes.FirstOrDefault(b => b.Id == (long)a.AttributeType)!.Type);
+    }
+
+    async Task<bool> ValidateGroupAttribute(GroupAttributeDto group)
+    {
+        Errors = new List<string>();
+
+        if (group.GroupID == 0)
+            Errors.Add("group is required");
+
+        if (string.IsNullOrEmpty(group.AttributeType))
+            Errors.Add("attribute type is required");
+
+        if (string.IsNullOrEmpty(group.AttributeValue))
+            Errors.Add("attribute value is required");
+
+        var isGroupAttributeExist = await GroupsAppService.ValidateGroupAttribute(group);
+
+        if (isGroupAttributeExist)
+            Errors.Add("group attribute is duplicated");
+
+        return !Errors.Any();
+    }
+
+    void SetGroupAttributeProperties(GroupAttributeDto groupAttribute)
+    {
+        groupAttribute.GroupName = Groups.FirstOrDefault(g => g.GroupID == groupAttribute.GroupID)!.Description;
+
+        //this means that object is already created and we try to update it so we get tne new attribute id according to the selected type
+        // in case new record attribute id will be 0 so we will set it before sending the request
+
+        if (groupAttribute.AttributeID > 0)
+            groupAttribute.AttributeID = Attributes.FirstOrDefault(a => a.Type == groupAttribute.AttributeType)!.Id;
+
+    }
+
+    async Task AddRequest(GridCommandEventArgs args)
+    {
+        try
+        {
+            var groupAttribute = (GroupAttributeDto)args.Item;
+
+            var isValid = await ValidateGroupAttribute(groupAttribute);
+
+            if (!isValid) return;
+
+            SetGroupAttributeProperties(groupAttribute);
+
+            var request = new RequestDto<GroupAttributeDto>
+                {
+                    ActivityForm = (int)ActivityForm.GroupAttribute,
+                    NewData = (GroupAttributeDto)args.Item,
+                    OldData = groupAttribute.AttributeID > 0 ? BackupGroupsAttributesList.FirstOrDefault(g => g.GroupID == groupAttribute.BackupGroupId &&
+                                                                                                         g.AttributeID == groupAttribute.BackupAttributeId)! : null!,
+
+                    ActivityType = groupAttribute.AttributeID > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            groupAttribute.AttributeID = groupAttribute.AttributeID <= 0 ? Attributes.FirstOrDefault(a => a.Type == groupAttribute.AttributeType)!.Id : groupAttribute.AttributeID;
+
+            var response = await GroupsAppService.AddGroupAttributeRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (groupAttribute.AttributeID > 0)
+                    await GetGroupsWithAttributes();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var groupAttribute = (GroupAttributeDto)args.Item;
+        SelectedGroupAttribute = groupAttribute;
+        ShowConfirmationDig = true;
+    }
+
+    public bool ShowConfirmationDig { get; set; }
+
+    async Task DeleteHandler()
+    {
+
+        var request = new RequestDto<GroupAttributeDto>
+            {
+                ActivityForm = (int)ActivityForm.GroupAttribute,
+                NewData = SelectedGroupAttribute,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await GroupsAppService.AddGroupAttributeRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedGroupAttribute.AttributeID > 0)
+                await GetGroupsWithAttributes();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

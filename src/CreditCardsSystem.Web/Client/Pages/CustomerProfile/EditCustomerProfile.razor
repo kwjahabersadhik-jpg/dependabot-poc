@@ -1,0 +1,395 @@
+﻿@page "/edit-customer-profile"
+@using System.ComponentModel.DataAnnotations;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.Customer;
+@using Kfh.Aurora.Common.Components.UI.Customer
+
+@inherits ApplicationComponent
+
+<PageTitle>Customer Profile</PageTitle>
+@{
+    string formClass = IsSupplementaryCustomer ? "AO-left100--container" : "AO-left70--container";
+}
+<AuroraCustomerKycAlert @bind-CivilId="@CivilId">
+<div class="main-container">
+    <div class="AO-flex--container mt-1">
+        <div class="@formClass">
+
+            @if (ValidSubmit)
+            {
+                <div class="d-flex  align-items-center  justify-content-start gp-8">
+                    <div>
+                        <span class="icon-Circle-check"> </span>
+                    </div>
+                    <div>
+                        @Message
+                    </div>
+                </div>
+            }
+            else
+            {
+                @if (FormDataStatus == DataStatus.Loading)
+                {
+                    <FormSkeleton />
+                }
+
+                if (FormDataStatus == DataStatus.Success && IsValidProfileToCreate && profile is not null)
+                {
+                    <Title Text="Edit Customer Profile"></Title>
+                    <TelerikForm EditContext="editContext" Model="@Model" Columns="@(IsSupplementaryCustomer ? 1: 3)" ColumnSpacing="32px"
+                                 OnValidSubmit="@HandleValidSubmit"
+                                 OnInvalidSubmit="@HandleInvalidSubmit">
+                    
+                        <FormItems>
+
+
+                            <FormItem>
+                                <Template>
+                                    <H5>ArabicName</H5>
+                                    <H3>@profile.ArabicName</H3>
+                                    </Template>
+                                </FormItem>
+
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>FullName</H5>
+                                        <H3>@profile.EnglishName</H3>
+                                    </Template>
+                                </FormItem>
+
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>CivilId</H5>
+                                        <H3>@profile.CivilId</H3>
+                                    </Template>
+                                </FormItem>
+
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>CivilID ExpiryDate</H5>
+                                        <H3>@profile.CIDExpiryDate</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Nationality</H5>
+                                        <H3>@profile.NationalityEnglish</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Holder Name</H5>
+                                        <H3>@Model.HolderName</H3>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.HolderName)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Education</H5>
+                                        <H3>@lookups.EducationLookupData?.FirstOrDefault(x => x.Key.ToString() == profile.EducationId)?.Value</H3>
+                                    </Template>
+                                </FormItem>
+
+
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Position</H5>
+                                        <H3>@lookups.JobTitleLookupData?.FirstOrDefault(x => x.Key.ToString() == profile?.PositionID)?.Value</H3>
+                                    </Template>
+                                </FormItem>
+
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Marital Status</H5>
+                                        <H3>@lookups.MaritalStatuslLookupData?.FirstOrDefault(x => x.Key.ToString() == profile.MaritalStatus)?.Value</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Occupation</H5>
+                                        <H3>@lookups.OccupationLookupData?.FirstOrDefault(x => x.Key.ToString() == profile.Occupation)?.Value</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Occupation Address</H5>
+                                        <H3>@profile.WorkAddress</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <label class="k-form-label k-label" for="Residency">Residency</label>
+                                        <H3>@lookups.Residence?.FirstOrDefault(x => x.Value?.ToString() == profile.Residency)?.Key</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>IncomeSource</H5>
+                                        <H3>@profile.IncomeSource</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>HomePhoneNumber</H5>
+                                        <H3>@profile.HomePhoneNumber</H3>
+                                    </Template>
+                                </FormItem>
+                                <FormItem>
+                                    <Template>
+                                        <H5>Mobile Number</H5>
+                                        <H3>@profile.PhoneNumber</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Address 1</H5>
+                                        <H3>@profile?.CustomerAddresses?[0]?.AddressLine1</H3>
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Address 2</H5>
+                                        <H3>@profile?.CustomerAddresses?[0]?.AddressLine2</H3>
+                                    </Template>
+                                </FormItem>
+
+
+                                <FormItem>
+                                    <Template>
+                                       
+                                    </Template>
+                                </FormItem>
+
+                                <Divider/>
+
+                                <FormItem Class="clear-both">
+                                    <Template>
+                                        <H5>Title*</H5>
+                                        <TelerikDropDownList Data=@titles TextField="Text" ValueField="Value" @bind-Value="@Model.Title">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings MaxHeight="200px" />
+                                            </DropDownListSettings>
+                                        </TelerikDropDownList>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Title)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>First Name*</H5>
+                                        <TelerikTextBox @bind-Value="Model.FirstName"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.FirstName)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+                                <FormItem>
+                                     <Template>
+                                        <H5>Middle Name</H5>
+                                        <TelerikTextBox @bind-Value="Model.MiddleName"></TelerikTextBox>
+                                    </Template>
+                                </FormItem>
+                                <FormItem>
+                                    <Template>
+                                        <H5>Last Name*</H5>
+                                        <TelerikTextBox @bind-Value="Model.LastName"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.LastName)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Date Of Birth*" Field="@nameof(Model.Birth)" /> *@
+                                  <FormItem>
+                                    <Template>
+                                        <H5>Date Of Birth*</H5>
+                                         @* Please bind value of birth below *@
+                                        <TelerikDateInput @bind-Value="Model.Birth" Format="@ConfigurationBase.DateFormat"></TelerikDateInput>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Birth)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                <FormItem>
+                                    <Template>
+                                        <H5>Gender*</H5>
+                                        <TelerikDropDownList Filterable=true Data="@lookups.GenderLookupData" TextField="Value" ValueField="Key" @bind-Value="@Model.Gender">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings MaxHeight="200px" />
+                                            </DropDownListSettings>
+                                        </TelerikDropDownList>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Gender)"></ValidationMessage></SubH2>
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Secondary Civil Id " Field="@nameof(Model.SecondaryCivilId)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Secondary Civil Id</H5>
+                                        <TelerikTextBox @bind-Value="Model.SecondaryCivilId"></TelerikTextBox>
+                                    </Template>
+                                </FormItem>
+                               
+                                <FormItem>
+                                    <Template>
+                                        <H5>Area*</H5>
+                                        <TelerikDropDownList Filterable=true Data="@lookups.AreaCode" TextField="Value" ValueField="Value" @bind-Value="@Model.Area">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings MaxHeight="200px" />
+                                            </DropDownListSettings>
+                                        </TelerikDropDownList>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Area)"></ValidationMessage></SubH2>
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Block No*" Field="@nameof(Model.BlockNo)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Block No*</H5>
+                                        <TelerikTextBox @bind-Value="Model.BlockNo"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.BlockNo)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Street*" Field="@nameof(Model.Street)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Street*</H5>
+                                        <TelerikTextBox @bind-Value="Model.Street"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Street)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Building No*" Field="@nameof(Model.Buildno)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Building No*</H5>
+                                        <TelerikTextBox @bind-Value="Model.Buildno"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Buildno)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+                                
+                                @* <FormItem LabelText="Flat No*" Field="@nameof(Model.Flatno)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Flat No*</H5>
+                                        <TelerikTextBox @bind-Value="Model.Flatno"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Flatno)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+
+                                @* <FormItem LabelText="Email*" Field="@nameof(Model.Email)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Email*</H5>
+                                        <TelerikTextBox @bind-Value="Model.Email"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Email)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+
+                                @* <FormItem LabelText="Employer*" Field="@nameof(Model.EmployerName)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Employer*</H5>
+                                        <TelerikTextBox @bind-Value="Model.EmployerName"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.EmployerName)"></ValidationMessage></SubH2>
+
+                                    </Template>
+                                </FormItem>
+
+
+                                @* <FormItem LabelText="Employer Area" Field="@nameof(Model.EmployerArea)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Employer Area</H5>
+                                        <TelerikTextBox @bind-Value="Model.EmployerArea"></TelerikTextBox>
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Employer Section*" Field="@nameof(Model.EmployerSection)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Employer Section*</H5>
+                                        <TelerikTextBox @bind-Value="Model.EmployerSection"></TelerikTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.EmployerSection)"></ValidationMessage></SubH2>
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Employer Department" Field="@nameof(Model.EmployerDepartment)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Employer Department</H5>
+                                        <TelerikTextBox @bind-Value="Model.EmployerDepartment"></TelerikTextBox>
+                                    </Template>
+                                </FormItem>
+
+                                @* <FormItem LabelText="Duration of Service" Field="@nameof(Model.DurationService)" /> *@
+                                <FormItem>
+                                    <Template>
+                                        <H5>Duration of Service</H5>
+                                        <TelerikTextBox @bind-Value="Model.DurationService"></TelerikTextBox>
+                                    </Template>
+                                </FormItem>
+
+
+                            </FormItems>
+                            
+                            <FormButtons>
+                                    @if (ShowButtons)
+                                {
+                                    if (AuthManager.HasPermission(Permissions.CustomerProfile.Edit()))
+                                    {
+                                        <Button Type="btn-primary" ButtonType="@ButtonType.Submit" Label="Submit"></Button>
+                                    }
+
+                                    if (AuthManager.HasPermission(Permissions.CustomerProfile.Delete()))
+                                    {
+                                        <Button Type="btn-primary" ButtonType="@ButtonType.Button" Label="Delete" OnClick="DeleteProfile"></Button>
+                                    }
+
+
+                                    <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Cancel" OnClick="GoHome"></Button>
+                                }
+                            </FormButtons>
+                        <FormValidation>
+                            <ObjectGraphDataAnnotationsValidator />
+                        </FormValidation>
+                    </TelerikForm>
+                }
+
+                if (!IsValidProfileToCreate)
+                {
+                    <div class="demo-alert demo-alert-failure" role="alert">
+                        @Message
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+</AuroraCustomerKycAlert>

@@ -1,0 +1,18 @@
+﻿@for (var i = 0; i < Count; i++)
+{
+    @ChildContent
+}
+
+@code {
+    /// <summary>
+    /// Number of time to repeat the content
+    /// </summary>
+    [Parameter]
+    public int Count { get; set; } = 1;
+
+    /// <summary>
+    /// Content to display
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

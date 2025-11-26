@@ -1,0 +1,337 @@
+﻿@page "/card-def-request-details"
+
+@inherits ApplicationComponent
+
+<div class="breadcrumb-stickyHeader my-0">
+    <TelerikBreadcrumb Data="@BreadcrumbItems" DisabledField="ItemDisabled" class="mb-0"></TelerikBreadcrumb>
+</div>
+
+<div class="message-view">
+    <div>
+        <div class="d-flex flex-column">
+            <Alert Type="alert-info" Class="m-0" Message="Request has been re-assigned by Bilal-92128"></Alert>
+            <div class="d-flex justify-content-between gp-8">
+                <div>
+                    <H2>Update Card Definition</H2>
+                     <div class="d-flex justify-content-between align-items-center w-100 gp-8 ">
+                        <div class="d-flex justify-content-between align-items-center w-30">
+                            <H4 Class="my-2 text-gray text-nowrap">Created on</H4>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center ps-2 w-70">
+                            <H3 Class=" my-2  text-nowrap"> September 5, 2023 4:32:00 PM</H3>
+                        </div>
+                    </div>
+                     <div class="d-flex justify-content-between align-items-center w-100 gp-8">
+                        <div class="d-flex justify-content-between align-items-center w-30">
+                            <H4 Class="my-2 text-gray text-nowrap ">Maker Name</H4>
+                        </div>
+                         <div class="d-flex justify-content-between align-items-center w-70">
+                            <H3 Class="my-2 ">Bilal Khan</H3>
+                        </div>
+                    </div>
+                     <div class="d-flex justify-content-between align-items-center w-100 gp-8">
+                        <div class="d-flex justify-content-between align-items-center w-30">
+                            <H4 Class="my-2 text-gray">Maker ID</H4>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center w-70">
+                            <H3 Class="my-2 ">80431</H3>
+                        </div>
+                    </div>
+                     <div class="d-flex justify-content-between align-items-center w-100 gp-8">
+                        <div class="d-flex justify-content-between align-items-center w-30">
+                            <H4 Class="my-2 text-gray text-nowrap">Checker ID</H4>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center w-70">
+                            <H3 Class="my-2 ">0</H3>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gp-16">  
+
+                <div class="AO-card--header">
+                    <picture>
+                        <source srcset="" />
+                        <img style="width:120px !important; height: 76px !important; display: block" src="@DefaultImage" onerror="if (this.src != '@DefaultImage') this.src = '@DefaultImage';" />
+                    </picture>
+
+                    <H3>400601XXXXXX7129 </H3>
+                    <SubH1>PrePaid </SubH1>
+                    <div class="mt-3">
+                        <Status StatusClass="blueStatus" StatusTitle="Pending"></Status>
+                    </div>
+
+                </div>
+                        <OnClickComponent >
+                            <TelerikTooltip TargetSelector="#printStm" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                            <CircleIcon Icon="icon-Print" Id="statmentDownload" Title="Print statement" />
+                            <TelerikTooltip TargetSelector="#statmentDownload" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                        </OnClickComponent>
+                </div>
+            </div>
+        </div>
+    </div>
+    <Divider/>
+    <div class="d-flex flex-column gp-24 ">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Card Type</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">45</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">System No</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">5254</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Merchant Account</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">432508199999996</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Monthly Max Due</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">0.0</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Duality</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">1</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Fees</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">25.0</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Max Limit</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">0</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Bin No</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">432508</H4>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100 section-card value-changed-bg">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Min Limit</H3>
+            </div>
+            <div class="d-flex flex-column align-items-left w-70 ">
+                <div>
+                    <H4 Class="text-gray my-2 k-text-line-through">011</H4>
+                </div>
+                <div>
+                  <H3 Class="text-red my-2">10</H3>
+                </div>
+            </div>
+        </div>
+        <Divider/> 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center w-30">
+                <H3 Class="my-0">Installments</H3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center w-70">
+                <H4 Class="my-0 text-gray">0.0</H4>
+            </div>
+        </div>
+          <Divider/> 
+
+        <div>
+        <H2>Card Extensions</H2>
+            <div class="KFHnopadding kfh-data-table ">
+                <TelerikGrid Data="@GridData"
+                            Pageable="true"
+                            PageSize="10"
+                            Width="100%">
+                    <GridColumns>
+                        <GridColumn Field="Attribute" Title="Attribute"  HeaderClass="Cell15 detailsCenter" OnCellRender="@((e) => e.Class = "Cell15 ")">
+                            <Template>
+                                    <H3>Emblem</H3>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Value" Title="Value" HeaderClass="Cell7 detailsCenter" OnCellRender="@((e) => e.Class = "Cell7 ")">
+                            <Template>
+                                    <H3>41300</H3>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                    <NoDataTemplate>
+                        <NoRecordsFound />
+                    </NoDataTemplate>
+                </TelerikGrid>
+            </div>
+        </div>
+
+    </div>
+    <div class="d-flex justify-content-end gp-16 mb-6">
+        <Button Type="btn-territory btn-sm" Label="Delete" OnClick="@(() => { RejectDialogVisible = true; })"></Button>
+        <Button Type="btn-secondary--critical btn-sm" Label="Reject" OnClick="@(() => { RejectDialogVisible = true; })"></Button>
+        <Button Type="btn-primary btn-sm" Label="Approve" OnClick="@(() => { ApproveDialogVisible = true; })"></Button>
+    </div>
+</div>
+
+<TelerikDialog @bind-Visible="@RejectDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true"
+               ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <span class="dialog-icon icon-Critical" />
+                <H2>Reject Request</H2>
+            </div>
+            <H4>You are about to reject this service request </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { RejectDialogVisible = false; })" />
+                <Button Type="btn-secondary--critical btn-sm" Label="Reject Request" OnClick="@RejectRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikDialog @bind-Visible="@ApproveDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true"
+ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Approve Request</H2>
+            </div>
+            <H4>You are about to Approve this service request </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ApproveDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Approve Request" OnClick="@ApproveRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikDialog @bind-Visible="@ReAsssignBranchDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true"
+ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div>
+                <EmptyState Heading="Re-Assign"
+                    Description="Select a branch you want this request to be re-assigned to">
+                </EmptyState>
+                <Form Label="Branch name">
+                    <Dropdown SourceData="@BranchName" SelectedValue="@BranchNameValue"
+                        SelectedValueChanged="@((selectedValue) => { BranchNameValue = selectedValue; })"></Dropdown>
+                </Form>
+            </div>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel"
+                    OnClick="@(() => { ReAsssignBranchDialogVisible = false; })"></Button>
+                <Button Type="btn-primary btn-sm" Label="Re-Assign" OnClick="@ReAsssignBranch"></Button>
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+<TelerikNotification @ref="BranchNotificationReference" Class="MyTelerikNotification"
+VerticalPosition="NotificationVerticalPosition.Bottom"
+HorizontalPosition="NotificationHorizontalPosition.Center">
+    <Template>
+        <div class="d-flex  align-items-center  justify-content-start gp-8">
+            <span class="icon-Circle-check"></span>
+            <H3>Request has been re-assigned to Branch Successfully!</H3>
+        </div>
+    </Template>
+</TelerikNotification> 
+
+<TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom" />
+
+@code {
+
+public bool RejectDialogVisible { get; set; }
+public bool ApproveDialogVisible { get; set; }
+public TelerikNotification? RejectNotificationReference { get; set; }
+public TelerikNotification? ApproveNotificationReference { get; set; }
+public TelerikNotification? BranchNotificationReference { get; set; }
+public bool ReAsssignBranchDialogVisible { get; set; }
+public List<BreadcrumbItem> BreadcrumbItems { get; set; } = default!;
+public string AccessValue { get; set; } = "All";
+public string BranchNameValue { get; set; } 
+public List<string> BranchName { get; set; } = new List<string> { "All", "Branch 1", "Branch 2", "Branch 3", "Branch 4" };
+public List<string> AccessLvl { get; set; } = new List<string> { "Full Access", "View Only" };
+private bool Visible { get; set; }
+
+protected override void OnInitialized()
+{
+    BreadcrumbItems = new List<BreadcrumbItem>
+        {
+        new BreadcrumbItem { Text = "Card Definition Requests", Url = "/" },
+        new BreadcrumbItem { Text = "Update Card Definition", Url = "/"}
+        }; 
+}
+private void RejectRequest()
+{
+    RejectNotificationReference.Show(new NotificationModel()
+        {
+            Text = "Card Request Rejected successfully",
+            Closable = false,
+            CloseAfter = 2000
+        });
+    RejectDialogVisible = false;
+    StateHasChanged();
+}
+
+private void ReAsssignBranch()
+{
+    BranchNotificationReference.Show(new NotificationModel()
+        {
+            Closable = false,
+            CloseAfter = 2000
+        });
+    ReAsssignBranchDialogVisible = false;
+    StateHasChanged();
+}
+private void ApproveRequest()
+{
+    ApproveNotificationReference.Show(new NotificationModel()
+        {
+            Text = "Card Request Approved successfully!",
+            Closable = false,
+            CloseAfter = 2000
+        });
+    ApproveDialogVisible = false;
+    StateHasChanged();
+}
+public class BreadcrumbItem
+{
+    public string Text { get; set; } = default!;
+    public string Url { get; set; } = default!;
+    public bool ItemDisabled { get; set; }
+}
+    public string GridData { get; set; }
+
+}

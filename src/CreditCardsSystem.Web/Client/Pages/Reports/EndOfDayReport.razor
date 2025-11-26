@@ -1,0 +1,195 @@
+﻿@page "/end-of-day-report"
+
+
+@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Domain.Models.Request
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@using CreditCardsSystem.Web.Client.Pages.Reports.Components
+@using Exception = System.Exception
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+<div class="main-container">
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <Title Text="End of Day Reports"></Title>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center gp-16">
+                <div >
+                    @if (IsAllowedToView)
+                    {
+                        <OnClickComponent OnClick="async () => { showSearchButton=false; await FiltersDrawerRef.ToggleAsync(); }">
+                            <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                        </OnClickComponent>
+                        <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                    }
+                </div>
+                <div >
+                    @if (IsAllowedToPrint)
+                    {
+                        <OnClickComponent Enabled="!IsProcessing" OnClick="async () => await PrintReport()">
+                            <CircleIcon Icon="icon-Print" Title="Print" Id="BottomTooltip" />
+                        </OnClickComponent>
+                        <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+
+        @if (!IsAllowedToView)
+        {
+            <AccessDenied />
+        }
+        else   @if (viewSubReport && subReports is not null)
+        {
+            <EndOfDaySubReport subReports="subReports" CloseSubReport="()=>{viewSubReport = false; StateHasChanged();}"></EndOfDaySubReport>
+        }
+        else
+        {
+            @if (endOfDayFilter.Type == "branch")
+            {
+                <EODBranchReport @ref=eodBranchReportRef groupedActivities="EODBranchReport" ViewDetailsRef="ViewDetails"></EODBranchReport>
+            }
+            else if (endOfDayFilter.Type == "staff")
+            {
+                <EODStaffReport groupedActivities="EODStaffReport" ViewDetailsRef="ViewDetails"></EODStaffReport>
+            }
+        }
+        @* <div class="d-flex align-items-center justify-content-center">
+        <Button Type="btn-primary btn-sm" Label="Search " Icon="icon-Search" OnClick="async () => await FiltersDrawerRef.ToggleAsync()"></Button>
+        </div> *@
+        @if (showSearchButton)
+        {
+            <div class="mt-4">
+                <div class="card-v2">
+                    <OnClickComponent OnClick="async () => { showSearchButton=false; await FiltersDrawerRef.ToggleAsync(); }">
+                        <EmptyState VectorName="search" Heading="Search" Description="Search to view End of Day Report"></EmptyState>
+                        
+                    </OnClickComponent>
+                </div>
+            </div>
+        }
+
+
+    </div>
+</div>
+
+@if (IsAllowedToView)
+{
+    <OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+        <OffcanvasContent>
+            <TelerikForm EditContext="editContext">
+                <FormValidation>
+                    <ObjectGraphDataAnnotationsValidator />
+                </FormValidation>
+                <FormItems>
+                    <FormItem>
+                        <Template>
+                            <FormList>
+
+                                <Form Label="Type">
+                                    <div class="accountStatement-typeFilter">
+                                        <ChipGroup Selected="@endOfDayFilter.Type" SelectedChanged="(value)=> { endOfDayFilter.Type= value;   }">
+                                            <Chip Text="Branch" Value="branch"></Chip>
+                                            <Chip Text="Staff" Value="staff"></Chip>
+                                        </ChipGroup>
+                                    </div>
+                                </Form>
+
+
+                                <div class="divider"></div>
+
+                                <Form Label="Activity Type">
+                                    <TelerikDropDownList Id="activity" DefaultText="All" Data="@CFUActivities"
+                                                         TextField="DescriptionEn"
+                                                         ValueField="CfuActivityId"
+                                                         @bind-Value="@endOfDayFilter.ActivityId"
+                                                         Filterable="true"></TelerikDropDownList>
+                                </Form>
+
+                                @if (endOfDayFilter.Type == "branch")
+                                {
+
+                                    <Form Label="Branch*">
+                                        <TelerikDropDownList Data="@Branches?.Where(x=> x.Value!="0").OrderBy(x=> x.Value)"
+                                                             @bind-Value="@endOfDayFilter.BranchId"
+                                                             TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                                             ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                                             Filterable="true">
+                                            <DropDownListSettings>
+                                                <DropDownListPopupSettings Height="300px" MaxHeight="500px" />
+                                            </DropDownListSettings>
+                                            <ItemTemplate>
+                                                @{
+                                                    var item = context as GroupAttributeLookupDto;
+                                                    <div class="card-drop-down-item">
+                                                        <div>
+                                                            <p>@($"({Convert.ToInt16(item.Value).ToString("000")}) {item.Attribute}")</p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </ItemTemplate>
+                                        </TelerikDropDownList>
+                                    </Form>
+
+                                }
+
+                                @if (endOfDayFilter.Type == "staff")
+                                {
+                                    <Form Label="Staff Id*">
+                                        <TelerikTextBox @bind-Value="@endOfDayFilter.StaffId" Placeholder="enter staff id"></TelerikTextBox>
+                                        <SubH2><ValidationMessage For="@(()=> endOfDayFilter.StaffId)" class="kfhtexterror text-red"></ValidationMessage> </SubH2>
+                                    </Form>
+                                }
+                                <H2 Class="mt-4">Duration</H2>
+                                @* <TelerikDateRangePicker @ref="@DatePicker" Placeholder="" T="DateTime?" Format=@ConfigurationBase.ReportDateFormat @bind-StartValue="@endOfDayFilter.FromDate" @bind-EndValue="@endOfDayFilter.ToDate" Size="medium">
+                            </TelerikDateRangePicker> *@
+                                <Form Label="From Date">
+                                    <div class="credit-card-filters mt-4">
+                                        <TelerikDatePicker AutoComplete="true" @bind-Value="@endOfDayFilter.FromDate"></TelerikDatePicker>
+                                    </div>
+                                </Form>
+                                <Form Label="To Date">
+                                    <div class="credit-card-filters mt-4">
+                                        <TelerikDatePicker AutoComplete="true" @bind-Value="@endOfDayFilter.ToDate"></TelerikDatePicker>
+                                    </div>
+                                </Form>
+
+                            </FormList>
+                        </Template>
+                    </FormItem>
+
+                </FormItems>
+                <FormButtons>
+
+                </FormButtons>
+            </TelerikForm>
+        </OffcanvasContent>
+        <OffcanvasFooterContent>
+            <div class="drawer-buttons">
+                <Button Type="btn-primary btn-sm" Label="Apply" OnClick="async () => await SearchEODReport(GenerateFor.ViewOnly)"></Button>
+            </div>
+        </OffcanvasFooterContent>
+    </OffCanvas>
+}
+
+@code {
+    private bool showSearchButton { get; set; } = true;
+}

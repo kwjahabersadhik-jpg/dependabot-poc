@@ -1,0 +1,82 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Web.Client.Components.Elements
+
+
+@if (groupedActivities.Status is DataStatus.Loading)
+{
+    <DataTableSkeleton />
+}
+else if (groupedActivities.Status is DataStatus.Error)
+{
+    <TechError Message="@groupedActivities.Exception?.Message" />
+}
+
+
+else if (groupedActivities.Status is DataStatus.Success)
+{
+    var data = groupedActivities.Data;
+
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center pt-4">
+            <CustomerAvatar Avatar="/dist/images/Team/default-avatar.png" />
+            <div class="AO-customerProfile--info  w-80">
+                <H2>@($"{data?.TellerName}({data?.TellerId})")</H2>
+                @if (data?.Summaries?.Count() <= 0)
+                {
+                    <SubH2 class="text-red">No activites found</SubH2>
+                }
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center gp-16">
+        </div>
+
+    </div>
+    <div class="kfh-data-table p-0">
+        <TelerikGrid Data="data?.Summaries??[]" PageSize=20 Pageable="true">
+            <GridColumns>
+                <GridColumn Field="ActivityDescription" Title="Description" HeaderClass="col-xl-3 text-start " OnCellRender="@((e) => e.Class = "col-xl-3 text-start ")"></GridColumn>
+                <GridColumn Field="Count" Title="No of Activities	" HeaderClass="Cell10 detailsCenter" OnCellRender="@((e) => e.Class = "Cell10 detailsCenter fieldHeader")"></GridColumn>
+                <GridColumn HeaderClass="Cell10" OnCellRender="@((e) => e.Class = "Cell10")">
+                    <Template>
+                        <TextButton Label="View Details" Enabled="true" LeftIcon="icon-Arrow-right" OnClick="@(async() =>await ViewDetails(data.TellerId, (context as EODStaffReportSummary)))"></TextButton>
+                    </Template>
+                </GridColumn>
+
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+
+
+
+
+
+
+
+
+}
+else
+{
+
+    @* <NoRecordsFound /> *@
+
+}
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<EODReportSummary> ViewDetailsRef { get; set; }
+
+    [Parameter]
+    public DataItem<EODStaffReportDto> groupedActivities { get; set; } = new();
+
+
+
+
+    async Task ViewDetails(decimal tellerId, EODStaffReportSummary activity)
+    {
+        await ViewDetailsRef.InvokeAsync(new EODReportSummary() { TellerId = tellerId, CfuActivityId = (decimal)activity.ActivityId! });
+    }
+}

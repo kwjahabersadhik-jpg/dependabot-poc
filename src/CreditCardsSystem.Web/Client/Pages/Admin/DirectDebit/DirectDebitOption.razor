@@ -1,0 +1,226 @@
+﻿ @page "/direct-debit-option"
+
+
+@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.DirectDebit
+@using CreditCardsSystem.Domain.Models.Report
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Domain.Models.Request
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@using CreditCardsSystem.Web.Client.Pages.Reports.Components
+@using Exception = System.Exception
+
+
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+<PageTitle>Direct Debit Option</PageTitle>
+
+
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="table-header row mx-0">
+                <Title Text="Direct Debit Option"></Title>
+
+            </div>
+            <CardContainer>
+                @if (!IsAllowTo(Permissions.DirectDebit.View()))
+                {
+                    <AccessDenied />
+                }
+                else
+                {
+                    @if (model is not null)
+                    {
+                        <TelerikForm EditContext="@editContext" Model="@model">
+                            <FormValidation>
+                                <ObjectGraphDataAnnotationsValidator />
+                            </FormValidation>
+                            <FormItems>
+                                <FormItem>
+                                    <Template>
+                                        <div class="form-flex ps-4 mt-4">
+
+                                            <div>
+
+                                                <div class="k-form-field-wrap">
+                                                    <H3>Options</H3>
+                                                    <TelerikRadioGroup Data="@Options"
+                                                                       @bind-Value="@SelectedOption"></TelerikRadioGroup>
+
+                                                </div>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => model.IsFileLoadReq!)"></ValidationMessage></SubH2>
+
+                                            </div>
+
+                                            <div>
+                                                <H3>Contents</H3>
+                                                @foreach (var content in GenerationOptions)
+                                                {
+                                                    <div class="mt-sm">
+                                                        <div class="checkbox clear-both">
+                                                            <TelerikCheckBox TValue="bool" @bind-Value="@content.IsSelected" Size="lg" />
+                                                            <label>
+                                                                @content.Text
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
+                                                }
+                                            </div>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => model.GenerationOptions!)"></ValidationMessage></SubH2>
+
+                                            <div class="drawer-buttons">
+                                                @if (IsAllowTo(Permissions.DirectDebit.Edit()))
+                                                {
+                                                    <Button Type="btn-primary btn-md" Label="Submit" OnClick="async () => await Submit()"></Button>
+                                                }
+                                            </div>
+
+                                        </div>
+
+                                    </Template>
+                                </FormItem>
+
+                            </FormItems>
+                            <FormButtons>
+                            </FormButtons>
+                        </TelerikForm>
+                    }
+                }
+            </CardContainer>
+        </div>
+    </div>
+
+
+
+@code {
+    [Inject] public IDirectDebitAppService directDebitAppService { get; set; } = default!;
+
+    private EditContext? editContext { get; set; } = null!;
+    ValidationMessageStore? validationMessageStore;
+
+    private DirectDebitOptionDto? model { get; set; }
+
+    private List<ListItem> Options = [new() { Text = "File load required", Value = 1 }, new() { Text = "Generate reversal payment", Value = 2 }];
+    private int? SelectedOption = null;
+
+    private record DirectDebitOptionItem(string Text, string Key, bool IsSelected)
+    {
+        public bool IsSelected { get; set; }
+    }
+
+    private List<DirectDebitOptionItem> GenerationOptions { get; set; } = [
+        new("101", "101", false),
+    new("Staff", "S", false),
+    new("Others", "O", false),
+    new("Corporate Card", "C", false),
+    ];
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAllowTo(Permissions.DirectDebit.View()))
+        {
+            Notification.Failure(GlobalResources.NotAuthorized);
+            return;
+        }
+
+        await BindEditContext();
+    }
+
+
+
+    async Task Submit()
+    {
+
+        if (!await IsValidData())
+            return;
+
+        Notification.Loading("Direct debit submission is in process..");
+
+        var response = await directDebitAppService.Create(model);
+
+        if (!response.IsSuccess)
+        {
+            Notification.Failure(response.Message);
+            return;
+        }
+
+        Notification.Success("Successfully updated !");
+    }
+
+
+    async Task<bool> IsValidData()
+    {
+
+        model!.GenerationOptions = string.Join(",", GenerationOptions.Where(x => x.IsSelected).Select(x => x.Key));
+
+        if (string.IsNullOrEmpty(model.GenerationOptions))
+            editContext!.AddAndNotifyFieldError(validationMessageStore!, () => model.GenerationStatus, "Please select any option!");
+
+        model.IsFileLoadReq = SelectedOption == 1 ? "1" : "0";
+        model.IsReversalPayment = SelectedOption != 1 ? "1" : "0";
+        model.GenerationStatus = "P";
+
+        if (model.IsFileLoadReq == "0" && model.IsReversalPayment == "0")
+            editContext!.AddAndNotifyFieldError(validationMessageStore!, () => model.IsFileLoadReq, "Please select any option(s)!");
+
+        if (!editContext!.Validate())
+            return false;
+
+        var response = await directDebitAppService.Get();
+
+        if (!response.IsSuccess)
+        {
+            Notification.Failure(response.Message);
+            return false;
+        }
+
+        var edata = response.Data;
+
+        if (edata is not null)
+        {
+            if (edata.EntryDate?.Date == DateTime.Today && edata.GenerationOptions == model.GenerationStatus && edata.IsFileLoadReq == model.IsFileLoadReq && edata.GenerationStatus == "P")
+            {
+                Notification.Failure(GlobalResources.DirectDebitSameOption);
+                return false;
+            }
+            else if (edata.GenerationStatus == "P")
+            {
+                Notification.Failure(GlobalResources.PendingDirectDebitOption);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    async Task BindEditContext()
+    {
+
+        model ??= new();
+        editContext = new EditContext(model);
+        validationMessageStore = new ValidationMessageStore(editContext);
+    }
+
+
+
+
+
+}

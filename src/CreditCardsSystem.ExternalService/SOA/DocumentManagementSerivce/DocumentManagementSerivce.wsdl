@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://www.openuri.org/" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" name="DocumentManagementSerivce" targetNamespace="http://www.openuri.org/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<wsp:UsingPolicy wssutil:Required="true" />
+	<wsp1_2:Policy wssutil:Id="policy">
+		<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+			<wsp1_2:Policy>
+				<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+					<wsp1_2:Policy>
+						<ns1:WssUsernameToken10 />
+					</wsp1_2:Policy>
+				</ns1:UsernameToken>
+			</wsp1_2:Policy>
+		</ns1:SupportingTokens>
+	</wsp1_2:Policy>
+	<types>
+		<xsd:schema>
+			<xsd:import schemaLocation="https://integration:443/KFHCommonBusinessWebservices/DocumentManagementSerivce?xsd=1" namespace="http://www.openuri.org/" />
+		</xsd:schema>
+	</types>
+	<message name="createDocument">
+		<part name="parameters" element="tns:createDocument" />
+	</message>
+	<message name="createDocumentResponse">
+		<part name="parameters" element="tns:createDocumentResponse" />
+	</message>
+	<message name="Exception">
+		<part name="fault" element="tns:Exception" />
+	</message>
+	<message name="getDocument">
+		<part name="parameters" element="tns:getDocument" />
+	</message>
+	<message name="getDocumentResponse">
+		<part name="parameters" element="tns:getDocumentResponse" />
+	</message>
+	<message name="getDocumentType">
+		<part name="parameters" element="tns:getDocumentType" />
+	</message>
+	<message name="getDocumentTypeResponse">
+		<part name="parameters" element="tns:getDocumentTypeResponse" />
+	</message>
+	<message name="searchDocumentDetails">
+		<part name="parameters" element="tns:searchDocumentDetails" />
+	</message>
+	<message name="searchDocumentDetailsResponse">
+		<part name="parameters" element="tns:searchDocumentDetailsResponse" />
+	</message>
+	<message name="storeDocument">
+		<part name="parameters" element="tns:storeDocument" />
+	</message>
+	<message name="storeDocumentResponse">
+		<part name="parameters" element="tns:storeDocumentResponse" />
+	</message>
+	<portType name="DocumentManagementSerivce">
+		<operation name="createDocument">
+			<input wsam:Action="http://www.openuri.org/DocumentManagementSerivce/createDocumentRequest" message="tns:createDocument" />
+			<output wsam:Action="http://www.openuri.org/DocumentManagementSerivce/createDocumentResponse" message="tns:createDocumentResponse" />
+			<fault wsam:Action="http://www.openuri.org/DocumentManagementSerivce/createDocument/Fault/Exception" name="Exception" message="tns:Exception" />
+		</operation>
+		<operation name="getDocument">
+			<input wsam:Action="http://www.openuri.org/DocumentManagementSerivce/getDocumentRequest" message="tns:getDocument" />
+			<output wsam:Action="http://www.openuri.org/DocumentManagementSerivce/getDocumentResponse" message="tns:getDocumentResponse" />
+			<fault wsam:Action="http://www.openuri.org/DocumentManagementSerivce/getDocument/Fault/Exception" name="Exception" message="tns:Exception" />
+		</operation>
+		<operation name="getDocumentType">
+			<input wsam:Action="http://www.openuri.org/DocumentManagementSerivce/getDocumentTypeRequest" message="tns:getDocumentType" />
+			<output wsam:Action="http://www.openuri.org/DocumentManagementSerivce/getDocumentTypeResponse" message="tns:getDocumentTypeResponse" />
+		</operation>
+		<operation name="searchDocumentDetails">
+			<input wsam:Action="http://www.openuri.org/DocumentManagementSerivce/searchDocumentDetailsRequest" message="tns:searchDocumentDetails" />
+			<output wsam:Action="http://www.openuri.org/DocumentManagementSerivce/searchDocumentDetailsResponse" message="tns:searchDocumentDetailsResponse" />
+			<fault wsam:Action="http://www.openuri.org/DocumentManagementSerivce/searchDocumentDetails/Fault/Exception" name="Exception" message="tns:Exception" />
+		</operation>
+		<operation name="storeDocument">
+			<input wsam:Action="http://www.openuri.org/DocumentManagementSerivce/storeDocumentRequest" message="tns:storeDocument" />
+			<output wsam:Action="http://www.openuri.org/DocumentManagementSerivce/storeDocumentResponse" message="tns:storeDocumentResponse" />
+		</operation>
+	</portType>
+	<binding name="DocumentManagementSerivceSoapBinding" type="tns:DocumentManagementSerivce">
+		<wsp:PolicyReference URI="#policy" />
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="createDocument">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="Exception">
+				<soap:fault use="literal" name="Exception" namespace="" />
+			</fault>
+		</operation>
+		<operation name="getDocument">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="Exception">
+				<soap:fault use="literal" name="Exception" namespace="" />
+			</fault>
+		</operation>
+		<operation name="getDocumentType">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="searchDocumentDetails">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="Exception">
+				<soap:fault use="literal" name="Exception" namespace="" />
+			</fault>
+		</operation>
+		<operation name="storeDocument">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="DocumentManagementSerivce">
+		<port name="DocumentManagementSerivceSoap" binding="tns:DocumentManagementSerivceSoapBinding">
+			<soap:address location="https://integration:443/KFHCommonBusinessWebservices/DocumentManagementSerivce" />
+		</port>
+	</service>
+</definitions>

@@ -1,0 +1,43 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.CardOperation
+@using CreditCardsSystem.Utility.Extensions
+
+
+
+
+
+@if (DataItem.Status == DataStatus.Loading)
+{
+    <DataTableSkeleton />
+}
+
+@if (DataItem.Status == DataStatus.Success && DataItem.Data is { IsValidCreditCheckData: true })
+{
+    <H2>@Label</H2>
+    <CheckerField Label="DBR:" Value="@DataItem.Data.DBRValue.ToText()"></CheckerField>
+    <CheckerField Label="Over 62" Value="@DataItem.Data.OverAgeValue.ToText()"></CheckerField>
+    <CheckerField Label="Guarantor" Value="@DataItem.Data.GuarantorValue.ToText()"></CheckerField>
+    <CheckerField Label="CAPS" Value="@DataItem.Data.CapsValue.ToText()"></CheckerField>
+    <CheckerField Label="Limit > 10.000" Value="@DataItem.Data.LimitGreaterThan10000Value.ToText()"></CheckerField>
+    <CheckerField Label="Limit > Salary x10 " Value="@DataItem.Data.LimitSalaryX10Value.ToText()"></CheckerField>
+    <CheckerField Label="Percentage" Value="@DataItem.Data.PercentageValue"></CheckerField>
+    <CheckerField Label="Retiree" Value="@DataItem.Data.RetireeValue.ToText()"></CheckerField>
+
+    <span>@DataItem!.Data!.isThereDBRException</span>
+    <span>@DataItem!.Data!.isThereException</span>
+}
+
+@if (DataItem.Status == DataStatus.Error)
+{
+    @DataItem?.Exception?.Message.ToString()
+}
+
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public DataItem<CreditCheckCalculationResponse> DataItem { get; set; }
+}

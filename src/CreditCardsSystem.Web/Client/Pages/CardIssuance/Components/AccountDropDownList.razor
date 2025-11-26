@@ -1,0 +1,170 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using System.Linq.Expressions;
+@using CreditCardsSystem.Utility.Extensions;
+
+@if (DataItem.Status != DataStatus.Uninitialized)
+{
+
+    <H5>@Title</H5>
+    <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@(DataItem.Status==DataStatus.Loading)"></TelerikLoader>
+
+    @if (DataItem.Status == DataStatus.Error)
+    {
+        <H3 Class="clear-both text-red">@DataItem.Exception?.Message</H3>
+    }
+
+    @if (DataItem.Status == DataStatus.Success)
+    {
+        if (DataItem?.Data is null || DataItem?.Data?.Count == 0)
+        {
+            <SubH2> <div class="kfhtexterror text-red clear-both">@NoRecordFoundText</div></SubH2>
+        }
+        else
+        {
+            <TelerikDropDownList Filterable=true Data="@DataItem?.Data.OrderByDescending(x=> x.AvailableBalance)"
+                                 TextField="Acct" ValueField="Acct" AdaptiveMode="AdaptiveMode.Auto"
+                                 DefaultText="@DefaultText" @bind-Value="@_accountNumber"
+                                 OnChange="@OnChanged" Class="dropdown-v2 mega-dropdown">
+                <DropDownListSettings>
+                    <DropDownListPopupSettings Class="dropdown-v2-popup" Height="45vh" />
+                </DropDownListSettings>
+                <ValueTemplate>
+                    <div class="account-list-items d-flex w-100 align-items-center gp-8">
+                        <CircleIcon Icon="icon-Account" />
+                        <div class="d-flex flex-column gp-4">
+                            <H3 class="my-0">@context.Acct</H3>
+                            <SubH1 class="my-0 text-gray50">@context.AcctTypeEnglish</SubH1>
+                        </div>
+                        @if (context.ViewCurrentAccountBalance)
+                        {
+
+                            <H3 Class="ms-auto">
+                                <b>
+                                    @context.TotalBalance.ToString("n3") <SubH2 Class="text-gray">@context.Currency</SubH2>
+                                </b>
+                            </H3>
+                        }
+                        else
+                        {
+                            <Icon class="icon-Block ms-auto" IconColor="text-red" id="TooltipBottom" title="Not allowed to view balance"> </Icon>
+                            <TelerikTooltip TargetSelector="#TooltipBottom" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                        }
+                    </div>
+                </ValueTemplate>
+                <ItemTemplate>
+                    @{
+                        <div class="account-list-items d-flex w-100 align-items-center gp-8 p-3">
+                            <CircleIcon Icon="icon-Account" />
+                            <div class="d-flex flex-column gp-4">
+
+                                <H3 Class="my-0">@context.Acct</H3>
+                                <SubH1 Class="my-0 text-gray50">@context.AcctTypeEnglish</SubH1>
+                            </div>
+                            @if (context.ViewCurrentAccountBalance)
+                            {
+
+                                <H3 Class="@(context.TotalBalance<=0 ?"ms-auto text-red":"ms-auto")">  <b>@context.TotalBalance.ToString("n3") <SubH2 Class="@(context.TotalBalance<=0 ?"text-red":"text-gray")">@context.Currency</SubH2> </b> </H3>
+
+
+                            }
+                            else
+                            {
+                                <Icon class="icon-Block ms-auto" IconColor="text-red" id="TooltipBottom" title="Not allowed to view balance"> </Icon>
+                                <TelerikTooltip TargetSelector="#TooltipBottom" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                @* <SubH1>Not allowed to view balance</SubH1> *@
+
+                            }
+                        </div>
+                    }
+                </ItemTemplate>
+            </TelerikDropDownList>
+            @if (SelectedCardAccount is not null)
+            {
+
+                <H5 Class="@(SelectedCardAccount.AvailableBalance<=0 && SelectedCardAccount.ViewCurrentAccountBalance?"text-red":"")">
+                    Available Balance :
+                    @if (SelectedCardAccount.ViewCurrentAccountBalance)
+                    {
+                        @SelectedCardAccount.AvailableBalance.ToMoney(SelectedCardAccount.Currency)
+                    }
+                    else
+                    {
+                        <span class="icon-Block" id="tooltipBottom" title="No Permission"></span>
+                    }
+                </H5>
+
+
+                @if (ShowCurrentBalance)
+                {
+                    <H5 Class="@(SelectedCardAccount.CurrentBalance<=0 ?"text-red":"")">
+                        Current Balance :
+                        @if (SelectedCardAccount.ViewCurrentAccountBalance)
+                        {
+                            @SelectedCardAccount.CurrentBalance.ToMoney(SelectedCardAccount.Currency)
+                        }
+                        else
+                        {
+                            <span class="icon-Block" id="tooltipBottom" title="No Permission"></span>
+                        }
+                    </H5>
+                }
+            }
+        }
+    }
+
+    if (DataItem?.Data is not null && DataItem?.Data?.Count > 0)
+        if (For is not null)
+        {
+            <SubH2><ValidationMessage class="kfhtexterror text-red clear-both" For="@For"></ValidationMessage></SubH2>
+        }
+}
+
+@code {
+
+    [Parameter]
+    public DataItem<List<AccountDetailsDto>> DataItem { get; set; } = new();
+
+
+    private string _accountNumber { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (string.IsNullOrEmpty(_accountNumber) || SelectedCardAccount is null)
+        {
+            _accountNumber = SelectedCardAccount is null ? string.Empty : SelectedCardAccount.Acct;
+        }
+        await Task.CompletedTask;
+    }
+
+
+
+
+    [Parameter]
+    public EventCallback<string> AccountNumberValueChanged { get; set; }
+
+    [Parameter]
+    public AccountDetailsDto SelectedCardAccount { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnCardAccountChanged { get; set; }
+
+    [Parameter]
+    public bool ShowCurrentBalance { get; set; } = false;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    private string DefaultText => $"Select {Title}";
+
+    private string NoRecordFoundText => $"{Title} not available";
+
+    [Parameter]
+    public Expression<Func<object>>? For { get; set; }
+
+    private async Task OnChanged()
+    {
+        await OnCardAccountChanged.InvokeAsync(_accountNumber);
+    }
+}

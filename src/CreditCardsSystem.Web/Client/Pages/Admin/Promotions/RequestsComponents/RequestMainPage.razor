@@ -1,0 +1,152 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Services
+@using CreditCardsSystem.Domain.Models.Promotions
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.EligiblePromotions
+@using CreditCardsSystem.Web.Client.Pages.Admin.Promotions.RequestsComponents
+@using CreditCardsSystem.Web.Client.Pages.Admin.Promotions.RequestsComponents.RequestsDetailsForms
+
+@page "/request/details"
+@inject RequestStateContainer RequestStateContainer;
+@inject IRequestsOpsAppService RequestsOpsAppService
+@inherits ApplicationComponent
+
+<div class="container-fluid"> 
+    <div class="container">
+        <div class="sticky-breadcrumb px-0">
+            <TelerikBreadcrumb Data="@BreadcrumbItems" DisabledField="ItemDisabled" class="mb-0"></TelerikBreadcrumb>
+        </div>
+
+        <div>
+            <div class="mt-4">
+                <RequestHeader></RequestHeader>
+            </div>
+            <Divider />
+            <div class="d-flex flex-column gp-24 ">
+                @switch (RequestStateContainer.RequestHeader.ActivityForm)
+                {
+                    case ActivityForm.Promotion:
+                        <RequestDetails T="@(PromotionDto)"></RequestDetails>
+                        break;
+                    case ActivityForm.EligiblePromotions:
+                        <RequestDetails T="@(EligiblePromotionDto)"></RequestDetails>
+                        break;
+                    case ActivityForm.PromotionGroup:
+                        <RequestDetails T="@(PromotionGroupDto)"></RequestDetails>
+                        break;
+                    case ActivityForm.GroupAttribute:
+                        <GroupAttributeRequest></GroupAttributeRequest>
+                        break;
+                    case ActivityForm.Services:
+                        <RequestDetails T="@(ServiceDto)"></RequestDetails>
+                        break;
+                    case ActivityForm.PCT:
+                        <RequestDetails T="@(PctDto)"></RequestDetails>
+                        break;
+                    case ActivityForm.CardDef:
+                        <CardDefRequest></CardDefRequest>
+                        break;
+                    case ActivityForm.CardEligibilityMatrix:
+                        <RequestDetails T="@(CardMatrixDto)"></RequestDetails>
+                        break;
+                }
+
+            </div>
+            <div class="d-flex justify-content-end gp-16 mb-6 mt-5">
+                <RequestActions IsAuthorized="@IsAuthorized"></RequestActions>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@code {
+
+    public class BreadcrumbItem
+    {
+        public string Text { get; set; } = default!;
+        public string Url { get; set; } = default!;
+        public bool ItemDisabled { get; set; }
+    }
+
+    [SupplyParameterFromQuery]
+    public string RequestId { get; set; } = string.Empty;
+
+    public bool IsAuthorized { get; set; }
+
+    public List<BreadcrumbItem> BreadcrumbItems { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        BreadcrumbItems = new List<BreadcrumbItem>
+        {
+            new() { Text = "Requests", Url = "/requests" },
+            new() { Text = "Request Details", Url = ""}
+        }; 
+
+        if (!string.IsNullOrEmpty(RequestId))
+        {
+            RequestId = RequestId.Decode()!;
+            RequestStateContainer.RequestId = RequestId;
+            RequestStateContainer = await SetRequestData(RequestStateContainer);
+        }
+
+        await CheckingAccess();
+    }
+
+    public async Task<RequestStateContainer> SetRequestData(RequestStateContainer requestStateContainer)
+    {
+        if (requestStateContainer.RequestHeader.RequestActivityId == 0)
+        {
+
+            requestStateContainer.UserId = AuthManager.GetUser()!.KfhId;
+
+            var requestHeaderResponse = await RequestsOpsAppService.GetRequestsByCriteria(new RequestsSearchCriteria
+            {
+                RequestId = Convert.ToInt64(requestStateContainer.RequestId)
+            });
+
+            if (requestHeaderResponse.IsSuccess)
+            {
+                requestStateContainer.RequestHeader = requestHeaderResponse.Data!.FirstOrDefault()!;
+
+                var requestDetails = await RequestsOpsAppService.GetRequestDetailsById(Convert.ToInt64(requestStateContainer.RequestId));
+                if (requestDetails.IsSuccess)
+                    requestStateContainer.RequestDetails = requestDetails.Data!;
+            }
+        }
+
+        return requestStateContainer;
+    }
+
+    private async Task CheckingAccess()
+    {
+        var permission = RequestStateContainer.RequestHeader.ActivityForm switch
+        {
+            ActivityForm.Promotion => Permissions.Promotions.Approve(),
+            ActivityForm.EligiblePromotions => Permissions.EligiblePromotions.Approve(),
+            ActivityForm.PromotionGroup => Permissions.PromotionGroup.Approve(),
+            ActivityForm.GroupAttribute => Permissions.GroupAttributes.Approve(),
+            ActivityForm.Services => Permissions.Services.Approve(),
+            ActivityForm.PCT => Permissions.PCT.Approve(),
+            ActivityForm.CardDef => Permissions.CardDefinitions.Approve(),
+            ActivityForm.CardEligibilityMatrix => Permissions.CardEligibilityMatrix.Approve(),
+        };
+
+        IsAuthorized = IsAllowTo(permission);
+
+    }
+
+
+    
+}

@@ -1,0 +1,597 @@
+﻿@page "/issue-supplementary-card"
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using Kfh.Aurora.Blazor.Components.UI.Responsiveness
+
+@layout BlankLayout
+
+@inherits ApplicationComponent
+@code {
+    public bool IsHavingSupplementaryCards => CardsCount.Existing != 0;
+    public int CurrentStep => WizardStepIndex + 1;
+    public int LastStep => IsHavingSupplementaryCards ? 5 : 4;
+}
+
+
+<ScreenSizeTypeProvider BreakingPoints="@_breakingPoints" OnResize="@OnScreenResized" />
+
+<div class="card-wizard wizard-center">
+    <div class="wrapper-wizard">
+        <div class="container">
+
+            @if (IsFormReady)
+            {
+                var cardImage = GetCreditCardImage(cardInfo?.CardType);
+
+                @if (IsAllowSupplementary)
+                {
+
+                    @* <TelerikWizard @bind-Value="@Value" StepperPosition="WizardStepperPosition.Left" ShowPager=false> *@
+                    <TelerikWizard @bind-Value="@WizardStepIndex" StepperPosition="@( _screenSizeType != ScreenSizeTypeProvider.ScreenSizeType.Large ? WizardStepperPosition.Left : WizardStepperPosition.Top )" ShowPager="true" Class="full-width-step col">
+                        <WizardSettings>
+                            <WizardStepperSettings Linear="true" StepType="StepperStepType.Steps"></WizardStepperSettings>
+                        </WizardSettings>
+                        <WizardSteps>
+                            @if (IsHavingSupplementaryCards)
+                            {
+                                <WizardStep Label="Existing Cards" Valid="@IsValid" OnChange="OnStepChange">
+                                    <Content>
+                                        <H1 class="cc-wizard-heading">Existing Cards</H1>
+                                        <div class="d-flex flex-column gp-16">
+                                            <div class="KFHnopadding kfh-data-table">
+                                                <TelerikGrid Data="@ExistingSupplementries" Pageable="true" Sortable="false">
+                                                    <GridColumns>
+
+                                                        <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                                                            <Template>
+
+                                                                <TelerikButton class="AO-image--button">
+                                                                    <picture>
+                                                                        <source srcset="" />
+                                                                        <img class="AO-cell--image" src=@cardImage />
+                                                                    </picture>
+                                                                </TelerikButton>
+
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridColumn Field="Existing Cards" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell")" HeaderClass="Cell15 AO-detailed--cell">
+                                                            <Template>
+                                                                @{
+                                                                    var ditem = context as SupplementaryCardDetail;
+                                                                }
+                                                                <div class="detailedCell-content">
+                                                                    <H2> @ditem?.HolderName <b>(@ditem?.Relation)</b> </H2>
+                                                                    <SubH1>@DisplayCardNumber(ditem?.CardNumberDto)</SubH1>
+                                                                </div>
+                                                            </Template>
+                                                        </GridColumn>
+                                                        <GridColumn Field="Validity" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                            <Template>
+                                                                @{
+                                                                    var ditem = context as SupplementaryCardDetail;
+                                                                }
+                                                                <H3>Validity @ditem?.CardData?.RequestDate.ToString(ConfigurationBase.DateFormat) - @ditem?.CardData?.Expiry?.ToString(ConfigurationBase.DateFormat)</H3>
+                                                            </Template>
+                                                        </GridColumn>
+                                                        <GridColumn Field="Limit" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                            <Template>
+                                                                @{
+                                                                    var ditem = context as SupplementaryCardDetail;
+                                                                }
+                                                                <H3>Limit @ditem?.CardData?.ApprovedLimit</H3>
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridColumn Field="Status" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                            <Template>
+
+                                                                @{
+                                                                    var ditem = context as SupplementaryCardDetail;
+                                                                }
+                                                                <Status StatusClass="@Helpers.GetStatusClass(ditem!.CardStatus)" StatusTitle="@ditem?.CardStatus.ToString()"></Status>
+
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridColumn Field="Remarks" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                            <Template>
+
+                                                                @{
+                                                                    var ditem = context as SupplementaryCardDetail;
+                                                                }
+                                                                <H3> @ditem?.CardData?.Remark </H3>
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                    </GridColumns>
+                                                    <NoDataTemplate>
+                                                        <NoRecordsFound />
+                                                    </NoDataTemplate>
+                                                </TelerikGrid>
+                                            </div>
+                                        </div>
+                                    </Content>
+                                </WizardStep>
+                            }
+                            <WizardStep Label="Add Card" Valid="@IsValid" OnChange="OnStepChange">
+                                <Content>
+
+
+
+                                    <div class="table-header mt-8 mx-0">
+                                        <H1 class="cc-wizard-heading">New Supplementary Card(s) </H1>
+                                        <div class="table-selectedFilters">
+                                            <OnClickComponent OnClick=OpenNewForm Enabled=CanAddNew>
+                                                <CircleIcon Icon="icon-Plus" Id="opennewacc" Title="Add new supplementary" />
+                                            </OnClickComponent>
+                                            <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                        </div>
+                                    </div>
+
+                                    <div class="KFHnopadding kfh-data-table">
+                                        <TelerikGrid @ref=newItemsGridRef Data="@Model.SupplementaryCards" Pageable="true" Sortable="false">
+                                            <GridColumns>
+                                                <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                                                    <Template>
+                                                        <TelerikButton class="AO-image--button">
+                                                            <picture>
+                                                                <source srcset="" />
+                                                                <img class="AO-cell--image" src=@cardImage />
+                                                            </picture>
+                                                        </TelerikButton>
+
+                                                    </Template>
+                                                </GridColumn>
+
+                                                <GridColumn Field="New Card" OnCellRender="@((e) => e.Class = "Cell25 AO-detailed--cell")" HeaderClass="Cell25 AO-detailed--cell">
+                                                    <Template>
+                                                        @{
+                                                            var ditem = context as SupplementaryEditModel;
+                                                        }
+                                                        <div class="detailedCell-content">
+                                                            <H2> @ditem?.HolderName <b>(@ditem?.RelationName)</b> </H2>
+                                                        </div>
+                                                    </Template>
+                                                </GridColumn>
+                                                @if (cardInfo.CardType != ConfigurationBase.AlOsraPrimaryCardTypeId)
+                                                {
+                                                    <GridColumn Field="Limit" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                        <Template>
+                                                            @{
+                                                                var ditem = context as SupplementaryEditModel;
+                                                            }
+                                                            <H3>Limit @ditem?.SpendingLimit</H3>
+                                                        </Template>
+                                                    </GridColumn>
+                                                }
+                                                <GridColumn Field="Remarks" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                    <Template>
+                                                        @{
+                                                            var ditem = context as SupplementaryEditModel;
+                                                        }
+                                                        <H3>@ditem?.Remarks</H3>
+                                                    </Template>
+                                                </GridColumn>
+                                                <GridColumn HeaderClass="Cell5" OnCellRender="@((e) => e.Class = "Cell5")">
+                                                    <Template>
+                                                        @{
+                                                            var ditem = context as SupplementaryEditModel;
+                                                            <ActionsMenu>
+                                                                <ChildContent>
+                                                                    <ActionMenuItem ItemIcon=" " ItemText="Edit" OnClickAction=@(async()=>{ await Edit(ditem.Id);})></ActionMenuItem>
+                                                                    <ActionMenuItem ItemIcon=" " Class="item-cancel" ItemText="Delete" OnClickAction=@(async()=>{ await DeleteItem(ditem.Id);})></ActionMenuItem>
+                                                                </ChildContent>
+                                                            </ActionsMenu>
+
+                                                        }
+                                                    </Template>
+                                                </GridColumn>
+
+                                            </GridColumns>
+                                            <NoDataTemplate>
+                                                <NoRecordsFound />
+                                            </NoDataTemplate>
+                                        </TelerikGrid>
+                                    </div>
+
+                                    <div class="d-flex flex-column gp-16 mt-6 pt-4">
+                                        @{
+                                            string message = "You have reached maximum number of supplementary for this card";
+
+                                            if (CardsCount.Remaining != 0)
+                                            {
+                                                message = $"Remaining cards {CardsCount.Remaining} and maximum spending limit is {AvailableLimit}. example: you can add each card with less or equal limit {(AvailableLimit / CardsCount.Remaining).ToMoney()}";
+                                                <Alert Type="alert-info" Message="@message" ActionLabel=" "></Alert>
+                                            }
+                                            else
+                                            {
+                                                <Alert Type="alert-critical" Message="@message" ActionLabel=" "></Alert>
+                                            }
+                                        }
+                                    </div>
+                                </Content>
+                            </WizardStep>
+                            <WizardStep Label="Choose Seller" Valid="@IsValid" OnChange="OnStepChange">
+                                <Content>
+                                    <div>
+                                        <div class="wizard-label-header">
+                                            <H1 class="cc-wizard-heading">Choose Seller</H1>
+                                            <SubH1>Person who brought the customer</SubH1>
+                                        </div>
+                                        <TelerikForm EditContext="EditContext" OnSubmit="WizardNextStep">
+                                            <FormValidation>
+                                                <ObjectGraphDataAnnotationsValidator />
+                                            </FormValidation>
+                                            <FormItems>
+                                                @*Seller Information *@
+                                                <FormItem>
+                                                    <Template>
+                                                        <TelerikGridLayout ColumnSpacing="32px" RowSpacing="8px">
+                                                            <GridLayoutRows>
+                                                                <GridLayoutRow></GridLayoutRow>
+                                                                <GridLayoutRow></GridLayoutRow>
+                                                            </GridLayoutRows>
+                                                            <GridLayoutColumns>
+                                                                <GridLayoutColumn Width="50%"></GridLayoutColumn>
+                                                            </GridLayoutColumns>
+                                                            <GridLayoutItems>
+                                                                <GridLayoutItem Column="1" Row="1">
+                                                                    <H5 class="form-label">Seller ID*</H5>
+                                                                    <TelerikNumericTextBox Arrows=false @bind-Value="@Model.SellerId" PlaceHolder="Enter ID" OnChange=@OnChangeSellerId></TelerikNumericTextBox>
+                                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.SellerId)"></ValidationMessage></SubH2>
+                                                                    <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@(SellerNameData.Status==Domain.Enums.DataStatus.Loading)"></TelerikLoader>
+                                                                </GridLayoutItem>
+                                                                <GridLayoutItem Column="1" Row="2">
+
+                                                                    @if (SellerNameData.Status == Domain.Enums.DataStatus.Success)
+                                                                    {
+                                                                        <div class="d-flex align-items-center mt-4">
+                                                                            <H5 class="form-label align-items-center">Seller Name </H5>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <div class="clear-both"></div>
+                                                                            <H2> @SellerNameData.Data?.NameEn </H2>
+                                                                        </div>
+                                                                        <div class="checkbox mt-4">
+                                                                            <TelerikCheckBox Id="agreeSeller" TValue="bool" @bind-Value="@Model.IsConfirmedSellerId" Size="lg" />
+                                                                            <label for="agreeSeller">Confirm seller name</label>
+                                                                        </div>
+                                                                        <div class="clear-both">
+                                                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.IsConfirmedSellerId)"></ValidationMessage></SubH2>
+                                                                        </div>
+                                                                    }
+
+                                                                </GridLayoutItem>
+                                                            </GridLayoutItems>
+                                                        </TelerikGridLayout>
+                                                    </Template>
+
+                                                </FormItem>
+                                            </FormItems>
+                                            <FormButtons></FormButtons>
+                                        </TelerikForm>
+                                    </div>
+                                </Content>
+                            </WizardStep>
+
+                            <WizardStep Label="Review" Valid="@IsValid" OnChange="OnStepChange">
+                                <Content>
+                                    <H2 class="cc-wizard-heading">Review</H2>
+
+                                    <div class="d-flex flex-column gp-16">
+                                        <div class="KFHnopadding kfh-data-table">
+
+                                            <TelerikGrid @ref=newItemsGridRef Data="@Model.SupplementaryCards" Pageable="true" Sortable="false">
+                                                <GridColumns>
+                                                    <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                                                        <Template>
+                                                            <TelerikButton class="AO-image--button">
+                                                                <picture>
+                                                                    <source srcset="" />
+                                                                    <img class="AO-cell--image" src=@cardImage />
+                                                                </picture>
+                                                            </TelerikButton>
+                                                        </Template>
+                                                    </GridColumn>
+
+                                                    <GridColumn Field="New Card" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell")" HeaderClass="Cell15 AO-detailed--cell">
+                                                        <Template>
+                                                            @{
+                                                                var ditem = context as SupplementaryEditModel;
+                                                            }
+                                                            <div class="detailedCell-content">
+                                                                <H2> @ditem?.HolderName <b>(@ditem?.RelationName)</b> </H2>
+                                                            </div>
+                                                        </Template>
+                                                    </GridColumn>
+
+                                                    <GridColumn Field="Limit" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                        <Template>
+                                                            @{
+                                                                var ditem = context as SupplementaryEditModel;
+                                                            }
+                                                            <H3>Limit @ditem?.SpendingLimit</H3>
+                                                        </Template>
+                                                    </GridColumn>
+
+                                                    <GridColumn Field="Remarks" HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")">
+                                                        <Template>
+                                                            @{
+                                                                var ditem = context as SupplementaryEditModel;
+                                                            }
+                                                            <H3>@ditem?.Remarks</H3>
+                                                        </Template>
+                                                    </GridColumn>
+                                                </GridColumns>
+                                                <NoDataTemplate>
+                                                    <NoRecordsFound />
+                                                </NoDataTemplate>
+                                            </TelerikGrid>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <ul class="list">
+                                            <li>
+                                                <H5>Seller Id</H5>
+                                                <H3>@Model.SellerId</H3>
+                                            </li>
+                                            <li>
+                                                <H5>Seller Name</H5>
+                                                <H3>@SellerNameData.Data?.NameEn</H3>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </Content>
+                            </WizardStep>
+                            <WizardStep Label="Thank you" Valid="@IsValid" OnChange="OnStepChange">
+                                <Content>
+                                    <H2 class="cc-wizard-heading">Thank you</H2>
+
+                                    <div class="d-flex flex-row my-0">
+                                        <div>
+                                            <H3 class="mb-4">Your request for issue supplementary card is successfully processed & in <b>PENDING</b> status.</H3>
+                                        </div>
+                                    </div>
+
+                                    <div class="gp-8" style="margin-block-start: 8.5rem;">
+                                        <Button Type="btn-secondary btn-l" Label="Back to main" OnClick="()=> {OnCancel();}"></Button>
+                                    </div>
+
+                                    <div class="d-flex flex-column mt-4">
+
+                                        @if (supplementaryResponse?.Data?.Data?.FailedCards.Any() ?? false)
+                                        {
+                                            <H4 class="cc-wizard-heading">Failed Cards</H4>
+                                            <ul>
+                                                @foreach (var item in supplementaryResponse.Data!.Data.FailedCards)
+                                                {
+                                                    <li>This civilId @item.Message}, Error :@item.ValidationErrors?.Select(x => x.Error)</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                </Content>
+                            </WizardStep>
+                        </WizardSteps>
+
+                        <WizardButtons>
+                            <div class="creditcard-wizard-buttons-act align-items-center mt-8">
+                                <div>
+                                    @if (CurrentStep != 1 && CurrentStep != LastStep)
+                                    {
+                                        <Button Type="btn-text btn-l" Label="Back" OnClick="@(() => { WizardStepIndex -= 1; })"></Button>
+                                    }
+                                </div>
+
+                                <div>
+                                    @if (CurrentStep >= 1)
+                                    {
+                                        if (CurrentStep == LastStep - 1)
+                                        {
+                                            <Button ButtonType="ButtonType.Submit" Type="btn-primary btn-l" Loader="IsProcessing" Enabled="!IsProcessing" Label="Submit" OnClick="@(() => Submit())"></Button>
+                                        }
+                                        else if (CurrentStep < LastStep)
+                                        {
+                                            <Button Type="btn-primary btn-l" Label="Continue" OnClick="WizardNextStep" Loader="IsProcessing" Enabled=!IsProcessing></Button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </WizardButtons>
+                    </TelerikWizard>
+
+                    <div class="cardDetails-drawerHeader card-preview" style="position:fixed">
+                        <picture>
+                            <source srcset="" />@{
+
+                            }
+                            <img style="width:200px !important; height: 120px !important; display: block" src=@cardImage onerror="if (this.src != '@cardImage') this.src = '@DefaultImage';" />
+
+                        </picture>
+                        <div class="card-basicInfo">
+                            <H3  Class="px-2 text-center my-0 text-clamped-2" Id="CustomerNameTooltip" Title="@CurrentState?.CustomerProfile?.FullName()">@CurrentState?.CustomerProfile?.FullName() </H3>
+                            <H4 class="my-1 text-gray50">@cardInfo?.ProductName</H4>
+                            @* <TextButton Label="Change card" @onclick="()=> { MoveTo(FormSteps.CardSelection); }" Enabled="true"></TextButton> *@
+                        </div>
+                    </div>
+                    <div class="clear-both"></div>
+                    <div class="custom-steps">
+                        @* <div>
+                <span class="mt-4 mb-4 text-primary">Step @(CurrentStep) of @(LastStep) </span>
+                </div> *@
+                        <div class="clear-both"></div>
+
+                        <div class="mt-6">
+                            <Button Type="btn-text btn-l" Label="Cancel" OnClick="()=> {OnCancel();}"></Button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <span>@ErrorMessage</span>
+                }
+            }
+            else
+            {
+                <ListSkeleton></ListSkeleton>
+            }
+        </div>
+    </div>
+</div>
+
+<OffCanvas @ref=NewSupplementaryCanvas Title="@(NewSupplementary?.Id is null ?"Add Supplementary Card":"Edit Supplementary Card")">
+    <OffcanvasContent>
+        <div class="d-flex flex-column ">
+            <div class="product-group mt-4">
+                <TextInputField Type="textfield-input" Label="Civil ID" Placeholder="Civil ID" HelperText="Please type Civil Id then press Enter / Tab key" OnChange="async (obj) => await OnChangeSupplementaryCivilID(NewSupplementary)" @bind-Value="NewSupplementary.CivilId"></TextInputField>
+            </div>
+            @if (profileLoadStatus == DataStatus.Loading)
+            {
+                <FormSkeleton />
+            }
+            @if (profileLoadStatus == DataStatus.Error)
+            {
+                <H3 Class="text-red">@profileMessage</H3>
+            }
+            @if (profileLoadStatus == DataStatus.Success)
+            {
+                <div class="product-group  mt-4">
+                    <NumericInputField T="long?" @bind-Value="@NewSupplementary.Mobile" Type="textfield-input" Label="Mobile" Placeholder="0" HelperText=" "></NumericInputField>
+                </div>
+                <div class="product-group  mt-4">
+                    <label class="editor-label mb-2">Relation</label>
+                    <TelerikDropDownList Data="@RelationShipData" TextField="NameEn" ValueField="Id" @bind-Value="@NewSupplementary!.RelationId" DefaultText="Select Relation">
+                        <DropDownListSettings>
+                            <DropDownListPopupSettings MaxHeight="200px" />
+                        </DropDownListSettings>
+                    </TelerikDropDownList>
+                </div>
+                @if (cardInfo.CardType != ConfigurationBase.AlOsraPrimaryCardTypeId)
+                {
+                    <div class="product-group  mt-4">
+                        <label class="editor-label mb-2">Spending Limit</label>
+
+                        <TelerikNumericTextBox Arrows="false" T="decimal" @bind-Value="@NewSupplementary.SpendingLimit" Class="mb-md"></TelerikNumericTextBox>
+                    </div>
+                }
+                <div class="product-group  mt-4">
+                    <TextInputField Type="textfield-input" @bind-Value="@NewSupplementary.Remarks" Label="Remarks" Placeholder=" " HelperText=" "></TextInputField>
+                </div>
+                <div class="product-group  mt-4">
+                    @if (CardPromotions.Status is Domain.Enums.DataStatus.Loading)
+                    {
+                        <span>Loading promotion...</span>
+                    }
+
+                    @if (CardPromotions.Status == Domain.Enums.DataStatus.Error)
+                    {
+                        <EmptyState IconName="Marketing" Heading="No promotions" Description="This card has no promotions"></EmptyState>
+                    }
+
+                    @if (CardPromotions.Status == Domain.Enums.DataStatus.Success)
+                    {
+                        @if (CardPromotions!.Data?.Any() ?? false)
+                        {
+                            <H3>Available promotions to choose !</H3>
+                            <RadioGroup SelectedChanged="OnCardPromotionSelectionChange" Title="Select a promotion" Description="Promotions are available for this customer">
+                                @foreach (var prmotion in CardPromotions!.Data)
+                                {
+                                    <RadioCard Title="@prmotion.promoName"
+                                               Description="@prmotion.promoDescription"
+                                               Label="@("Valid till " + prmotion.endDate.ToString(ConfigurationBase.DateFormat))"
+                                               Value="@prmotion.promotionId.ToString()"></RadioCard>
+                                }
+
+                                <RadioCard Title="No Promotion"
+                                           Description="Dont like to choose promotion"
+                                           IsActive=true
+                                           Label=""
+                                           Value="-1"></RadioCard>
+                            </RadioGroup>
+                        }
+                        else
+                        {
+                            <EmptyState IconName="Marketing" Heading="No promotions" Description="This card has no promotions"></EmptyState>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-between align-items-end">
+            @{
+                bool isAuthorized = profileLoadStatus == DataStatus.Success;
+                string btnClass = SaveInProgress ? "btn-disabled" : "";
+            }
+            <Button Type='@($"{btnClass} btn-text btn-sm")' OnClick=CancelToAdd Label="Cancel" />
+            <Button Type='@($"{btnClass} btn-primary btn-sm")' Enabled=isAuthorized Loader=SaveInProgress OnClick=AddToList ButtonType="@ButtonType.Button" Label="@(NewSupplementary.Id is null ?"Save":"Update")" />
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+<OffCanvas @ref=EditProfileCanvas Title="Update Profile">
+    <OffcanvasContent>
+        <EditCustomerProfile CustomerProfileFromPhenix="@CustomerProfileFromPhenix" IsSupplementaryCustomer=true ShowButtons=false @ref=EditProfileRef CivilId="@NewSupplementary?.CivilId"></EditCustomerProfile>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+
+        @{
+            bool isAuthorized = AuthManager.HasPermission(Permissions.CustomerProfile.Edit());
+        }
+
+        <div class="drawer-buttons justify-content-between align-items-end">
+            <Button Type="btn-text btn-sm" OnClick="async()=>{ await NewSupplementaryCanvas.ToggleAsync(); await EditProfileCanvas.ToggleAsync();}" Label="Cancel" />
+            <Button Type="btn-primary btn-sm" Enabled=isAuthorized Loader="ProcessStatus==DataStatus.Loading" ButtonType="@ButtonType.Button" Label="Update" OnClick="()=>{ConfirmDialogVisible= true;}"></Button>
+
+        </div>
+
+        @if (!isAuthorized)
+        {
+            <span class="text-red clear-both"> Sorry, you don't have permission to edit profile!</span>
+        }
+
+
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+<TelerikDialog @bind-Visible="@ConfirmDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Update Profile</H2>
+            </div>
+            <H4>Are you sure ? </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ConfirmDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Yes" OnClick="@UpdateProfile" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+<TelerikTooltip TargetSelector="#CustomerNameTooltip" Position="TooltipPosition.Bottom"></TelerikTooltip>
+@code {
+
+    public int StepIndex { get; set; }
+
+    ScreenSizeTypeProvider.ScreenBreakingPoints _breakingPoints = new();
+    ScreenSizeTypeProvider.ScreenSizeType _screenSizeType { get; set; } = ScreenSizeTypeProvider.ScreenSizeType.Small;
+
+    private void OnScreenResized(ScreenSizeTypeProvider.ScreenSizeInformation screenSize)
+    {
+        _screenSizeType = screenSize.ScreenSizeType;
+        Console.WriteLine($"Screen Size Type: {screenSize.ScreenSizeType}");
+
+    }
+
+}

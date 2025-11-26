@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Kfh.Aurora.Common.Shared" />
+		<PackageReference Include="Kfh.Aurora.Common.Application" />
+		<PackageReference Include="Kfh.Aurora.ExternalServices.Server" />
+		<PackageReference Include="AspNetCore.HealthChecks.Oracle" />
+		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+		<PackageReference Include="Kfh.Aurora.Server" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Telerik.Reporting" />
+		<PackageReference Include="Telerik.Reporting.WebServiceDataSource" />
+		<PackageReference Include="Serilog.AspNetCore.IngestionCore" />
+		<PackageReference Include="Toolbelt.Blazor.GetProperty.Script" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\CreditCardsSystem.Application\CreditCardsSystem.Application.csproj" />
+	  <ProjectReference Include="..\Client\CreditCardsSystem.Web.Client.csproj" />
+	</ItemGroup>
+
+
+</Project>

@@ -1,0 +1,49 @@
+﻿@using CreditCardsSystem.Domain.Enums;
+
+
+@if (Status == DataStatus.Success)
+{
+    <H3 Class="my-0">  @ChildContent</H3>
+}
+else if (Status is (DataStatus.Loading or DataStatus.Uninitialized))
+{
+    if (IsCircle == true)
+    {
+        <Loader class="loader-small table-loader"></Loader>
+    }
+    else
+    {
+        <TelerikSkeleton ShapeType="SkeletonShapeType.Text" AnimationType="SkeletonAnimationType.Pulse" Height="16px" Width="70px" />
+    }
+}
+else if (Status == DataStatus.Error)
+{
+    <H3 Class="my-0">Error</H3>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    [Parameter]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public string Id { get; set; } = default!;
+
+    [Parameter]
+    public DataStatus Status { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? LoaderCss { get; set; }
+
+    [Parameter]
+    public bool? IsCircle { get; set; } = true;
+
+}

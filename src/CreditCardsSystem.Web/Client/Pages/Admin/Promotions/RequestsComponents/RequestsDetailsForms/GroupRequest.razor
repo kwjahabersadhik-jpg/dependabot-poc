@@ -1,0 +1,110 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+
+@inject RequestStateContainer RequestStateContainer
+@inherits PromotionsRequestsHelpers
+
+<H2>Promotion Group (@RequestStateContainer.RequestHeader.ActivityType.ToString())</H2>
+
+<style>
+    .content {
+        padding-right: 40px;
+    }
+</style>
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+
+    </tr>
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Group ID</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.GroupID))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Description</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails ,nameof(PromotionGroupDto.Description))</H5>
+            </div>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Promotion</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.PromotionName))</H5>
+            </div>
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Status</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.Status))</H5>
+            </div>
+        </td>
+    </tr>
+</table>
+
+@if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+{
+
+    <H2>Promotion Group (Old)</H2>
+
+    <table>
+        <tr>
+            <th></th>
+            <th></th>
+
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Group ID</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.GroupID) , true)</H5>
+                </div>
+
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Description</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails ,nameof(PromotionGroupDto.Description) , true)</H5>
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <Label>Promotion</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.PromotionName) , true)</H5>
+                </div>
+            </td>
+
+            <td>
+                <div class="content">
+                    <Label>Status</Label>
+                    <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(PromotionGroupDto.Status) , true)</H5>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+}
+
+
+@code {
+
+
+}

@@ -1,0 +1,195 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CurrencyInformationService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_CurrencyInformationService.jws_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_CurrencyInformationService.jws_xsd=2"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_CurrencyInformationService.jws_xsd=3"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="currencyConversion">
+    <part name="parameters" element="tns:currencyConversion">
+    </part>
+  </message>
+  <message name="getCurrencyRate">
+    <part name="parameters" element="tns:getCurrencyRate">
+    </part>
+  </message>
+  <message name="getAllForeignCurrencies">
+    <part name="parameters" element="tns:getAllForeignCurrencies">
+    </part>
+  </message>
+  <message name="getHistoryForeignCurrencies">
+    <part name="parameters" element="tns:getHistoryForeignCurrencies">
+    </part>
+  </message>
+  <message name="getHistoryForeignCurrenciesResponse">
+    <part name="parameters" element="tns:getHistoryForeignCurrenciesResponse">
+    </part>
+  </message>
+  <message name="getAllForeignCurrenciesResponse">
+    <part name="parameters" element="tns:getAllForeignCurrenciesResponse">
+    </part>
+  </message>
+  <message name="getForexRateHistory">
+    <part name="parameters" element="tns:getForexRateHistory">
+    </part>
+  </message>
+  <message name="getCurrencyRateResponse">
+    <part name="parameters" element="tns:getCurrencyRateResponse">
+    </part>
+  </message>
+  <message name="currencyConversionResponse">
+    <part name="parameters" element="tns:currencyConversionResponse">
+    </part>
+  </message>
+  <message name="getForexRateHistoryResponse">
+    <part name="parameters" element="tns:getForexRateHistoryResponse">
+    </part>
+  </message>
+  <portType name="CurrencyInformationService">
+    <operation name="getAllForeignCurrencies">
+      <input message="tns:getAllForeignCurrencies" wsam:Action="http://www.openuri.org/CurrencyInformationService/getAllForeignCurrenciesRequest">
+    </input>
+      <output message="tns:getAllForeignCurrenciesResponse" wsam:Action="http://www.openuri.org/CurrencyInformationService/getAllForeignCurrenciesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CurrencyInformationService/getAllForeignCurrencies/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getHistoryForeignCurrencies">
+      <input message="tns:getHistoryForeignCurrencies" wsam:Action="http://www.openuri.org/CurrencyInformationService/getHistoryForeignCurrenciesRequest">
+    </input>
+      <output message="tns:getHistoryForeignCurrenciesResponse" wsam:Action="http://www.openuri.org/CurrencyInformationService/getHistoryForeignCurrenciesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CurrencyInformationService/getHistoryForeignCurrencies/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getForexRateHistory">
+      <input message="tns:getForexRateHistory" wsam:Action="http://www.openuri.org/CurrencyInformationService/getForexRateHistoryRequest">
+    </input>
+      <output message="tns:getForexRateHistoryResponse" wsam:Action="http://www.openuri.org/CurrencyInformationService/getForexRateHistoryResponse">
+    </output>
+    </operation>
+    <operation name="currencyConversion">
+      <input message="tns:currencyConversion" wsam:Action="http://www.openuri.org/CurrencyInformationService/currencyConversionRequest">
+    </input>
+      <output message="tns:currencyConversionResponse" wsam:Action="http://www.openuri.org/CurrencyInformationService/currencyConversionResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CurrencyInformationService/currencyConversion/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCurrencyRate">
+      <input message="tns:getCurrencyRate" wsam:Action="http://www.openuri.org/CurrencyInformationService/getCurrencyRateRequest">
+    </input>
+      <output message="tns:getCurrencyRateResponse" wsam:Action="http://www.openuri.org/CurrencyInformationService/getCurrencyRateResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="CurrencyInformationServiceSoapBinding" type="tns:CurrencyInformationService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getAllForeignCurrencies">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getHistoryForeignCurrencies">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getForexRateHistory">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="currencyConversion">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCurrencyRate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_CurrencyInformationService">
+    <port name="CurrencyInformationServiceSoap" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CurrencyInformationService.CurrencyInformationServiceSoap/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap3" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CurrencyInformationService.CurrencyInformationServiceSoap/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap4" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CurrencyInformationService/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap2" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CurrencyInformationService/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap9" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CurrencyInformationService/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap7" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/CurrencyInformationService/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap8" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CurrencyInformationService/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap5" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CurrencyInformationService.CurrencyInformationServiceSoap/1.0"/>
+    </port>
+    <port name="CurrencyInformationServiceSoap6" binding="tns:CurrencyInformationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CurrencyInformationService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

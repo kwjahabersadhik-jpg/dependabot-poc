@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://www.openuri.org/" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" name="CorporateCreditCardService" targetNamespace="http://www.openuri.org/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:UsingPolicy wssutil:Required="true" />
+  <wsp1_2:Policy wssutil:Id="policy">
+    <ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+      <wsp1_2:Policy>
+        <ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+          <wsp1_2:Policy>
+            <ns1:WssUsernameToken10 />
+          </wsp1_2:Policy>
+        </ns1:UsernameToken>
+      </wsp1_2:Policy>
+    </ns1:SupportingTokens>
+  </wsp1_2:Policy>
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="https://integration:443/KFHCreditCardApplicationWebServices/CorporateCreditCardService?xsd=1" namespace="http://www.openuri.org/" />
+    </xsd:schema>
+  </types>
+  <message name="getCorporateCards">
+    <part name="parameters" element="tns:getCorporateCards" />
+  </message>
+  <message name="getCorporateCardsResponse">
+    <part name="parameters" element="tns:getCorporateCardsResponse" />
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception" />
+  </message>
+  <message name="getCorporateProfile">
+    <part name="parameters" element="tns:getCorporateProfile" />
+  </message>
+  <message name="getCorporateProfileResponse">
+    <part name="parameters" element="tns:getCorporateProfileResponse" />
+  </message>
+  <message name="performCorporateProfileBoarding">
+    <part name="parameters" element="tns:performCorporateProfileBoarding" />
+  </message>
+  <message name="performCorporateProfileBoardingResponse">
+    <part name="parameters" element="tns:performCorporateProfileBoardingResponse" />
+  </message>
+  <message name="updateCorporateProfile">
+    <part name="parameters" element="tns:updateCorporateProfile" />
+  </message>
+  <message name="updateCorporateProfileResponse">
+    <part name="parameters" element="tns:updateCorporateProfileResponse" />
+  </message>
+  <message name="getCorporateGlobalLimit">
+    <part name="parameters" element="tns:getCorporateGlobalLimit" />
+  </message>
+  <message name="getCorporateGlobalLimitResponse">
+    <part name="parameters" element="tns:getCorporateGlobalLimitResponse" />
+  </message>
+  <message name="updateCorporateUndisbursedAmt">
+    <part name="parameters" element="tns:updateCorporateUndisbursedAmt" />
+  </message>
+  <message name="updateCorporateUndisbursedAmtResponse">
+    <part name="parameters" element="tns:updateCorporateUndisbursedAmtResponse" />
+  </message>
+  <portType name="CorporateCreditCardService">
+    <operation name="getCorporateCards">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateCardsRequest" message="tns:getCorporateCards" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateCardsResponse" message="tns:getCorporateCardsResponse" />
+      <fault wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateCards/Fault/Exception" name="Exception" message="tns:Exception" />
+    </operation>
+    <operation name="getCorporateProfile">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateProfileRequest" message="tns:getCorporateProfile" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateProfileResponse" message="tns:getCorporateProfileResponse" />
+      <fault wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateProfile/Fault/Exception" name="Exception" message="tns:Exception" />
+    </operation>
+    <operation name="performCorporateProfileBoarding">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/performCorporateProfileBoardingRequest" message="tns:performCorporateProfileBoarding" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/performCorporateProfileBoardingResponse" message="tns:performCorporateProfileBoardingResponse" />
+      <fault wsam:Action="http://www.openuri.org/CorporateCreditCardService/performCorporateProfileBoarding/Fault/Exception" name="Exception" message="tns:Exception" />
+    </operation>
+    <operation name="updateCorporateProfile">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/updateCorporateProfileRequest" message="tns:updateCorporateProfile" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/updateCorporateProfileResponse" message="tns:updateCorporateProfileResponse" />
+    </operation>
+    <operation name="getCorporateGlobalLimit">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateGlobalLimitRequest" message="tns:getCorporateGlobalLimit" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateGlobalLimitResponse" message="tns:getCorporateGlobalLimitResponse" />
+      <fault wsam:Action="http://www.openuri.org/CorporateCreditCardService/getCorporateGlobalLimit/Fault/Exception" name="Exception" message="tns:Exception" />
+    </operation>
+    <operation name="updateCorporateUndisbursedAmt">
+      <input wsam:Action="http://www.openuri.org/CorporateCreditCardService/updateCorporateUndisbursedAmtRequest" message="tns:updateCorporateUndisbursedAmt" />
+      <output wsam:Action="http://www.openuri.org/CorporateCreditCardService/updateCorporateUndisbursedAmtResponse" message="tns:updateCorporateUndisbursedAmtResponse" />
+      <fault wsam:Action="http://www.openuri.org/CorporateCreditCardService/updateCorporateUndisbursedAmt/Fault/Exception" name="Exception" message="tns:Exception" />
+    </operation>
+  </portType>
+  <binding name="CorporateCreditCardServiceSoapBinding" type="tns:CorporateCreditCardService">
+    <wsp:PolicyReference URI="#policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="getCorporateCards">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="Exception">
+        <soap:fault use="literal" name="Exception" namespace="" />
+      </fault>
+    </operation>
+    <operation name="getCorporateProfile">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="Exception">
+        <soap:fault use="literal" name="Exception" namespace="" />
+      </fault>
+    </operation>
+    <operation name="performCorporateProfileBoarding">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="Exception">
+        <soap:fault use="literal" name="Exception" namespace="" />
+      </fault>
+    </operation>
+    <operation name="updateCorporateProfile">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getCorporateGlobalLimit">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="Exception">
+        <soap:fault use="literal" name="Exception" namespace="" />
+      </fault>
+    </operation>
+    <operation name="updateCorporateUndisbursedAmt">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="Exception">
+        <soap:fault use="literal" name="Exception" namespace="" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="CorporateCreditCardService">
+    <port name="CorporateCreditCardServiceSoap" binding="tns:CorporateCreditCardServiceSoapBinding">
+      <soap:address location="https://integration:443/KFHCreditCardApplicationWebServices/CorporateCreditCardService" />
+    </port>
+  </service>
+</definitions>

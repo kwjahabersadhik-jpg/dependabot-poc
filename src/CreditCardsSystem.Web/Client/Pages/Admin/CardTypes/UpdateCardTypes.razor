@@ -1,0 +1,215 @@
+﻿@using Microsoft.AspNetCore.Components
+@using CreditCardsSystem.Domain.Models.Card
+
+@inject ICreditCardArtworkAppService CreditCardArtworkAppServiceRefit
+@inherits ApplicationComponent
+
+
+<OffCanvas @ref="CardConfigRef" Title="Edit card configuration">
+    <OffcanvasContent>
+
+        <EditForm EditContext="@EditContext" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+              @if (NotValid)
+            {
+            <div class="alert k-alert-error">
+            <ValidationSummary />
+            </div>
+            }
+           <FormList>
+                
+                    <Form Label="Card Type">
+                        <label class="editor-label mb-2"></label>
+                        <TelerikTextBox @bind-Value="@CreditCard.Type"  ></TelerikTextBox>
+                    </Form>
+               
+                    <Form Label="Name English">
+                        <TelerikTextBox @bind-Value="@CreditCard.Name"  ></TelerikTextBox>
+                    </Form>
+             
+                    <Form Label="Name Arabic">
+                        <TelerikTextBox @bind-Value="@CreditCard.NameAr"  ></TelerikTextBox>
+                    </Form>
+             
+                    <Form Label="Type">
+                        <label class="editor-label mb-2"></label>
+                        <TelerikTextBox @bind-Value="@CreditCard.Type"  ></TelerikTextBox>
+                    </Form>
+
+                    <div class="mt-4">
+                        <div class="textfield">
+                            <div class="d-flex flex-row gp-10 align-items-center justify-content-start">
+                                <div>
+                                    <TelerikCheckBox @bind-Value="CreditCard.IsActive" Size="lg" />
+                                </div>
+                                <div>
+                                    <H3 class="mb-2  ps-1">Enabled</H3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <li>
+                        <div class="mt-4 text-center">
+                            <div class="textfield">
+                                <img src="@CreditCardImage" width="164" onerror="if (this.src != '@DefaultImage') this.src = '@DefaultImage';"  />
+                                <H4 class="mb-1"></H4>
+                            @if(CreditCardImage !=null){
+                                <TelerikButton ButtonType="ButtonType.Button" OnClick="@RemoveImage" Class="btn-secondary">
+                                    Remove Image
+                                </TelerikButton>
+                            }
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="mt-2">
+                            <div class="textfield">
+                                    <Form Label="Upload card image">
+                                        <FileUpload Heading="Upload Card image here" AllowedExtensions="@AllowedExtensions"
+                                                    MinSizeFile="@MinFileSize"
+                                                    MaxSizeFile="@MaxFileSize"
+                                                    OnSelect="@OnSelect"
+                                                    OnRemove="@OnRemove"
+                                                    Description="You didn't upload any file yet"></FileUpload>
+
+                                        <div class="k-form-hint">
+                                            Accepted file: <strong> jpg, jpeg, png and svg</strong>
+                                            between <strong>1KB</strong> and <strong>1MB</strong>
+                                        </div
+                                    </Form>
+                            </div>
+                        </div>
+                    </li>
+
+            </FormList>
+
+        </EditForm>
+
+
+
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-end">
+            @* <TelerikButton Class="btn btn-primary btn-sm" OnClick="HandleValidSubmit" ButtonType="@ButtonType.Submit" Form="frm">Save</TelerikButton> *@
+            <Button Type="btn btn-primary btn-sm" Label="Save" ButtonType="@ButtonType.Submit"  OnClick="HandleValidSubmit"  Loader="IsProcessing" Enabled=!IsProcessing />
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+
+
+
+
+
+@code {
+
+    private OffCanvas CardConfigRef { get; set; } = new();
+
+
+    // [Parameter]
+    public CardTypeDto CreditCard { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<bool> OnUpdateEvent { get; set; }
+
+
+    public async Task ToggleAsync(CardTypeDto card)
+    {
+        CreditCard = card;
+
+        EditContext = new EditContext(CreditCard);
+        GetCreditCardImage();
+
+        await CardConfigRef.ToggleAsync();
+    }
+
+    private List<string> AllowedExtensions { get; set; } = new() { ".jpg", ".jpeg", ".png", ".svg" };
+    private string? CreditCardImage { get; set; }
+    private StreamPart? Image { get; set; }
+
+    private int MinFileSize { get; set; } = 1024;
+    private int MaxFileSize { get; set; } = 1 * 1024 * 1024;
+
+    private EditContext? EditContext { get; set; }
+    private bool NotValid => EditContext!.GetValidationMessages().Any();
+
+    private string _successMessage = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(CreditCard);
+
+        GetCreditCardImage();
+    }
+
+    private void GetCreditCardImage()
+    {
+        CreditCardImage = $"/api/creditCardsImages/{CreditCard.Type}";
+    }
+
+    private void OnSelect(FileSelectEventArgs args)
+    {
+        var file = args.Files[0];
+        var fileExtension = file.Extension.Replace(".", "");
+
+        Image = new StreamPart(file.Stream, file.Name, $"image/{fileExtension}");
+    }
+
+    private void OnRemove(FileSelectEventArgs args)
+    {
+
+        Image = null;
+    }
+    private void RemoveImage()
+    {
+        CreditCardImage = null;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+
+        if (!EditContext.Validate())
+            return;
+
+        var creditCard = new CardTypeDto()
+            {
+                Id = CreditCard.Id,
+                Name = CreditCard.Name,
+                NameAr = CreditCard.NameAr,
+                Type = CreditCard.Type,
+                IsActive = CreditCard.IsActive,
+            };
+
+        Notification.HasOffCanvas = true;
+        Notification.Loading("Update in process");
+
+        await CreditCardArtworkAppServiceRefit.UpdateCreditCardType(creditCard);
+
+        if (Image != null)
+        {
+            ApiResponseModel imageEditResponse =   await CreditCardArtworkAppServiceRefit.UploadCreditCardImage(creditCard.Id, Image);
+            if (!imageEditResponse.IsSuccess)
+            {
+                Notification.Failure(imageEditResponse.Message);
+                return;
+            }
+
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(CreditCardImage))
+            {
+              await CreditCardArtworkAppServiceRefit.RemoveCreditCardImage(creditCard.Id);
+            }
+        }
+        
+        await CardConfigRef.ToggleAsync();
+        Notification.Success("Updated successful");
+        await OnUpdateEvent.InvokeAsync(true);
+    }
+
+  
+}

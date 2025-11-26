@@ -1,0 +1,128 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Services
+
+@inject RequestStateContainer RequestStateContainer
+@inherits PromotionsRequestsHelpers
+
+<H2>Service (@RequestStateContainer.RequestHeader.ActivityType.ToString())</H2>
+
+<style>
+    .content {
+        padding-right: 40px;
+    }
+</style>
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="content">
+                <Label>Service ID</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceId))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Service No</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceNo))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+    <tr>
+        <td>
+            <div class="content">
+                <Label>No Of Months</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.NoOfMonths))</H5>
+            </div>
+
+        </td>
+
+        <td>
+            <div class="content">
+                <Label>Description</Label>
+                <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceDescription))</H5>
+            </div>
+        </td>
+
+    </tr>
+    
+</table>
+
+@if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+{
+
+    <H2>Service (Old)</H2>
+
+    <table>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <table>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="content">
+                        <Label>Service ID</Label>
+                        <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceId) , true)</H5>
+                    </div>
+
+                </td>
+
+                <td>
+                    <div class="content">
+                        <Label>Service No</Label>
+                        <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceNo) , true)</H5>
+                    </div>
+                </td>
+
+            </tr>
+    
+            <tr>
+                <td>
+                    <div class="content">
+                        <Label>No Of Months</Label>
+                        <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.NoOfMonths) , true)</H5>
+                    </div>
+
+                </td>
+
+                <td>
+                    <div class="content">
+                        <Label>Description</Label>
+                        <H5>@GetParamValue(RequestStateContainer.RequestDetails, nameof(ServiceDto.ServiceDescription) , true)</H5>
+                    </div>
+                </td>
+
+            </tr>
+    
+        </table>
+
+    </table>
+
+    <br />
+    <br />
+
+}
+
+
+@code {
+
+
+}

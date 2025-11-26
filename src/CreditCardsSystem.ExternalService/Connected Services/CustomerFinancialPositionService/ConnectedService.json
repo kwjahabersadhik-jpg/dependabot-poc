@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/CustomerFinancialPositionService/WLS_CustomerFinancialPositionService.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, CustomerFinancialPositionServiceReference"
+    ],
+    "outputFile": "CustomerFinancialPositionServiceReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

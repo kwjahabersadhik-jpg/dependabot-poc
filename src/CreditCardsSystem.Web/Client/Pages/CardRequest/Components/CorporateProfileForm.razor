@@ -1,0 +1,10 @@
+﻿@inherits WorkflowComponent
+
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else if (TaskDetail is not null)
+{
+    <WorkflowTaskDetail TaskDetail="TaskDetail" />
+}

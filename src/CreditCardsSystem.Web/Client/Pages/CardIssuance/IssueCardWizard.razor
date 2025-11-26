@@ -1,0 +1,1464 @@
+﻿@page "/new-card-wizard"
+@layout BlankLayout
+
+
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using CreditCardsSystem.Domain.Models.CardOperation
+@using CreditCardsSystem.Domain.Shared.Models.Account;
+@using CreditCardsSystem.Utility.Extensions;
+@using System.Text.Json;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard
+@using CreditCardsSystem.Web.Client.Components;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+@using Telerik.FontIcons
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile
+@using Microsoft.AspNetCore.Components.Forms
+@using Telerik.SvgIcons
+@using CreditCardsSystem.Domain.Models.Access
+@using Kfh.Aurora.Blazor.Components.UI.Responsiveness
+@using static Kfh.Aurora.Blazor.Components.UI.Responsiveness.ScreenSizeTypeProvider
+@using Telerik.SvgIcons
+
+@inject IJSRuntime Js
+@inherits ApplicationComponent
+
+
+<ScreenSizeTypeProvider BreakingPoints="@_breakingPoints" OnResize="@OnScreenResized" />
+
+<div class="card-wizard wizard-center">
+    <div class="wrapper-wizard">
+        <div class="container">
+            @{
+                int currentIndex = (int)CurrentStep;
+                string btnClass = IsProcessing ? "btn-disabled" : "";
+            }
+            @* <TelerikWizard @bind-Value="@currentIndex" StepperPosition="WizardStepperPosition.Left" ShowPager=false> *@
+            @* <TelerikWizard @bind-Value="@currentIndex" StepperPosition="@( !isLargeScreen ? WizardStepperPosition.Top : WizardStepperPosition.Left )" ShowPager="true" Class="full-width-step col"> *@
+            <TelerikWizard @bind-Value="@currentIndex" StepperPosition="@( isLargeScreen ? WizardStepperPosition.Top : WizardStepperPosition.Left )" ShowPager="true" Class="full-width-step col">
+                <WizardSettings>
+                    <WizardStepperSettings Linear="true" StepType="StepperStepType.Steps"></WizardStepperSettings>
+                </WizardSettings>
+                <WizardSteps>
+                    <WizardStep Label="Choose Card" Valid="@(StepStatus[FormSteps.CardSelection])" OnChange="OnStepChange">
+                        <Content>
+                            <div class="wizard-label-header flex-column justify-content-space">
+
+                                <div class="d-flex flex-column mt-4">
+                                    @* <TelerikBreadcrumb Data="@Items"></TelerikBreadcrumb> *@
+                                    @* <H1>Issue a card</H1> *@
+                                    <div class="search-tags">
+                                        <div class="search-bar">
+                                            <div class="d-flex flex-column">
+                                                <H1 class="cc-wizard-heading my-0">Choose card</H1>
+                                                <H3 class="my-0">Choose from below eligible credit card to issue</H3>
+                                            </div>
+
+                                        </div>
+                                        <div class="types">
+                                            @if (CardsEligibilityMatrixDto.Status == DataStatus.Loading)
+                                            {
+                                                <TelerikSkeleton Width="150px" ShapeType="@SkeletonShapeType.Text" AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton>
+                                            }
+                                            @if (CardsEligibilityMatrixDto.Status == DataStatus.Success)
+                                            {
+                                                <div class="creditcard-search-bar">
+                                                    <div class="search-box search-box-cards">
+
+                                                        <EditForm EditContext="_editContext" OnValidSubmit="@SearchByCardName">
+                                                            <TelerikTextBox class="extfield-leftInput" @bind-Value="_searchProfileInput.SearchText" Name="Card Name" Placeholder="Search card" ShowPrefixSeparator=false>
+                                                                <TextBoxPrefixTemplate>
+                                                                    <TelerikSvgIcon Icon="@SvgIcon.Search"></TelerikSvgIcon>
+                                                                </TextBoxPrefixTemplate>
+                                                            </TelerikTextBox>
+
+                                                        </EditForm>
+
+                                                    </div>
+                                                </div>
+
+
+                                                <TelerikDropDownList Data="@ProductTypesList" TextField="Text" ValueField="Value" @bind-Value="SelectedProductType" class="single-dropdown" OnChange="() => FilterCards()">
+                                                    <ValueTemplate>Type  <strong> @context.Text</strong></ValueTemplate>
+                                                    <DropDownListSettings>
+                                                        <DropDownListPopupSettings Width="180px" />
+                                                    </DropDownListSettings>
+                                                </TelerikDropDownList>
+                                                <TelerikDropDownList Data="@CurrenciesDto" TextField="CurrencyIsoCode" ValueField="CurrencyOriginalId" @bind-Value="SelectedCardCurrency" class="single-dropdown" OnChange="() => FilterCards()">
+                                                    <ValueTemplate>Currency  <strong> @context.CurrencyIsoCode</strong></ValueTemplate>
+                                                    <DropDownListSettings>
+                                                        <DropDownListPopupSettings Width="180px" />
+                                                    </DropDownListSettings>
+                                                </TelerikDropDownList>
+                                            }
+
+                                            @* <RadioTab se @bind-SelectedValue="ViewType" ItemValue="GridView"></RadioTab> *@
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @if (CardsEligibilityMatrixDto.Status == DataStatus.Success && CardsEligibilityMatrixDtoFiltered.Any())
+                            {
+                                @if (ViewType == "GridView")
+                                {
+                                    <CardsGrid>
+                                        @foreach (var card in CardsEligibilityMatrixDtoFiltered)
+                                        {
+                                            var image = $"/api/creditCardsImages/{card.ProductID}";
+                                            <CardView Image=@image Heading="@card.ProductName" Description="@card.ToString()" Id="@card.ProductName" Name="card-selection-group" OnClick="@(() => OnCardSelect(card.ProductID) )"></CardView>
+
+
+                                            @* <CardView Image="@string.Format(picPath, @card.ProductID)" Heading="@card.ProductName" Description="@card.ToString()" Id="@card.ProductName" Name="card-selection-group" OnClick="@(() => OnCardSelect(card.ProductID) )"></CardView> *@
+                                        }
+                                    </CardsGrid>
+                                }
+                                else
+                                {
+                                    <CardsList>
+                                        @foreach (var card in CardsEligibilityMatrixDtoFiltered)
+                                        {
+                                            var image = $"/api/creditCardsImages/{card.ProductID}";
+                                            <CardList Image="@image" Heading="@card.ProductName" Description="@card.ToString()" OnClick="@(() => OnCardSelect(card.ProductID))"></CardList>
+                                        }
+                                    </CardsList>
+                                }
+                            }
+                            else if (CardsEligibilityMatrixDto.Status == DataStatus.Success)
+                            {
+                                <NoRecordsFound />
+                            }
+                            @if (CardsEligibilityMatrixDto.Status == DataStatus.Error)
+                            {
+                                @* <EmptyState Icon="icon-tech-error" Heading="Technical Error" /> *@
+                                <EmptyState IconName="tech-error" Heading="Technical Error" Description="@CardsEligibilityMatrixDto.Exception?.Message" />
+                            }
+                            @if (CardsEligibilityMatrixDto.Status is DataStatus.Loading or DataStatus.Uninitialized)
+                            {
+                                <div class="cards-grid">
+                                    <Repeater Count="10">
+                                        <div class="card-view thumbnail-wrapper">
+                                            <div class="card-image thumbnail">
+                                                <TelerikSkeleton Width="220px" Height="150px" AnimationType="@animationType" ShapeType="@SkeletonShapeType.Rectangle" Class="k-display-inline-block"></TelerikSkeleton>
+                                            </div>
+                                            <H5>
+                                                <TelerikSkeleton Width="150px" ShapeType="@SkeletonShapeType.Text" AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton>
+                                            </H5>
+                                            <H5>
+                                                <TelerikSkeleton Width="200px" ShapeType="@SkeletonShapeType.Text" AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton>
+                                            </H5>
+                                        </div>
+                                    </Repeater>
+                                </div>
+                            }
+
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Card details" Valid="@(StepStatus[FormSteps.IssueDetail])" OnChange="OnStepChange">
+                        <Content>
+                            <div>
+                                <div class="wizard-label-header">
+                                    <H1 class="cc-wizard-heading my-0">@CurrentStep.GetDescription()</H1>
+                                    <H3 class="my-0">Fill card details</H3>
+                                </div>
+                                @{
+                                    CardInfo cardBasicInfo = CardRequest.IssueDetailsModel!.Card;
+                                    CoBrand? cobrand = CardRequest.IssueDetailsModel!.CoBrand ?? new();
+                                    bool IsUsdAgainstSalary = IsUsdChargeCard && collateral is Collateral.AGAINST_SALARY;
+                                    bool DepositOrMargin = collateral is (Collateral.AGAINST_DEPOSIT or Collateral.AGAINST_MARGIN);
+                                    if (IsCorporateCard)
+                                    {
+                                        CardRequest.IssueDetailsModel.CorporateProfile ??= new();
+                                    }
+                                    <TelerikForm EditContext="EditContextRequest" OnSubmit="WizardNextStep">
+                                        <FormValidation>
+                                            <ObjectGraphDataAnnotationsValidator />
+                                        </FormValidation>
+                                        <FormItems>
+                                            <FormItem>
+                                                <Template>
+                                                    <ul class="form d-flex flex-column gp-16 ps-0">
+                                                        @*Charge Card Section*@
+                                                        @if (!IsPrepaidCard)
+                                                        {
+
+                                                            @if (IsCorporateCard)
+                                                            {
+                                                                <li>
+                                                                    <H5 class="form-label">Corporate Civil Id*</H5>
+                                                                    <TelerikTextBox @bind-Value="@CardRequest.IssueDetailsModel.CorporateProfile.CorporateCivilId" OnChange=@OnChangeCorporateCivilId PlaceHolder="Civil Id"></TelerikTextBox>
+                                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.IssueDetailsModel.CorporateProfile.CorporateCivilId)"></ValidationMessage></SubH2>
+                                                                </li>
+                                                                @if (CorporateProfileData.Status == DataStatus.Loading)
+                                                                {
+                                                                    <TelerikLoader Class="loader-indicator" ThemeColor="light"></TelerikLoader>
+                                                                }
+                                                                @if (CorporateProfileData.Status == DataStatus.Success)
+                                                                {
+
+                                                                    <li>
+                                                                        <H5>Arabic Name</H5>
+                                                                        <H3>@CorporateProfileData.Data!.CorporateNameAr</H3>
+                                                                    </li>
+                                                                    <li>
+                                                                        <H5>English Name</H5>
+                                                                        <H3>@CorporateProfileData.Data!.CorporateNameEn</H3>
+                                                                    </li>
+                                                                    <li>
+                                                                        <H5>Holder Name</H5>
+                                                                        <H3>@CorporateProfileData.Data!.EmbossingName</H3>
+                                                                    </li>
+                                                                    <li>
+                                                                        <H5>Available Limit</H5>
+                                                                        <H3>@CorporateProfileData.Data!.RemainingLimit</H3>
+                                                                    </li>
+
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <li>
+                                                                    @*Collateral Selection Fields*@
+                                                                    <H5 class="form-label">Collateral*</H5>
+                                                                    <TelerikDropDownList Data="@collateralData" TextField="name" ValueField="value" OnChange="OnChangeCollateral" DefaultText="-- Select a collateral --" @bind-Value="@CardRequest.IssueDetailsModel.Collateral">
+                                                                        <DropDownListSettings>
+                                                                            <DropDownListPopupSettings MaxHeight="200px" />
+                                                                        </DropDownListSettings>
+                                                                    </TelerikDropDownList>
+                                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => collateral)"></ValidationMessage></SubH2>
+                                                                </li>
+                                                            }
+
+                                                            @if (DepositOrMargin || IsUsdAgainstSalary)
+                                                            {
+                                                                string title = collateral switch
+                                                                {
+                                                                    Collateral.AGAINST_SALARY => "Salary Account",
+                                                                    Collateral.AGAINST_DEPOSIT => "Deposit Account",
+                                                                    Collateral.AGAINST_MARGIN => "Margin Account",
+                                                                    _ => ""
+                                                                };
+
+                                                                bool showCurrentBalance = collateral != Collateral.AGAINST_SALARY;
+
+                                                                <li>
+                                                                    <AccountDropDownList For="@(() => cardBasicInfo.CollateralAccountNumber)" ShowCurrentBalance="true" DataItem="@CardAccounts" Title="@title"
+                                                                                         OnCardAccountChanged="async (acno)=> { cardBasicInfo.CollateralAccountNumber = acno;  await OnCardAccountChanged(acno); }" SelectedCardAccount="@SelectedCardAccount" />
+
+                                                                    @*Sowing option to create new margin account*@
+                                                                    @if (collateral is Collateral.AGAINST_MARGIN && string.IsNullOrEmpty(cardBasicInfo.CollateralAccountNumber))
+                                                                    {
+                                                                        <div class="checkbox clear-both">
+                                                                            <TelerikCheckBox Id="agreeCreateNewMargin" TValue="bool" @bind-Value="@IsAgreeToCreateMargin" Size="lg" />
+                                                                            <label for="agreeCreateNewMargin">I Accept Creating new margin account</label>
+                                                                        </div>
+                                                                    }
+                                                                </li>
+
+                                                            }
+                                                            @if (collateral == Collateral.EXCEPTION)
+                                                            {
+                                                                <li>
+                                                                    <H5>Salary*</H5>
+                                                                    <TelerikNumericTextBox Arrows=false Enabled=true Decimals="3" T="decimal?" @bind-Value="@CardRequest.Customer.Salary" />
+                                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Customer.Salary)"></ValidationMessage></SubH2>
+                                                                </li>
+
+                                                                @if (CardCurrency?.CurrencyIsoCode == ConfigurationBase.KuwaitCurrency)
+                                                                {
+                                                                    <li>
+                                                                        <H5 class="form-label">Total installments (CINET)</H5>
+                                                                        <TelerikNumericTextBox Arrows="false" Decimals="3" T="decimal?" @bind-Value="@CardRequest.Customer.TotalCinet" PlaceHolder="TotalCinet"></TelerikNumericTextBox>
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Customer.TotalCinet)"></ValidationMessage></SubH2>
+                                                                    </li>
+                                                                }
+                                                            }
+
+                                                            @*Salary Fields*@
+                                                            @if (collateral == Collateral.AGAINST_SALARY)
+                                                            {
+                                                                <li>
+
+                                                                    <H5>
+                                                                        Salary*<TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@(SalaryVerification.Status==Domain.Enums.DataStatus.Loading)"></TelerikLoader>
+                                                                        @if (SalaryVerification.Status != Domain.Enums.DataStatus.Uninitialized)
+                                                                        {
+                                                                            string verification_status_style_cass = "icon-Circle-check text-green";
+                                                                            string message = "";
+                                                                            if (!SalaryVerification.Data)
+                                                                            {
+                                                                                verification_status_style_cass = "icon-Close redStatus";
+                                                                                message = SalaryVerification?.Exception?.Message ?? "";
+                                                                            }
+
+                                                                            <span class="@verification_status_style_cass">@message </span>
+                                                                        }
+                                                                    </H5>
+
+                                                                    @if (IsEmployeeCustomer)
+                                                                    {
+                                                                        @if (IsAllowTo(Permissions.StaffSalary.View()))
+                                                                        {
+                                                                            <TelerikNumericTextBox Arrows=false Enabled=false Decimals="3" T="decimal?" @bind-Value="@CardRequest.Customer.Salary" />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <H3 class="text-red">No Permission</H3>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <TelerikNumericTextBox Arrows=false Enabled=false Decimals="3" T="decimal?" @bind-Value="@CardRequest.Customer.Salary" />
+                                                                    }
+
+                                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Customer.Salary)"></ValidationMessage></SubH2>
+                                                                </li>
+
+                                                                @if (CardCurrency?.CurrencyIsoCode == ConfigurationBase.KuwaitCurrency)
+                                                                {
+                                                                    <li>
+                                                                        <H5 class="form-label">Total installments (CINET)*</H5>
+                                                                        <TelerikNumericTextBox Arrows="false" Decimals="3" T="decimal?" @bind-Value="@CardRequest.Customer.TotalCinet" PlaceHolder="TotalCinet"></TelerikNumericTextBox>
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Customer.TotalCinet)"></ValidationMessage></SubH2>
+                                                                    </li>
+                                                                    <li>
+                                                                        <H5 class="form-label">Cinet ID*</H5>
+                                                                        <TelerikNumericTextBox Arrows="false" @bind-Value="@CardRequest.Customer.CinetId" PlaceHolder="CinetID"></TelerikNumericTextBox>
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Customer.CinetId)"></ValidationMessage></SubH2>
+                                                                    </li>
+                                                                }
+                                                            }
+
+                                                        }
+
+                                                        @* Required Limit And Account Number *@
+                                                        @if ((IsCollateralSelected && !IsPrepaidCard) || IsCorporateCard)
+                                                        {
+                                                            <li>
+                                                                <H5>Limit Required*</H5>
+                                                                <TelerikNumericTextBox Arrows="false" Decimals="3" T="decimal" @bind-Value="@CardRequest.IssueDetailsModel.Card.RequiredLimit" OnBlur=OnChangeRequiredLimit PlaceHolder="Required Limit"></TelerikNumericTextBox>
+                                                                @if (CardDefinition?.Eligibility?.ProductType != ProductTypes.PrePaid)
+                                                                {
+                                                                    <SubH2>Limit Range (@CardDefinition?.MinLimit - @CardDefinition?.MaxLimit)</SubH2>
+                                                                    @if (IsCorporateCard)
+                                                                    {
+                                                                        <SubH2> and your corporate available limit is @CorporateProfileData.Data!.RemainingLimit</SubH2>
+                                                                    }
+                                                                }
+                                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.IssueDetailsModel.Card.RequiredLimit)"></ValidationMessage></SubH2>
+                                                            </li>
+                                                        }
+
+                                                        @if (IsCorporateCard)
+                                                        {
+                                                            <li>
+                                                                <H5>Debit Account*</H5>
+                                                                <TelerikTextBox @bind-Value="@CardRequest.IssueDetailsModel.Card.DebitAccountNumber" PlaceHolder="Debit Account" Enabled=false></TelerikTextBox>
+                                                                @if (SelectedCardAccount is not null)
+                                                                {
+
+                                                                    if (SelectedCardAccount.ViewCurrentAccountBalance)
+                                                                    {
+                                                                        <H5 Class="@(SelectedCardAccount!.AvailableBalance<=0 ?"text-red":"")">
+                                                                            Available Balance : @SelectedCardAccount.AvailableBalance.ToMoney(SelectedCardAccount.Currency)
+                                                                        </H5>
+                                                                    }
+                                                                    else
+                                                                    {
+
+                                                                        <span class="permission-icon icon-Block" id="tooltipBottom" title="No Permission"></span>
+                                                                    }
+
+                                                                }
+                                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() =>CardRequest.IssueDetailsModel.Card.DebitAccountNumber)"></ValidationMessage></SubH2>
+                                                            </li>
+                                                        }
+                                                        else if (IsPrepaidCard || IsCollateralSelected)
+                                                        {
+                                                            @*Debit Accounts Selection*@
+                                                            <li>
+                                                                <AccountDropDownList For="@(() => cardBasicInfo.DebitAccountNumber)" DataItem="@DebitAccounts" Title="Debit Account"
+                                                                                     OnCardAccountChanged="async (acno)=> { cardBasicInfo.DebitAccountNumber=acno; await OnDebitAccountChanged(acno); }" SelectedCardAccount="@SelectedDebitAccount" />
+
+                                                            </li>
+
+                                                            @*Exchange Rate for foreign currency*@
+                                                            @if (CardCurrency!.IsForeignCurrency && IsPrepaidCard)
+                                                            {
+
+                                                                var IsLoadedCurrencyRate = CurrencyRate.Status is not (DataStatus.Loading or DataStatus.Uninitialized);
+
+                                                                <li>
+                                                                    <H3>Exchange Transfer Details</H3>
+                                                                    <H5>Exchange Rate :</H5>
+                                                                    <H3Wait IsLoaded=@IsLoadedCurrencyRate>@CurrencyRate.Data?.TransferRate</H3Wait>
+                                                                </li>
+                                                                <li>
+
+                                                                    <H5>Amount In @CurrencyRate.Data?.SourceCurrencyCode :</H5>
+                                                                    <H3Wait IsLoaded=@IsLoadedCurrencyRate>@CurrencyRate.Data?.SrcAmount @CurrencyRate.Data?.SourceCurrencyCode</H3Wait>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="checkbox">
+                                                                        <TelerikCheckBox Enabled=@(CurrencyRate.Status is DataStatus.Success) Id="agreeCurrency" TValue="bool" @bind-Value="@cardBasicInfo.IsAgreedToCurrencyRate" Size="lg" />
+                                                                        <label for="agreeCurrency">I agree to currency rate</label>
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => cardBasicInfo.IsAgreedToCurrencyRate)"></ValidationMessage></SubH2>
+
+                                                                        @if (CurrencyRate.Status is DataStatus.Error)
+                                                                        {
+                                                                            <Button Type="btn-text btn-sm" Label="Retry" OnClick="@(async() => { await BindForeignCurrencyRate();})" />
+                                                                        }
+                                                                    </div>
+                                                                </li>
+
+                                                            }
+                                                        }
+
+                                                        @*Co-Brand*@
+                                                        @if (IsCobrandCard && (IsPrepaidCard || IsCollateralSelected))
+                                                        {
+                                                            <li>
+                                                                <H5 class="form-label">Company & Club</H5>
+                                                                <TelerikSkeleton Width="400px" Height="31px" ShapeType="@SkeletonShapeType.Rectangle" Visible="@(coBrandCardCompany.Status == Domain.Enums.DataStatus.Loading)" class="AO-skeleton-rectangle"></TelerikSkeleton>
+                                                                @if (coBrandCardCompany.Status == Domain.Enums.DataStatus.Success)
+                                                                {
+                                                                    var company = coBrandCardCompany.Data!;
+                                                                    if (company != null)
+                                                                    {
+
+                                                                        <H3 Class="clear-both">@company.CompanyName - @company.ClubName</H3>
+                                                                    }
+                                                                }
+                                                                @if (coBrandCardCompany.Status == Domain.Enums.DataStatus.Error)
+                                                                {
+                                                                    <SubH2 class="text-red">Unable to load Company list</SubH2>
+                                                                }
+                                                            </li>
+                                                            <li>
+                                                                <H5 class="form-label">Membership ID  <IconButton IsEnabled=true OnClick=@(async ()=> { IsAllowToEditMembershipId=!IsAllowToEditMembershipId; })></IconButton></H5>
+                                                                <TelerikNumericTextBox Arrows="false" Enabled=@IsAllowToEditMembershipId @bind-Value="@cobrand!.MemberShipId" PlaceHolder="Membership Id"
+                                                                                       OnChange="@(()=> {cobrand.IsValidMemberShipIdToIssueCard=true; })"
+                                                                                       OnBlur="@(async ()=> { if(IsAllowToEditMembershipId){await OnChangeMemberShipId();}})"></TelerikNumericTextBox>
+                                                                <SubH2><ValidationMessage For="@(()=> cobrand.MemberShipId)" class="kfhtexterror text-red"></ValidationMessage> </SubH2>
+                                                                <SubH2><ValidationMessage For="@(()=> cobrand.IsValidMemberShipIdToIssueCard)" class="kfhtexterror text-red"></ValidationMessage></SubH2>
+                                                            </li>
+
+                                                            @if (IsAllowToDeleteMemberShip)
+                                                            {
+                                                                <li>
+                                                                    <H5 class="form-label">Reason For Delete</H5>
+                                                                    <TelerikTextArea @bind-Value="@cobrand!.ReasonForDeleteRequest" PlaceHolder="Enter reason"></TelerikTextArea>
+                                                                    <Button Type="btn-primary btn-l mt-2" Label="Send Request" OnClick=@(()=> {ShowRequestDeleteMemberShipConfirmation = true; })></Button>
+                                                                </li>
+                                                            }
+                                                        }
+
+                                                        @if (IsCorporateCard || IsPrepaidCard || IsCollateralSelected)
+                                                        {
+                                                            <li>
+                                                                <div class="checkbox">
+                                                                    <TelerikCheckBox Id="isVIPCustomer" TValue="bool" @bind-Value="@CardRequest.Customer.IsVIP" Size="lg" />
+                                                                    <label for="isVIPCustomer">VIP Customer</label>
+                                                                </div>
+                                                            </li>
+                                                            @if (IsAllowTo(Permissions.PinMailer.Issue()))
+                                                            {
+                                                                <li>
+
+                                                                    <div class="checkbox">
+                                                                        <TelerikCheckBox Id="IssuePinMailer" TValue="bool" @bind-Value="@CardRequest.PinMailer" Size="lg" />
+                                                                        <label for="IssuePinMailer">Issue With PIN Mailer</label>
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                            <li>
+                                                                <H5 class="form-label">Remarks</H5>
+                                                                <TelerikTextBox @bind-Value="@CardRequest.Remark" PlaceHolder="Remarks"></TelerikTextBox>
+                                                                <br /> <br />
+                                                            </li>
+                                                        }
+
+                                                        <li>
+                                                            <H5>Deliver By</H5>
+                                                            <H3><TelerikRadioGroup Data="@DeliveryOptions" @bind-Value="@CardRequest.IssueDetailsModel.DeliveryOption" Layout="RadioGroupLayout.Horizontal" ValueField="value" TextField="name"></TelerikRadioGroup></H3>
+                                                        </li>
+
+                                                        @if (CardRequest.IssueDetailsModel.DeliveryOption == DeliveryOption.BRANCH)
+                                                        {
+                                                            <li>
+                                                                <H5>Branch Name</H5>
+                                                                <H5>
+
+                                                                    <TelerikDropDownList Filterable="true" Data="@Branches" @bind-Value="@CardRequest.IssueDetailsModel.DeliveryBranchId" ValueField="BranchId" TextField="Name"></TelerikDropDownList>
+
+                                                                </H5>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </Template>
+                                            </FormItem>
+                                        </FormItems>
+                                        <FormButtons></FormButtons>
+                                    </TelerikForm>
+                                }
+                            </div>
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Financial Position" Valid="@(StepStatus[FormSteps.FinancialPosition])" OnChange="OnStepChange">
+                        <Content>
+                            <ul class="form d-flex flex-column gp-16 ps-0">
+                                <div class="wizard-label-header">
+                                    <H1 class="cc-wizard-heading my-0">@CurrentStep.GetDescription()</H1>
+                                    <H2 class="my-0">Financial position for eligibility</H2>
+                                    @* <H1 class="cc-wizard-heading">@((int)CurrentStep). @CurrentStep.GetDescription()</H1> *@
+                                </div>
+                                @if (financialPosition.Status == DataStatus.Loading)
+                                {
+                                    <SubH2> Calculating financial position ...</SubH2>
+                                }
+                                @if (financialPosition.Status == DataStatus.Error)
+                                {
+                                    <EmptyState IconName="tech-error" Heading="Technical Error" Description=@financialPosition?.Exception?.Message />
+                                    <Button OnClick="LoadFinancialPositionData">Click here to retry</Button>
+                                }
+                                @if (financialPosition.Status == DataStatus.Success)
+                                {
+                                    <TelerikForm EditContext="EditContextRequest">
+                                        <FormValidation>
+                                            <ObjectGraphDataAnnotationsValidator />
+                                        </FormValidation>
+                                        <FormItems>
+                                            <FormItem>
+                                                <Template>
+                                                    @{
+                                                        CardInfo cardBasicInfo = CardRequest.IssueDetailsModel!.Card;
+                                                        FinancialPosition fp = financialPosition?.Data!;
+                                                    }
+                                                    <FormItem ColSpan="2">
+                                                        <Template>
+
+                                                            @if (IsTayseerCard && CreditCardApplicationsFiltered.Count == 0)
+                                                            {
+                                                                <Alert Type="alert-warning" Message=@("No credit cards available for this Account Number " + @cardBasicInfo.DebitAccountNumber)></Alert>
+                                                                @* <p class="text-red"> No credit cards available for this Account Number @cardBasicInfo.DebitAccountNumber </p> *@
+                                                            }
+
+                                                            <ul class="list">
+                                                                @*     <li>
+                                                            <H5>Required Limit</H5>
+                                                            <H3>@CardRequest.IssueDetailsModel!.Card.RequiredLimit</H3>
+                                                            </li> *@
+
+
+
+                                                                <li>
+                                                                    <H5>Monthly Salary/ Deposit</H5>
+                                                                    <H3>@fp.MaximumLimit.ToMoney() (@CardRequest.IssueDetailsModel?.Collateral?.ToString().Replace("AGAINST_", ""))</H3>
+                                                                </li>
+
+                                                                <li>
+                                                                    <H5>Monthly Deductions</H5>
+                                                                    <H3Currency Amount="@fp.MonthlyDeduction" />
+                                                                </li>
+
+                                                                <li>
+                                                                    <H5>Debit Account Balance	(@cardBasicInfo.DebitAccountNumber)</H5>
+                                                                    <H3Currency Amount="@fp.DebitAccountBalance" />
+                                                                </li>
+
+                                                                <li>
+                                                                    <H5>Total Existing Credit Card Requirements</H5>
+                                                                    <H3Currency Amount="@fp.TotalCreditCardLimit" />
+                                                                </li>
+
+                                                                <li>
+                                                                    <H5>Total Real Estate Installments</H5>
+                                                                    <H3>@fp.TotalRealEstateInstallments.ToMoney()</H3>
+                                                                </li>
+                                                                <li>
+                                                                    <H5>Total MURABAHA Installments</H5>
+                                                                    <H3>@fp.TotalMurabahaInstallments.ToMoney()</H3>
+                                                                </li>
+                                                                <li>
+                                                                    <H5>Total installments (CINET)</H5>
+                                                                    <H3>@fp.TotalInstallmentsCINET.ToMoney()</H3>
+                                                                </li>
+                                                                <li>
+                                                                    <H5>Total Deductions</H5>
+                                                                    <H3>@fp.TotalDuties.ToMoney() (@fp.TotalFixedDuties.ToMoney())</H3>
+                                                                </li>
+
+
+                                                                <li>
+                                                                    <H5>Max. Available Limit - KFH</H5>
+                                                                    <H3 Class="@((fp.MaxAvailableLimitKFH<=0 || fp.MaxAvailableLimitKFH<=CardRequest.IssueDetailsModel.Card.RequiredLimit) ?"text-red":"")">@fp.MaxAvailableLimitKFH.ToMoney() </H3>
+                                                                    @if (CardCurrency!.CurrencyIsoCode == ConfigurationBase.USDollerCurrency)
+                                                                    {
+                                                                        <H3 Class="@(fp.MaxAvailableLimitKFH_USD<=0?"text-red":"")">@fp.MaxAvailableLimitKFH_USD @CardCurrency!.CurrencyIsoCode</H3>
+                                                                    }
+                                                                </li>
+                                                                <li>
+                                                                    <H5>Max. Available Limit - CBK</H5>
+                                                                    <H3 Class="@((fp.MaxAvailableLimitCBK<=0 || fp.MaxAvailableLimitKFH<=CardRequest.IssueDetailsModel.Card.RequiredLimit)?"text-red":"")">@fp.MaxAvailableLimitCBK.ToMoney()</H3>
+                                                                </li>
+
+
+
+
+
+                                                                @if (IsTayseerCard)
+                                                                {
+                                                                    <li>
+                                                                        <H5>T3 Max. Limit</H5>
+                                                                        <H3>@fp.T3MaxLimit.ToMoney()</H3>
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <H5>T12 Max. Limit</H5>
+                                                                        <H3>@fp.T12MaxLimit.ToMoney()</H3>
+                                                                    </li>
+                                                                }
+
+
+
+                                                                @* Required Limit And Account Number *@
+                                                                @if (IsCollateralSelected && (!IsPrepaidCard || IsCorporateCard))
+                                                                {
+                                                                    <li>
+                                                                        <H5>Limit Required*</H5>
+                                                                        <TelerikNumericTextBox Arrows="false" Decimals="3" T="decimal" @bind-Value="@CardRequest.IssueDetailsModel.Card.RequiredLimit" OnBlur=OnChangeRequiredLimit PlaceHolder="Required Limit"></TelerikNumericTextBox>
+                                                                        @if (CardDefinition?.Eligibility?.ProductType != ProductTypes.PrePaid)
+                                                                        {
+                                                                            <SubH2>Limit Range (@CardDefinition?.MinLimit - @CardDefinition?.MaxLimit)</SubH2>
+                                                                        }
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.IssueDetailsModel.Card.RequiredLimit)"></ValidationMessage></SubH2>
+                                                                    </li>
+                                                                }
+
+
+                                                            </ul>
+
+
+                                                            @* Display existing credit cards for close or transfer *@
+
+                                                            @if (IsEligibleForReplaceCard)
+                                                            {
+
+                                                                <H2>Insufficient Limit Options</H2>
+                                                                <H4>Select the desired card and choose the corresponding account</H4>
+                                                                <p> The Total Dues and the Maximum limit will be changed accordingly.</p>
+                                                                <div class="KFHnopadding kfh-data-table shadow">
+                                                                    <TelerikGrid Data=@CreditCardApplicationsFiltered SelectedItemsChanged="@((IEnumerable<CreditCardApplication> items) => OnChangeReplaceCard(items.First()))"
+                                                                                 Pageable="true"
+                                                                                 SelectionMode="GridSelectionMode.Single" SelectedItems="@SelectedTransferCardAccounts">
+
+                                                                        <GridColumns>
+                                                                            <GridColumn>
+                                                                                <Template>
+                                                                                    @{
+                                                                                        var _card = context as CreditCardApplication;
+                                                                                        var image = GetCreditCardImage(_card!.ProductId);
+                                                                                        var cardStatus = (CreditCardStatus)_card!.CardStatus;
+                                                                                        var selectionClass = SelectedTransferCardAccounts?.FirstOrDefault()?.RequestId == _card.RequestId ? "card-selection" : "";
+                                                                                        var productCategory = _card?.CardCategoryType is CardCategoryType.Primary ? $"{_card?.CardCategoryType.GetDescription()} - {_card?.ProductType.ToString()}" : _card?.ProductType.ToString();
+                                                                                    }
+
+                                                                                    <div class="cursor-pointer @selectionClass">
+                                                                                        <div class="transaction-details">
+                                                                                            <div class="transaction-description gp-8">
+                                                                                                <img src="@image" class="card-s" style="height:50px;" onerror="if(this.src != '@image') this.src = '@DefaultImage';" />
+                                                                                                <div class="d-flex flex-column align-items-start gp-4 ps-2">
+                                                                                                    <H4>@DisplayCardNumber(_card.CreditCardNumber)</H4>
+                                                                                                    <H4><Status StatusClass="@Helpers.GetStatusClass(cardStatus)" StatusTitle="@cardStatus.GetDescription()"></Status></H4>
+                                                                                                    <div class="d-flex gp-8">
+
+                                                                                                        @_card.ProductName (@productCategory)
+
+                                                                                                        <H4 class="d-flex gp-8">
+
+                                                                                                            @if (collateral is Collateral.AGAINST_DEPOSIT or Collateral.AGAINST_MARGIN)
+                                                                                                            {
+                                                                                                                @collateral.GetDescription()
+                                                                                                            }
+                                                                                                        </H4>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                            </div>
+                                                                                            <div class="d-flex justify-content-between align-items-center gp-16">
+                                                                                                <div class="d-flex flex-column gp-2 align-items-end">
+                                                                                                    @* this is for code of the amount ( Depit , Creidt , Declined )  *@
+                                                                                                    <div class="transaction-amount">
+                                                                                                        @(_card!.IsFetchedBalance ? "Balance : " + _card.CardBalance : "Loading Balance...")
+                                                                                                        <TelerikSkeleton ShapeType="SkeletonShapeType.Text" Visible=!_card.IsFetchedBalance />
+                                                                                                        <H3>Limit : @_card.CardLimit</H3>
+                                                                                                        @if ((_card!.IsFetchedBalance && !_card.ShowBalance))
+                                                                                                        {
+                                                                                                            <Button Label="Retry" OnClick="async()=>{ await BindCardBalanceStatus(_card);}"></Button>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                    <div class="transaction-amount transaction-description">
+                                                                                                        @if (collateral is Collateral.AGAINST_DEPOSIT)
+                                                                                                        {
+                                                                                                            <p>DepositAccount : @_card.DepositAccount</p>
+                                                                                                            <p>DepositAmount : @_card.DepositAmount</p>
+                                                                                                            <p>HoldId : @_card.HoldId</p>
+                                                                                                            <p>HoldStatus : @_card.HoldStatus</p>
+                                                                                                        }
+
+                                                                                                        @if (collateral is Collateral.AGAINST_MARGIN)
+                                                                                                        {
+                                                                                                            <p>MarginAccount : @_card.MarginAccount</p>
+                                                                                                            <p>MarginBalance : @_card.MarginBalance</p>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        @if (_card?.CardCategoryType is CardCategoryType.Primary)
+                                                                                        {
+                                                                                            <div class="validation-message">
+                                                                                                <span class="text-red">@GlobalResources.PrimaryCardUpgrade</span>
+                                                                                            </div>
+                                                                                        }
+                                                                                        <div class="validation-message">
+                                                                                            <span class="text-red">@_card?.Message</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </Template>
+                                                                            </GridColumn>
+                                                                        </GridColumns>
+                                                                        <NoDataTemplate>
+                                                                            <NoRecordsFound />
+                                                                        </NoDataTemplate>
+                                                                    </TelerikGrid>
+                                                                </div>
+                                                                @if (CardToReplace is not null)
+                                                                {
+
+                                                                    @if (CardToReplace.IsValid && fp.IsTransferrable && (!IsTayseerCard || (IsTayseerCard && fp.IsTransferrableTayseer)))
+                                                                    {
+                                                                        <AccountDropDownList SelectedCardAccount=SelectedTransferCardAccount DataItem="@DebitAccounts" Title="Transfer Debit Account" OnCardAccountChanged="(acno)=> OnChangeTransferDebitAccount(acno)" />
+                                                                    }
+
+                                                                    @if (!CardToReplace.IsValid && CardToReplace.Message.Length == 0)
+                                                                    {
+                                                                        CardToReplace.Message.AppendLine("Invalid Card");
+                                                                    }
+
+
+                                                                    <strong class="text-red">@CardToReplace.Message.ToString()</strong>
+
+                                                                    @foreach (var task in taskList)
+                                                                    {
+                                                                        <h4>@task</h4>
+                                                                    }
+
+                                                                }
+                                                            }
+
+
+                                                            <div class="hadmptystates">  <ValidationMessage class="kfhtexterror text-red " For="()=> CardRequest.FinancialPositionMessage"></ValidationMessage></div>
+
+
+                                                            @if (!IsHavingSufficientLimit)
+                                                            {
+                                                                @if (IsAllowException)
+                                                                {
+                                                                    <div class="checkbox clear-both">
+                                                                        <TelerikCheckBox Id="agreeException" TValue="bool" @bind-Value="@IsExceptionCase" Size="lg" />
+                                                                        <label for="agreeException">Want to issue in Exception case</label>
+                                                                    </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <strong class="text-red">Unable to issue this card due to insufficient limit </strong>
+                                                                }
+                                                            }
+
+
+
+                                                        </Template>
+                                                    </FormItem>
+                                                </Template>
+                                            </FormItem>
+                                        </FormItems>
+                                        <FormButtons></FormButtons>
+                                    </TelerikForm>
+
+                                }
+                            </ul>
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Choose Seller" Valid="@(StepStatus[FormSteps.Seller])" OnChange="OnStepChange">
+                        <Content>
+                            <div>
+                                <div class="wizard-label-header">
+
+                                    <H1 class="cc-wizard-heading my-0">Choose Seller</H1>
+                                    @* <H1 class="cc-wizard-heading">@CurrentStep.GetDescription()</H1> *@
+                                    <H2 class="my-0">Person who brought the customer</H2>
+                                </div>
+                                @{
+                                    CardInfo cardBasicInfo = CardRequest.IssueDetailsModel!.Card;
+                                    CoBrand? cobrand = CardRequest.IssueDetailsModel!.CoBrand;
+                                }
+                                <TelerikForm EditContext="EditContextRequest" OnSubmit="WizardNextStep">
+                                    <FormValidation>
+                                        <ObjectGraphDataAnnotationsValidator />
+                                    </FormValidation>
+
+                                    <FormItems>
+                                        @*Seller Information *@
+
+                                        @if (IsCorporateCard || IsPrepaidCard || (!IsPrepaidCard && IsCollateralSelected))
+                                        {
+                                            <FormItem>
+                                                <Template>
+                                                    <TelerikGridLayout ColumnSpacing="32px" RowSpacing="8px">
+                                                        <GridLayoutRows>
+                                                            <GridLayoutRow></GridLayoutRow>
+                                                            <GridLayoutRow></GridLayoutRow>
+                                                        </GridLayoutRows>
+                                                        <GridLayoutColumns>
+                                                            <GridLayoutColumn Width="50%"></GridLayoutColumn>
+                                                        </GridLayoutColumns>
+                                                        <GridLayoutItems>
+                                                            <GridLayoutItem Column="1" Row="1">
+                                                                <H5 class="form-label">Seller ID*</H5>
+                                                                <TelerikNumericTextBox Arrows=false @bind-Value="@CardRequest.Seller.SellerId" PlaceHolder="Enter ID" OnChange=@OnChangeSellerId></TelerikNumericTextBox>
+                                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Seller.SellerId)"></ValidationMessage></SubH2>
+                                                                <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@(SellerNameData.Status==Domain.Enums.DataStatus.Loading)"></TelerikLoader>
+                                                            </GridLayoutItem>
+                                                            <GridLayoutItem Column="1" Row="2">
+
+                                                                @if (SellerNameData.Status == Domain.Enums.DataStatus.Success)
+                                                                {
+                                                                    <div class="d-flex align-items-center mt-4">
+                                                                        <H5 class="form-label align-items-center">Seller Name </H5>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div class="clear-both"></div>
+                                                                        <H2> @SellerNameData.Data?.NameEn </H2>
+                                                                    </div>
+                                                                    <div class="checkbox mt-4">
+                                                                        <TelerikCheckBox Id="agreeSeller" TValue="bool" @bind-Value="@CardRequest.Seller.IsConfirmedSellerId" Size="lg" />
+                                                                        <label for="agreeSeller">Confirm seller name</label>
+                                                                    </div>
+                                                                    <div class="clear-both">
+                                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.Seller.IsConfirmedSellerId)"></ValidationMessage></SubH2>
+                                                                    </div>
+                                                                }
+
+                                                            </GridLayoutItem>
+                                                        </GridLayoutItems>
+                                                    </TelerikGridLayout>
+                                                </Template>
+
+                                            </FormItem>
+                                        }
+                                    </FormItems>
+                                    <FormButtons></FormButtons>
+                                </TelerikForm>
+                            </div>
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Promotions" Valid="@(StepStatus[FormSteps.Promotions])" OnChange="OnStepChange">
+                        <Content>
+
+                            <div class="wizard-label-header">
+                                <H1 class="cc-wizard-heading my-0">@CurrentStep.GetDescription()</H1>
+                                <H2 class="my-0">Choose trendy promotions</H2>
+                            </div>
+                            <TelerikForm EditContext="EditContextRequest">
+                                <FormValidation>
+                                    <ObjectGraphDataAnnotationsValidator />
+                                </FormValidation>
+                                <FormItems>
+                                    <FormItem>
+                                        <Template>
+                                            @if (CardPromotions.Status is Domain.Enums.DataStatus.Loading or Domain.Enums.DataStatus.Uninitialized)
+                                            {
+                                                <TelerikSkeleton Width="400px" Height="31px" ShapeType="@SkeletonShapeType.Rectangle" class="AO-skeleton-rectangle"></TelerikSkeleton>
+                                            }
+
+                                            @if (CardPromotions.Status == Domain.Enums.DataStatus.Error)
+                                            {
+                                                <EmptyState IconName="Marketing" Heading="No promotions" Description="This card has no promotions"></EmptyState>
+                                            }
+
+                                            @if (CardPromotions.Status == Domain.Enums.DataStatus.Success)
+                                            {
+                                                @if (CardPromotions!.Data?.Any() ?? false)
+                                                {
+                                                    <RadioGroup SelectedChanged="OnCardPromotionSelectionChange" Title="Select a promotion" Description="Promotions are available for this customer">
+                                                        @foreach (var prmotion in CardPromotions!.Data)
+                                                        {
+                                                            <RadioCard Title="@prmotion.promoName"
+                                                                       Description="@prmotion.promoDescription"
+                                                                       Label="@("Valid till " + prmotion.endDate.ToString(ConfigurationBase.DateFormat))"
+                                                                       Value="@prmotion.promotionId.ToString()"></RadioCard>
+                                                        }
+
+                                                        <RadioCard Title="No Promotion"
+                                                                   Description="Dont like to choose promotion"
+                                                                   IsActive=true
+                                                                   Label=""
+                                                                   Value="-1"></RadioCard>
+                                                    </RadioGroup>
+                                                }
+                                                else
+                                                {
+                                                    <EmptyState IconName="Marketing" Heading="No promotions" Description="This card has no promotions"></EmptyState>
+                                                }
+                                            }
+                                            @if (CardRequest.PromotionModel is not null)
+                                            {
+                                                <p hidden>
+                                                    <TelerikNumericTextBox Arrows="false" @bind-Value="@CardRequest.PromotionModel.PromotionId"></TelerikNumericTextBox>
+                                                </p>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.PromotionModel.PromotionId)"></ValidationMessage></SubH2>
+                                            }
+                                        </Template>
+                                    </FormItem>
+                                </FormItems>
+                                <FormButtons></FormButtons>
+                            </TelerikForm>
+
+
+
+
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Billing Address" Valid="@(StepStatus[FormSteps.BillingAddress])" OnChange="OnStepChange">
+                        <Content>
+                            <div class="wizard-label-header">
+                                <H1 class="cc-wizard-heading my-0">@CurrentStep.GetDescription()</H1>
+                                <H2 class="my-0">Fill billing address for delivery</H2>
+                            </div>
+                            <TelerikForm EditContext="EditContextRequest">
+                                <FormValidation>
+                                    <ObjectGraphDataAnnotationsValidator />
+                                </FormValidation>
+                                <FormItems>
+                                    <FormItem>
+                                        <Template>
+                                            <div class="address-row1">
+                                                <div class="mb-3 address-flex">
+                                                    <H5 class="form-label">Address Type Selection</H5>
+                                                    <TelerikRadioGroup Data="@AddressTypes" @bind-Value="@SelectedAddressType" Layout="RadioGroupLayout.Horizontal" ValueField="Value" TextField="Text" OnChange="() => OnAddressTypeChange()"></TelerikRadioGroup>
+                                                </div>
+                                            </div>
+                                            <div class="address-row2">
+                                                <div class="mb-3">
+                                                    <H5 class="form-label">Area</H5>
+                                                    <TelerikDropDownList Data="@AreaCodes" TextField="AreaName" ValueField="AreaName" @bind-Value="@CardRequest.BillingAddressModel.City" Filterable="true" FilterOperator="StringFilterOperator.Contains">
+                                                        <DropDownListSettings>
+                                                            <DropDownListPopupSettings MaxHeight="200px" />
+                                                        </DropDownListSettings>
+                                                    </TelerikDropDownList>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.City)"></ValidationMessage></SubH2>
+                                                </div>
+                                            </div>
+
+                                            <div class="address-row3">
+                                                <div class="mb-3 address-flex">
+                                                    <H5 class="form-label">Address</H5>
+                                                    <H3>@CardRequest.BillingAddressModel.Street</H3>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.Street)"></ValidationMessage></SubH2>
+                                                </div>
+                                            </div>
+
+                                            @if (IsFullAddressEnabled)
+                                            {
+                                                <div class="address-row3">
+                                                    <div class="mb-3">
+                                                        <H5 class="form-label">Block*</H5>
+                                                        <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnFullAddressChange()" PlaceHolder="Block" @bind-Value="@CardRequest.BillingAddressModel.Block"></TelerikTextBox>
+                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.Block)"></ValidationMessage></SubH2>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <H5 class="form-label">Street*</H5>
+                                                        <TelerikTextBox MaxLength="11" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnFullAddressChange()" PlaceHolder="Street" @bind-Value="@CardRequest.BillingAddressModel.StreetNo_NM"></TelerikTextBox>
+                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.StreetNo_NM)"></ValidationMessage></SubH2>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <H5 class="form-label">House*</H5>
+                                                        <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnFullAddressChange()" PlaceHolder="House" @bind-Value="@CardRequest.BillingAddressModel.House"></TelerikTextBox>
+                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.House)"></ValidationMessage></SubH2>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <H5 class="form-label">Jaddah</H5>
+                                                        <TelerikTextBox MaxLength="3" Enabled="@IsFullAddressEnabled" OnChange="async (obj) => await OnFullAddressChange()" PlaceHolder="Jaddah" @bind-Value="@CardRequest.BillingAddressModel.Jada"></TelerikTextBox>
+                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.Jada)"></ValidationMessage></SubH2>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="address-row3">
+                                                    <div class="mb-3">
+                                                        <H5 class="form-label">P.O.Box * </H5>
+                                                        <TelerikNumericTextBox T="int?" Enabled="@IsPOBoxEnabled" OnChange="async (obj) => await OnPOBoxChange()" Arrows="false" PlaceHolder="P.O.Box" @bind-Value="@CardRequest.BillingAddressModel.PostOfficeBoxNumber"></TelerikNumericTextBox>
+                                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.PostOfficeBoxNumber)"></ValidationMessage></SubH2>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <div class="address-row3">
+                                                <div class="mb-3">
+                                                    <H5 class="form-label">Zipcode</H5>
+                                                    <TelerikNumericTextBox Arrows="false" T="int?" @bind-Value="@CardRequest.BillingAddressModel.PostalCode" PlaceHolder="Zipcode"></TelerikNumericTextBox>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.PostalCode)"></ValidationMessage></SubH2>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <H5 class="form-label">Mobile phone*</H5>
+                                                    <TelerikNumericTextBox Arrows="false" T="long?" @bind-Value="@CardRequest.BillingAddressModel.Mobile" PlaceHolder="Mobile phone" Enabled="false"></TelerikNumericTextBox>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.Mobile)"></ValidationMessage></SubH2>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <H5 class="form-label">Home phone</H5>
+                                                    <TelerikNumericTextBox Arrows="false" T="long?" @bind-Value="@CardRequest.BillingAddressModel.HomePhone" PlaceHolder="Home phone"></TelerikNumericTextBox>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.HomePhone)"></ValidationMessage></SubH2>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <H5 class="form-label">Work phone</H5>
+                                                    <TelerikNumericTextBox Arrows="false" T="long?" @bind-Value="@CardRequest.BillingAddressModel.WorkPhone" PlaceHolder="Work phone"></TelerikNumericTextBox>
+                                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CardRequest.BillingAddressModel.WorkPhone)"></ValidationMessage></SubH2>
+                                                </div>
+                                            </div>
+                                        </Template>
+                                    </FormItem>
+                                </FormItems>
+                                <FormButtons></FormButtons>
+                            </TelerikForm>
+
+
+
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Review" Valid="@(StepStatus[FormSteps.CardSelection])" OnChange="OnStepChange">
+                        <Content>
+                            <div class="wizard-label-header flex-column justify-content-space">
+                                <div class="d-flex flex-column">
+                                    <div class="search-tags">
+                                        <div class="search-bar">
+                                            <div class="d-flex flex-column">
+                                                <H1 class="cc-wizard-heading my-0">@CurrentStep.GetDescription()</H1>
+                                                <H2 class="my-0">Review the information before you submit</H2>
+                                            </div>
+                                        </div>
+                                        <div class="types">
+                                            <div class="creditcard-search-bar">
+                                                <div class="search-box search-box-cards">
+                                                    <div>
+                                                        @if (SelectedCard.Status == DataStatus.Uninitialized)
+                                                        {
+                                                            <div class="mt-8">
+                                                                <EmptyState Heading="No card selected" Description="Please select card to view details" IconName="Information"> </EmptyState>
+                                                            </div>
+                                                        }
+
+                                                        @if (SelectedCard.Status == DataStatus.Loading)
+                                                        {
+                                                            <div class="cardDetails-ThankyouImg">
+                                                                <picture>
+                                                                    <img />
+                                                                    <source srcset="" />
+                                                                    <TelerikSkeleton Width="180px" Height="100px" AnimationType="@animationType" ShapeType="@SkeletonShapeType.Rectangle" Class="k-display-inline-block img"></TelerikSkeleton>
+                                                                </picture>
+                                                                <div class="card-basicInfo">
+                                                                    <H2> <TelerikSkeleton Width="150px" ShapeType=SkeletonShapeType.Text AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton> </H2>
+                                                                    <H5> <TelerikSkeleton Width="80px" ShapeType=SkeletonShapeType.Text AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton> </H5>
+
+                                                                </div>
+                                                            </div>
+                                                            @* <Button Type="btn-primary" Label="Issue Card" @onclick="() => FormSubmitted(SelectedCard.ProductId)"></Button> *@
+                                                            <ul class="list">
+
+                                                                <Repeater Count="4">
+
+                                                                    <li>
+                                                                        <H5> <TelerikSkeleton Width="150px" ShapeType=SkeletonShapeType.Text AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton></H5>
+                                                                        <H3> <TelerikSkeleton Width="200px" ShapeType=SkeletonShapeType.Text AnimationType="@animationType" Class="k-display-inline-block"></TelerikSkeleton></H3>
+                                                                    </li>
+                                                                </Repeater>
+                                                            </ul>
+                                                        }
+                                                        @if (SelectedCard.Status == DataStatus.Error)
+                                                        {
+                                                            <SubH2 class="text-red">Unable to load card details ! </SubH2>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-v2 d-flex flex-column gp-16 px-0 py-0 mb-5">
+
+
+                                <div class="d-flex flex-column gp-8 px-5 mt-2 pt-1">
+                                    <H2>@FormSteps.IssueDetail.GetDescription()</H2>
+                                    @{
+                                        var issudetail = CardRequest.IssueDetailsModel;
+                                    }
+
+                                    <ul class="row gy-3 p-0">
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Card Name</H4>
+                                            <H3 class="my-0">@CardDefinition?.Name</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Card Type</H4>
+                                            <H3 class="my-0">@CardDefinition?.Eligibility?.ProductType </H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">@nameof(issudetail.Card.DebitAccountNumber)</H4>
+                                            <H3 class="my-0">@issudetail.Card.DebitAccountNumber </H3>
+                                        </li>
+                                        @if ((CardCurrency is not null && CardCurrency.IsForeignCurrency) && issudetail.Card.IsAgreedToCurrencyRate)
+                                        {
+                                            <li class="col-xl-3 col-md-6 pb-3">
+                                                <H4 class="text-gray50 mt-0 mb-2">@nameof(issudetail.Card.IsAgreedToCurrencyRate)</H4>
+                                                <H3 class="my-0">@issudetail.Card.IsAgreedToCurrencyRate</H3>
+                                            </li>
+                                            <li class="col-xl-3 col-md-6 pb-3">
+                                                <H4 class="text-gray50 mt-0 mb-2">@nameof(issudetail.Card.IsForeignCurrencyCard)</H4>
+                                                <H3 class="my-0">@issudetail.Card.IsForeignCurrencyCard</H3>
+                                            </li>
+                                        }
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">@nameof(CardRequest.Remark)</H4>
+                                            <H3 class="my-0">@CardRequest.Remark</H3>
+                                        </li>
+
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">@nameof(CardRequest.IssueDetailsModel.DeliveryOption)</H4>
+                                            <H3 class="my-0">@CardRequest.IssueDetailsModel.DeliveryOption.ToString()</H3>
+                                            @if (CardRequest.IssueDetailsModel.DeliveryOption is DeliveryOption.BRANCH)
+                                            {
+                                                <H3 class="my-0">@Branches?.FirstOrDefault(b => b.BranchId == CardRequest.IssueDetailsModel.DeliveryBranchId)?.Name?.ToString() </H3>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <Divider />
+                                @if (CardToReplace is not null)
+                                {
+                                    <div class="d-flex flex-column gp-8 px-5 mt-2 pt-1">
+                                        <H2>Old Card</H2>
+                                        <div class="row">
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">Card Type</H4>
+                                                <H3 class="my-0">@CardToReplace!.ProductName</H3>
+                                            </div>
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">Card Number</H4>
+                                                <H3 class="my-0">@DisplayCardNumber(CardToReplace.CreditCardNumber)</H3>
+                                            </div>
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">Out Standing Amount</H4>
+                                                <H3 class="my-0">@CardToReplace.CardBalance</H3>
+                                            </div>
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">AccountNumber</H4>
+                                                <H3 class="my-0">@CardToReplace.AccountNumber</H3>
+                                            </div>
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">New Highest Limit</H4>
+                                                <H3 class="my-0">@CardToReplace.CardLimit</H3>
+                                            </div>
+                                        </div>
+
+                                        <H2>New Card</H2>
+                                        <div class="row">
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">Card Type</H4>
+                                                <H3 class="my-0">@CardDefinition!.Name</H3>
+                                            </div>
+                                            <div class="col-6 pb-4">
+                                                <H4 class="text-gray50 mt-0 mb-2">Out Standing Amount</H4>
+                                                <H3 class="my-0">@CardRequest.IssueDetailsModel.Card.RequiredLimit</H3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="divider"></div>
+                                }
+
+                                @if (CardPromotions?.Data?.Any() ?? false)
+                                {
+                                    <div class="d-flex flex-column gp-8 px-5">
+                                        <H2>@FormSteps.Promotions.GetDescription()</H2>
+                                        @{
+                                            var promotion = CardPromotions?.Data?.FirstOrDefault(x => x.promotionId == CardRequest.PromotionModel?.PromotionId);
+
+                                            if (promotion is not null)
+                                            {
+                                                <div class="row">
+                                                    @foreach (var property in promotion.GetType().GetProperties())
+                                                    {
+                                                        <div class="col-6 pb-4">
+                                                            <H4>@property.Name</H4>
+                                                            <H3>@property.GetValue(promotion) </H3>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+
+                                }
+                                <div class="d-flex flex-column gp-8 px-5 ">
+                                    <H2>@FormSteps.BillingAddress.GetDescription()</H2>
+                                    @{
+                                        var billingAddress = CardRequest.BillingAddressModel;
+                                    }
+                                    <ul class="row gy-3 p-0">
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Area</H4>
+                                            <H3 class="my-0">@billingAddress.City</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Address 1</H4>
+                                            <H3 class="my-0">@billingAddress.AddressLine1</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Block</H4>
+                                            <H3 class="my-0">@billingAddress.Block</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Street</H4>
+                                            <H3 class="my-0">@billingAddress.StreetNo_NM</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">House</H4>
+                                            <H3 class="my-0">@billingAddress.House</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Jaddah</H4>
+                                            <H3 class="my-0">@billingAddress.Jada</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Zipcode</H4>
+                                            <H3 class="my-0">@billingAddress.PostalCode</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Mobile phone</H4>
+                                            <H3 class="my-0">@billingAddress.Mobile</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Home phone</H4>
+                                            <H3 class="my-0">@billingAddress.HomePhone</H3>
+                                        </li>
+                                        <li class="col-xl-3 col-md-6 pb-3">
+                                            <H4 class="text-gray50 mt-0 mb-2">Work phone</H4>
+                                            <H3 class="my-0">@billingAddress.WorkPhone</H3>
+                                        </li>
+                                    </ul>
+                                </div>
+
+
+                            </div>
+
+
+
+                        </Content>
+                    </WizardStep>
+                    <WizardStep Label="Thank you" Valid="@(StepStatus[FormSteps.CardSelection])" OnChange="OnStepChange">
+                        <Content>
+                            <div class="wizard-label-header flex-column justify-content-space">
+                                <div class="d-flex flex-column">
+                                    <div class="thankyou-img">
+                                        <div class="search-bar">
+                                            <div class="d-flex flex-column">
+                                                <div>
+                                                    <H1 class="cc-wizard-heading">@CurrentStep.GetDescription()</H1>
+                                                    <div class="d-flex flex-row my-0">
+                                                        <div class="mt-6">
+                                                            Your request ID <b>@cardIssueResponse?.RequestId </b> for issue card is successfully processed <br /> and in Pending status.
+                                                            <br /><br /><br /><br /><br /><br />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-start">
+                                            <div class="creditcard-search-bar">
+                                                <div class="search-box search-box-cards">
+
+                                                    <div class="cardDetails-ThankyouImg">
+                                                        <div class="AO-card--header text-center">
+                                                            <picture>
+                                                                <source srcset="" />
+                                                                @{
+                                                                    var image = GetCreditCardImage(CardDefinition?.ProductId);
+                                                                }
+                                                                <img src=@image onerror="if (this.src != '@image') this.src = '@DefaultImage" />
+                                                            </picture>
+                                                        </div>
+                                                        <div class="card-basicInfo">
+                                                            @* <H2>@CardDefinition?.Name</H2>
+                                                            <H5>@CardDefinition?.Eligibility?.ProductType</H5>
+                                                            <SubH2>@CurrentState?.CustomerProfile?.FullName() </SubH2> *@
+
+                                                            <H3 class="my-0">@CurrentState?.CustomerProfile?.FullName() </H3>
+                                                            <H2 class="my-0">@CardDefinition?.Name</H2>
+                                                            <H4 class="my-0 text-gray50">@CardDefinition?.Eligibility?.ProductType</H4>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row gp-8 pt-4" style="margin-block-start: 8.5rem;">
+                                <div>
+                                    <Button Type="btn-secondary btn-m" Label="Download E-Form" OnClick="async ()=> {await Download(PrintForm.Eform);}"></Button>
+                                </div>
+                                @if (collateral is Collateral.AGAINST_DEPOSIT or Collateral.AGAINST_DEPOSIT_USD)
+                                {
+                                    <div>
+                                        <Button Type="btn-territory btn-m" Label="Download Deposit Voucher" OnClick="async ()=> {await Download(PrintForm.DepositVoucher);}"></Button>
+                                    </div>
+                                }
+                                @if (collateral is Collateral.AGAINST_MARGIN)
+                                {
+                                    <div>
+                                        <Button Type="btn-territory btn-m" Label="Download Debit Voucher" OnClick="async ()=> {await Download(PrintForm.DebitVoucher);}"></Button>
+                                    </div>
+                                }
+                                <Button Type="btn-primary btn-m" Label="Back to home" OnClick="()=> {OnCancel();}"></Button>
+                                @* <Button Type="btn-secondary btn-l" Label="Create new supplementary" OnClick= "()=> {ViewSupplementaryForm();}"></Button> *@
+                            </div>
+                            @if (IsAllowSupplementary)
+                            {
+                                <div>
+                                    <H2 class="mt-8">
+                                        Would you like to Add Supplementary Card ? <TextButton Label="Yes" Enabled="true" LeftIcon=" " OnClick="async ()=> {await ViewSupplementaryForm();}"></TextButton>
+                                    </H2>
+                                </div>
+                            }
+
+                            <UploadDocumentsForm RequestId="@cardIssueResponse?.RequestId" />
+
+                        </Content>
+                    </WizardStep>
+                </WizardSteps>
+                <WizardButtons>
+                    <div class="creditcard-wizard-buttons-act align-items-center">
+                        <div>
+                            @if (CurrentStep is not (FormSteps.CardSelection or FormSteps.Thankyou))
+                            {
+                                <Button Type='@($"{btnClass} btn-text btn-l")' @onclick="WizardBackStep" Enabled="!IsProcessing" Label="Back" />
+                            }
+                        </div>
+                        <div>
+                            @if (CurrentStep == FormSteps.Review)
+                            {
+                                <Button ButtonType="ButtonType.Submit" Type='@($"{btnClass} btn-l btn-primary")' @onclick="Submit" Enabled="!IsProcessing" Label="Submit" />
+                            }
+                            else   @if (CurrentStep != FormSteps.Thankyou)
+                            {
+                                if (SelectedCard.Data is not null)
+                                {
+                                    <Button Type="btn-primary btn-l" Label="Continue" @onclick="WizardNextStep" Enabled=!IsProcessing />
+                                    @* <Button Type="btn-primary btn-l" Label="Continue" @onclick="WizardNextStep" Loader="IsProcessing" Enabled=!IsProcessing /> *@
+                                }
+                            }
+                        </div>
+                    </div>
+                </WizardButtons>
+            </TelerikWizard>
+
+
+            <CardDetailHeader CustomClass="card-preview" Hide=@(CurrentStep==FormSteps.Thankyou)
+                              CustomStyle="position:fixed height:140px"
+                              CustomerName=@CurrentState?.CustomerProfile?.FullName()
+                              SelectedCard="new CardDetailsResponse(){CardStatus=CreditCardStatus.None, CardType = CardDefinition?.ProductId??0,ProductName=SelectedCard?.Data?.Name! }"></CardDetailHeader>
+
+
+
+
+            <div class="clear-both"></div>
+
+
+            <div class="custom-steps">
+                @* <div>
+                <span class="mt-4 mb-4 text-primary">Step @((int)CurrentStep + 1) of @((int)FormSteps.Thankyou + 1)  </span>
+                </div> *@
+                <div class="clear-both"></div>
+
+                <div class="mt-6">
+                    @if (CurrentStep != FormSteps.Thankyou)
+                    {
+                        <Button Type='@($"{btnClass} btn-text btn-l")' Label="Cancel" OnClick="async() => { await GoHome(); }"></Button>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<TelerikDialog @bind-Visible="@ShowRequestDeleteMemberShipConfirmation" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <span class="dialog-icon icon-Critical" />
+                <H2>Request Delete MemberShip </H2>
+            </div>
+            <H4>You are request to delete this MemberShip</H4>
+
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ShowRequestDeleteMemberShipConfirmation = false; })" />
+                <Button Type="btn-secondary--critical btn-sm" Label="Yes" OnClick="@RequestDeleteMemberShip" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+@code {
+
+    private TelerikDialog DialogRef { get; set; } = default!;
+
+    public bool WizardDialog { get; set; } = false;
+
+    public int StepIndex { get; set; }
+
+    public bool isValid { get; set; } = true;
+
+
+    public bool isLargeScreen { get; set; }
+
+    ScreenBreakingPoints _breakingPoints = new();
+    ScreenSizeType _screenSizeType { get; set; } = ScreenSizeType.Small;
+
+    private void OnScreenResized(ScreenSizeInformation screenSize)
+    {
+        _screenSizeType = screenSize.ScreenSizeType;
+        DialogRef.Refresh();
+
+        isLargeScreen = _screenSizeType is ScreenSizeType.XXLarge or ScreenSizeType.XLarge or ScreenSizeType.Large;
+    }
+}

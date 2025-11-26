@@ -1,0 +1,252 @@
+﻿@page "/cards-delivery"
+
+@using CreditCardsSystem.Data.Models;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using CreditCardsSystem.Domain.Models.Request;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Shared.Models.RequestActivity;
+@using CreditCardsSystem.Utility.Extensions;
+ 
+@using Kfh.Aurora.Blazor.Components.UI.Timeline
+
+
+@inject ICardIssuanceAppService cardIssueService;
+@inject IRequestActivityAppService requestActivityAppService;
+@inject IReportAppService ReportService;
+@inject NavigationManager NavigationManager;
+
+
+@inherits ApplicationComponent
+
+<div class="cc-transactions-header">
+                <div class="d-flex flex-column mt-6">
+                    <Title Text="Card Delivery"></Title>
+                </div>
+                <div class="accountStatement-search">
+            <label>Type</label>
+            <ChipGroup Selected="All">
+                <Chip Text="All" Value="all"></Chip>
+                <Chip Text="Delivered" Value="Delivered"></Chip>
+                <Chip Text="Failed" Value="Failed"></Chip>
+            </ChipGroup>
+        </div>
+</div>
+
+<div class="tables">
+    <div class="KFHnopadding kfh-data-table">
+        
+        <TelerikGrid Data="@GridData" EditMode="@GridEditMode.Inline"
+                    Pageable="true" PageSize="2" Width="100%" Resizable="false" Reorderable="false"
+                    Groupable="true"
+                    Sortable="false" SortMode="@SortMode.Multiple">
+                    
+                    
+                    <GridColumns>
+
+                        
+                        <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                            <Template>
+                                        <TelerikButton Class="AO-image--button">
+                                            <picture>
+                                                <div class="row">
+                                                    <img src="/dist/KFHCreditCards/credit/42.png" width="50px" height="50px" />
+                                                </div>
+                                            </picture>
+                                        </TelerikButton>
+                            </Template>
+                        </GridColumn>
+
+                        <GridColumn Field="Card Details" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell")" HeaderClass="Cell15 AO-detailed--cell ">
+                            <Template>
+                                @{
+                                    <div class="detailedCell-content">
+                                        <H2>0110105779649</H2>
+                                        <H3>Visa Infinite Debit Card</H3>
+                                    </div>
+                                }
+                            </Template>
+                        </GridColumn>
+
+                 
+                        <GridColumn Field="Courier" OnCellRender="@((e) => e.Class = "Cell17")" HeaderClass="Cell17">
+                            <Template>
+                                @{
+                                    <H2>Aramex</H2>
+                                }
+                            </Template>
+                        </GridColumn>
+
+                        <GridColumn Field="Receiver" OnCellRender="@((e) => e.Class = "Cell17")" HeaderClass="Cell17">
+                            <Template>
+                                @{
+                                    <H2>6623</H2>
+                                }
+                            </Template>
+                        </GridColumn>
+
+                        <GridColumn Field="Delivery Status" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                            <Template>
+                                @{
+                                <Status StatusClass="blueStatus" StatusTitle="In-Progress"></Status>
+                            
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                            <Template>
+                                     <TextButton Label="View status" OnClick="async () => await CardDeliveryDrawerRef.ToggleAsync()" Enabled="true" LeftIcon="icon-LTR"></TextButton>
+                                    
+                            </Template>
+                        </GridColumn>
+
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+</div>
+
+
+<OffCanvas @ref="CardDeliveryDrawerRef" Title="Card Delivery Details" >
+     
+    <OffcanvasContent>
+                            <div class="cardDetails-drawerHeader">
+                                <div class="AO-card--header">
+                                    <picture>
+                                        <source srcset="" />
+                                        <img style="width: 220px !important;  height: 144px !important; display: block" src="/dist/KFHCreditCards/credit/42.png"/>
+                                    </picture>
+                                    <div class="card-basicInfo">
+                                        <H2>4325 08<span class="CardX">XX XXXX</span>1693</H2>
+                                        <H3>Visa Platinum</H3>
+
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                            @* <CardDetailHeader SelectedCard=""></CardDetailHeader> *@
+                            
+                            <div>
+                            <div class="textfield">
+                                <ul class="offcanvas-list">
+                                    <li>
+                                        <H5> Courier </H5>
+                                        <H3> Aramex </H3>
+                                    </li>
+                                    <li>
+                                        <H5> Receiver </H5>
+                                        <H3> 6623 </H3>
+                                    </li>
+                                    <li>
+                                        <H5> Contact </H5>
+                                        <H3> 98473843 </H3>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <Divider/>
+                    
+                                <Timeline>
+
+                                    <TimelineItem Label="Step 1" Date="April 20, 2024" Description="Embossing is done"
+                                    TimelineStatus="TimelineStatus.Success" OnClick="@Clicked" User="Embossing" Status="Approved"></TimelineItem>
+
+                                    <TimelineItem Label="Step 2" Date="April 20, 2024" Description="Cancel delivery by admin"
+                                    TimelineStatus="TimelineStatus.Failure" User="Cancel Delivery"></TimelineItem>
+
+                                    <TimelineItem Label="Step 3" TimelineStatus="TimelineStatus.Success" Date="April 20, 2024"
+                                        Description="Card sent to Hawally" User="Delivery"></TimelineItem>
+
+                                    <TimelineItem Label="Step 4" Disabled="true" Date="April 20, 2024" Description="test timline updated" User="Delivery">
+                                    </TimelineItem>
+    
+                                    <TimelineItem Label="Step 5" Date="April 20, 2024" Description="Delivery to Head office" User="Delivery"></TimelineItem>
+
+                                </Timeline>
+                            </div>
+
+    </OffcanvasContent>
+    @* <OffcanvasFooterContent>
+        <div class="drawer-buttons">
+            <Button Type="btn-primary btn-sm" Label="Apply" OnClick="@ToggleFilterDrawer"></Button>
+        </div>
+    </OffcanvasFooterContent> *@
+     
+</OffCanvas>
+
+
+
+
+   @*
+ <div class="product-list">
+  @foreach (var card in FilteredCards!)
+    {
+        <OnClickComponent OnClick="@(_ => ShowCardDetails(card!.CardNumberDto!))">
+            <Card>
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <div class="product-item">
+                        @{
+                            var imageDist = string.Empty;
+
+                            if (card!.IsCreditCard)
+                                imageDist = "dist/KFHCreditCards/credit";
+                            else if (card.IsDebitCard)
+                                imageDist = "dist/KFHDebitCards/debit";
+                        }
+                        <div class="d-flex">
+                            <img class="" src="@imageDist/@(card.CardType).png" width="120" alt="Active" />
+                        </div>
+                        <div class="product-info">
+                            <H2 Class="InvoiceNo">@card.CardNumberDto</H2>
+                            <H3>@(card.NameEn ?? "N/A")</H3>
+                            <div class="product-dates">
+                                <span class="icon-Date"></span>
+                                <SubH2 class="date-label">Created on @GetCardLoadDate(card) - Delivered on @GetCardDeliveryDate(card)</SubH2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Card>
+        </OnClickComponent>
+    } 
+            <Card>
+                <EmptyState Icon="icon-No-record" Heading="No records available" Class="w-100"></EmptyState>
+            </Card>
+
+</div>
+*@
+
+@code {
+public OffCanvas CardDeliveryDrawerRef { get; set; } = new();
+
+public bool ExcludeDialog { get; set; } = false;
+
+public TimelineStatus Status { get; set; } = TimelineStatus.Success;
+
+    public void Clicked()
+    {
+        Console.WriteLine("tets");
+    }
+    private TelerikGrid<GridModel> TheGrid { get; set; }
+
+
+    private IEnumerable<GridModel> GridData = Enumerable.Range(1, 10)
+        .Select(x => new GridModel
+        {
+            Id = x,
+            Text = "some longer text here that will not fit on a single line and we would like to expand it " + x
+        });
+
+    public class GridModel
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    private bool ShouldOpenMenu { get; set; } = false;
+
+    private void OnActionMenuItemClicked()
+    {
+        ExcludeDialog = true;
+    }
+}

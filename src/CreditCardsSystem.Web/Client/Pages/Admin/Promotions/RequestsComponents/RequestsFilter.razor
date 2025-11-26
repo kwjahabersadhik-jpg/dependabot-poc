@@ -1,0 +1,98 @@
+﻿@using CreditCardsSystem.Domain.Shared.Enums
+
+<OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+    <OffcanvasContent>
+
+        <FormList>
+            <Form Label="Forms">
+                <TelerikDropDownList Data="Forms" @bind-Value="Form"></TelerikDropDownList>
+            </Form>
+            <Form Label="Actions">
+                <TelerikDropDownList Data="Actions" @bind-Value="Action"></TelerikDropDownList>
+            </Form>
+            <Form Label="Statuses">
+                 <TelerikDropDownList Data="Statuses" @bind-Value="Status"></TelerikDropDownList>
+            </Form>
+        </FormList>
+
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons">
+            <Button Type="btn-primary btn-sm"  Loader="ShowLoader" Label="Apply" OnClick="GetRequests"></Button>
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+@code {
+
+    [Parameter]
+    public EventCallback SearchRequests { get; set; }
+
+    private OffCanvas FiltersDrawerRef { get; set; } = new();
+
+    private class Lookup
+    {
+        public string Text { get; set; } = string.Empty;
+        public int Value { get; set; }
+    }
+
+    public int Form { get; set; }
+    public int Action { get; set; }
+    public int Status { get; set; }
+
+    private List<Lookup> Forms { get; set; } = new();
+    private List<Lookup> Actions { get; set; } = new();
+    private List<Lookup> Statuses { get; set; } = new();
+    public bool ShowLoader { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Forms.AddRange(new List<Lookup>()
+        {
+            new(){Text = "All"  , Value = 0},
+            new(){Text = "Promotions"  , Value = (int)ActivityForm.Promotion},
+            new(){Text = "Eligible Promotions"  , Value = (int)ActivityForm.EligiblePromotions},
+            new(){Text = "Cards Definitions"  , Value = (int)ActivityForm.CardDef},
+            new(){Text = "Card Eligibility Matrix"  , Value = (int)ActivityForm.CardEligibilityMatrix},
+            new(){Text = "Groups"  , Value = (int)ActivityForm.PromotionGroup},
+            new(){Text = "Groups Attributes"  , Value = (int)ActivityForm.GroupAttribute},
+            new(){Text = "PCTs"  , Value = (int)ActivityForm.PCT},
+            new(){Text = "Services"  , Value = (int)ActivityForm.Services}
+
+        });
+
+        Actions.AddRange(new List<Lookup>()
+        {
+            new(){Text = "All"  , Value = 0},
+            new(){Text = "Add"  , Value = (int)ActivityType.Add},
+            new(){Text = "Edit"  , Value = (int)ActivityType.Edit},
+            new(){Text = "Delete"  , Value = (int)ActivityType.Delete},
+        });
+
+        Statuses.AddRange(new List<Lookup>()
+        {
+            new(){Text = "All"  , Value = 0},
+            new(){Text = "Pending"  , Value = (int)ActivityStatus.Pending},
+            new(){Text = "Approved"  , Value = (int)ActivityStatus.Approved},
+            new(){Text = "Rejected"  , Value = (int)ActivityStatus.Rejected},
+            new(){Text = "Deleted"  , Value = (int)ActivityStatus.Deleted},
+        });
+    }
+
+    public async Task OpenRequestsFilter()
+    {
+        ShowLoader = false;
+        await FiltersDrawerRef?.ExpandAsync()!;
+        StateHasChanged();
+    }
+
+    private async Task GetRequests()
+    {
+        ShowLoader = true;
+        await SearchRequests.InvokeAsync();
+        ShowLoader = false;
+        await FiltersDrawerRef?.CollapseAsync()!;
+    }
+
+}

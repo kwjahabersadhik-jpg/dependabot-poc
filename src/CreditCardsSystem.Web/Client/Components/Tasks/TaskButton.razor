@@ -1,0 +1,17 @@
+@inject NavigationManager NavManager
+<div class="aurora-theme">
+    <TelerikButton OnClick="@NavigateToPage">
+        <span class="icon-In-KFH" Title="Tasks" Id="BottomTooltip"></span>
+
+        </TelerikButton>
+    <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom"/>
+</div>
+
+@code {
+
+    private void NavigateToPage()
+    {
+        NavManager.NavigateTo("/cc-tasks");
+    }
+
+}

@@ -1,0 +1,435 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Skeletons;
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@inject IClosureAppService closureAppService;
+@inject IActivationAppService activationAppService;
+@inject ICardDetailsAppService CardDetailsAppService;
+
+@inherits ApplicationComponent
+
+
+
+
+@if (IsViewOnly)
+{
+    @if (Cards.Status == DataStatus.Success)
+    {
+        if (Cards.Data == null)
+        {
+            <NoRecordsFound></NoRecordsFound>
+        }
+        else
+        {
+
+            <CGrid ViewAddNew=false Label="Supplementary Cards" DataItem="Cards">
+                <TelerikGrid Data="@Cards.Data" Pageable="true" Sortable="false">
+
+                    <GridColumns>
+
+
+                        <GridColumn Field=" Details" OnCellRender="@((e) => e.Class = "col-4  AO-detailed--cell ps-2")" HeaderClass="col-4">
+                            <Template>
+                                @{
+                                    var card = context as SupplementaryCardDetail;
+                                    <div class="d-flex flex-column align-items-start ps-2">
+                                        <H5 class="text-start my-0">@DisplayCardNumber(card.CardNumberDto)</H5>
+                                        <SubH2 class="text-start">@card.HolderName</SubH2>
+                                        <SubH2 class="text-start">Card Limit @card.CardData?.ApprovedLimit <SubH2>KWD</SubH2></SubH2>
+                                        <SubH2 class="text-start">@card.Description</SubH2>
+                                    </div>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Validity" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3">
+                            <Template>
+                                @{
+                                    var card = context as SupplementaryCardDetail;
+                                    <div class="product-dates">
+                                        <span class="icon-Date"></span>
+                                        <SubH2 class="date-label">@card?.CardData?.RequestDate.Formed() - @card?.CardData?.Expiry?.Formed()</SubH2>
+                                    </div>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Status" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3">
+                            <Template>
+                                @{
+                                    var card = context as SupplementaryCardDetail;
+                                    <Status StatusClass="@Helpers.GetStatusClass(card!.CardStatus)" StatusTitle="@card.CardStatus.ToString()"></Status>
+                                }
+                            </Template>
+                        </GridColumn>
+
+                    </GridColumns>
+                </TelerikGrid>
+            </CGrid>
+          
+        }
+    }
+
+
+    else if (Cards.Status == DataStatus.Loading)
+    {
+        <CardDetailSkeleton />
+    }
+    else if (Cards.Status == DataStatus.Error)
+    {
+        <EmptyState IconName="tech-error" Heading="Technical Error" Description="@Cards.Exception?.Message" />
+    }
+}
+else
+{
+    <div class="cc-accountStatement-header mt-4 mx-0">
+        <Title Text="Supplementary Cards"> </Title>
+
+        <div class="table-selectedFilters mx-0">
+            <TelerikButton Class="@ActivateButtonStyle" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)" OnClick="@ActiveSelectedCards"
+                           Enabled="@EnableActivateButton">
+                Activate Selected Cards
+                <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@ActivationInProgress"></TelerikLoader>
+            </TelerikButton>
+            <OnClickComponent OnClick=GoToNewSupplementaryCardPage>
+                <CircleIcon Icon="icon-Plus" Id="opennewacc" Title="Add Supplementar Card" />
+            </OnClickComponent>
+            <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+        </div>
+
+    </div>
+
+    <div class="KFHnopadding kfh-data-table">
+
+
+        @if (Cards.Status == DataStatus.Success)
+        {
+            if (Cards.Data == null)
+            {
+                <NoRecordsFound></NoRecordsFound>
+            }
+            else
+            {
+
+                <TelerikGrid Data=@Cards.Data
+                             Pageable="true" PageSize="10" Width="100%" Resizable="false" Reorderable="false"
+                             Groupable="true"
+                             Sortable="false"
+                             SelectionMode="GridSelectionMode.Multiple" SortMode="@SortMode.Multiple" @bind-SelectedItems="@SelectedItems">
+
+                    <GridColumns>
+                        <GridColumn Field="Select" OnCellRender="@((e) => e.Class = "col-xl-1 text-center ")" HeaderClass="col-xl-1 text-center">
+                            <Template>
+                                @{
+                                    var item = context as SupplementaryCardDetail;
+                                    if (item?.CardStatus != CreditCardStatus.Active && item?.CardStatus != CreditCardStatus.Pending && item?.CardStatus != CreditCardStatus.Lost)
+                                    {
+                                        <TelerikCheckBox @bind-Value="item!.IsSelected" OnChange="OnSelectChange"></TelerikCheckBox>
+                                    }
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn OnCellRender="@((e) => e.Class = "col-xl-3 text-start ")" HeaderClass="col-xl-3 text-start" Field="Card Details">
+                            <Template>
+                                @{
+
+                                    var item = context as SupplementaryCardDetail;
+                                    string? cardNumber = DisplayCardNumber(item?.CardNumberDto);
+
+                                    @if (item?.CardStatus is CreditCardStatus.Approved or CreditCardStatus.Active)
+                                    {
+                                        <a onclick="@(()=> NavigateToDetailPage(item))" class="text-green"><H2 class="text-start  my-1">@cardNumber</H2></a>
+                                    }
+                                    else
+                                    {
+                                        <H2 class="text-start my-1">@cardNumber</H2>
+                                    }
+                                    <H3 class="text-start my-0">@(item?.FullName)</H3>
+                                    <SubH1 class="text-start my-0">Branch @item?.CardData!.BranchID</SubH1>
+                                }
+                            </Template>
+
+                        </GridColumn>
+
+                        <GridColumn Field="Account Number" OnCellRender="@((e) => e.Class = "col-xl-2 ")" HeaderClass="col-xl-2">
+                            <Template>
+                                @{
+                                    var item = context as SupplementaryCardDetail;
+                                    <H3>@item?.CardData!.BankAcctNo</H3>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Open Date" OnCellRender="@((e) => e.Class = "col-xl-2 ")" HeaderClass="col-xl-2">
+                            <Template>
+                                @{
+                                    var item = context as SupplementaryCardDetail;
+                                    <H3>@item?.CardData!.RequestDate.Formed()</H3>
+                                }
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn Field="Expiry Date" OnCellRender="@((e) => e.Class = "col-xl-2 ")" HeaderClass="col-xl-2">
+                            <Template>
+                                @{
+                                    var item = context as SupplementaryCardDetail;
+                                    <H3>@item?.CardData!.Expiry?.Formed()</H3>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Status" OnCellRender="@((e) => e.Class = "col-xl-2 ")" HeaderClass="col-xl-2">
+                            <Template>
+                                @{
+                                    var item = context as SupplementaryCardDetail;
+                                    <Status StatusClass="@Helpers.GetStatusClass(item!.CardStatus)" StatusTitle="@item.CardStatus.ToString()"></Status>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-2 ")" HeaderClass="col-xl-2">
+                            @{
+                                var item = context as SupplementaryCardDetail;
+                                @if (item?.CardStatus != CreditCardStatus.Closed && item?.CardStatus != CreditCardStatus.Pending)
+                                {
+
+                                    List<ListItem<SupplementaryCardDetail>> Actions = new();
+                                    Actions.Add(new("Close", item));
+                                    Actions.Add(new("Credit Reverse", item));
+                                    <ActionMenuNew Data="@Actions" Status="DataStatus.Success" Callback="@(async (ListItem<SupplementaryCardDetail> selectedItem)=> { await ActionSelectionChanged(selectedItem); } )" />
+                                }
+                            }
+                        </GridCommandColumn>
+                    </GridColumns>
+                    <NoDataTemplate>
+                        <NoRecordsFound />
+                    </NoDataTemplate>
+                </TelerikGrid>
+
+            }
+        }
+        else if (Cards.Status == DataStatus.Loading)
+        {
+            <CardDetailSkeleton />
+        }
+        else if (Cards.Status == DataStatus.Error)
+        {
+            <EmptyState IconName="tech-error" Heading="Technical Error" Description="@Cards.Exception?.Message" />
+        }
+
+    </div>
+
+
+    <TelerikDialog @bind-Visible="@ShowCloseCardConfirmation" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+        <DialogContent>
+            <div class="dialog-content">
+                <div class="dialog-header">
+                    <span class="dialog-icon icon-Critical" />
+                    <H2>Close Card</H2>
+                </div>
+                <H4>You are about to close this card </H4>
+                <p>Are you sure to close this card @DisplayCardNumber(_selectedCard?.CardNumberDto)</p>
+
+                <div class="dialog-buttons">
+                    <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ShowCloseCardConfirmation = false; })" />
+                    <Button Type="btn-secondary--critical btn-sm" Label="Yes" OnClick="@ConfirmCardClose" />
+                </div>
+            </div>
+        </DialogContent>
+    </TelerikDialog>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public bool IsViewOnly { get; set; }
+
+    [Parameter]
+    public decimal PrimaryCardRequestId { get; set; }
+
+    [Parameter]
+    public DataItem<List<SupplementaryCardDetail>> Cards { get; set; } = new();
+    // [CascadingParameter]
+    // protected SearchProfile? SearchProfileComponent { get; set; }
+
+    [Parameter]
+    public EventCallback LoadData { get; set; }
+
+    [Parameter]
+    public EventCallback<CardRequestFormRequest> OnChangeAction { get; set; }
+
+    private bool ShowCloseCardConfirmation { get; set; } = false;
+    private bool ActivationInProgress { get; set; } = false;
+    private bool EnableActivateButton { get; set; } = false;
+
+
+
+    private void OnSelectChange()
+    {
+        EnableActivateButton = ActivationInProgress == false && Cards.Data.AnyWithNull(x => x.IsSelected);
+        StateHasChanged();
+    }
+
+    private async Task ActionSelectionChanged(ListItem<SupplementaryCardDetail> item)
+    {
+        if (item?.Text?.ToUpper() == "CLOSE")
+        {
+            CloseCard(item.Value);
+        }
+        else if (item?.Text?.ToUpper() == "CREDIT REVERSE")
+        {
+
+            Notification.Loading("Getting supplementary card information....");
+
+            var cardInfoResponse = await CardDetailsAppService.GetCardInfo(item.Value!.SourceRequestId, includeCardBalance: true);
+            await HandleApiResponse(cardInfoResponse);
+
+            if (cardInfoResponse.Message.ToLower().Contains("cardno not found"))
+            {
+                Notification.Failure(GlobalResources.NotFoundInMQ);
+                return;
+            }
+
+
+            if (cardInfoResponse.IsSuccessWithData)
+            {
+                var creditCardDto = new CreditCardDto();
+                creditCardDto.CardBalance.SetData(cardInfoResponse.Data!);
+
+                await OnChangeAction.InvokeAsync(new() { Card = creditCardDto, RequestType = RequestType.CreditReverse });
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+    private SupplementaryCardDetail _selectedCard = null!;
+    private string ActivateButtonStyle
+    {
+        get
+        {
+            return EnableActivateButton ? "btn-primary btn-sm" : "btn-primary btn-sm btn-disabled";
+        }
+    }
+
+
+
+    private IEnumerable<SupplementaryCardDetail> SelectedItems { get; set; } = new List<SupplementaryCardDetail>();
+    private void CloseCard(SupplementaryCardDetail? card)
+    {
+        if (card is null || Cards.Data == null) return;
+        if (card.CardStatus == CreditCardStatus.Closed) return;
+
+        if (!CanDeleteSupplementaryCards(card))
+        {
+            Notification.Failure("There is no cards to close!"); ;
+            return;
+        }
+
+        _selectedCard = card;
+        ShowCloseCardConfirmation = true;
+    }
+
+    private bool CanDeleteSupplementaryCards(SupplementaryCardDetail card)
+    {
+        if (card.CardType != ConfigurationBase.AlOsraSupplementaryCardTypeId.ToString())
+            return true;
+
+        int totalCards = Cards?.Data?.Count ?? 0;
+        int totalRejectedCards = Cards?.Data?.Count(x => x.CardStatus == CreditCardStatus.Rejected) ?? 0;
+        int remainingCards = totalCards - totalRejectedCards;//   Cards.Data.Any(x => x.CardStatus != CreditCardStatus.Closed);
+        return remainingCards > 1;
+    }
+
+    private async Task ConfirmCardClose()
+    {
+        if (_selectedCard == null) return;
+
+        ShowCloseCardConfirmation = false;
+        Notification.Loading("Card close is in process..");
+
+        var result = await closureAppService.CloseCreditCard(_selectedCard.CardNumberDto!);
+
+
+        if (!result.IsSuccess)
+            Notification.Show(AlertType.Error, result.Message);
+
+        if (result.IsSuccess)
+        {
+            Notification.Show(AlertType.Success, "Successfully closed the selected card");
+
+            await LoadData.InvokeAsync();
+        }
+
+
+    }
+
+    private async Task ActiveSelectedCards()
+    {
+        if (!SelectedItems.Any()) return;
+
+        var cardNumbers = SelectedItems.Where(x => x.CardNumberDto != null).Select(x => x.CardNumberDto).ToList();
+
+        if (!cardNumbers.AnyWithNull())
+            return;
+
+        ActivationInProgress = true;
+        var result = await activationAppService.ActivateMultipleCards(new() { CardNumbers = cardNumbers!, CivilId = CurrentState.CurrentCivilId ?? "" });
+
+        if (result.IsSuccess)
+        {
+            Notification.Success("Card activated Successfully");
+        }
+        else
+        {
+            Notification.Failure($"{result.Message}  {string.Join(",", result.ValidationErrors.Select(x => x.Error))}");
+        }
+
+
+        ActivationInProgress = false;
+        StateHasChanged();
+    }
+
+
+
+
+    private async Task NavigateToDetailPage(SupplementaryCardDetail supplementary)
+    {
+        if (CurrentState.CurrentCivilId != supplementary.CivilId)
+        {
+            //Assigning Parent Ids
+            CurrentState.PrimaryCivilId = CurrentState.CurrentCivilId;
+            CurrentState.PrimaryRequestId = CurrentState.CurrentRequestId;
+
+            //Assigning Supplementary Ids
+            CurrentState.SupplementaryCivilId = supplementary.CivilId;
+            CurrentState.SupplementaryRequestId = supplementary.SourceRequestId;
+
+            //assigning current active ids
+            CurrentState.CurrentCivilId = supplementary.CivilId;
+
+            CurrentState.IsFromSpplementay = true;
+
+            // await AdvancedSearchRef.SwitchProfile(supplementary.CivilId!);
+        }
+
+        Dictionary<string, string> queryParams = new()
+            {
+                {"requestId", supplementary.SourceRequestId.ToString()}
+            };
+
+        NavigateTo("credit-card-statement", queryParams!);
+
+        await Task.CompletedTask;
+    }
+
+    async Task GoToNewSupplementaryCardPage()
+    {
+        NavigateTo($"/issue-supplementary-card?requestId={PrimaryCardRequestId}");
+        await Task.CompletedTask;
+
+    }
+
+
+}

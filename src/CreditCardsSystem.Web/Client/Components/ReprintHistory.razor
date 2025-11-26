@@ -1,0 +1,147 @@
+
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Web.Client.Shared.ResourceFiles;
+@using Kfh.Aurora.Common.Shared.Interfaces.Search
+@using Kfh.Aurora.Organization
+@using Newtonsoft.Json
+@using Bloc.Models
+@using CreditCardsSystem.Web.Client.Cubits
+@using CreditCardsSystem.Web.Client.States
+@using Kfh.Aurora.Common.Shared.Interfaces.Print
+@using Kfh.Aurora.ReportHistory.Models
+
+@inherits ApplicationComponent
+@inject IStringLocalizer<Resource> Localization
+@inject IJSRuntime JS
+@inject IPrintHistoryCommonApi PrintHistoryCommonApi
+
+
+<div class="w-100">
+
+    <H2>@Localization["PrintHistory"]</H2>
+        <div class="kfh-data-table d-flex">
+            @if (PrintHistoryBuilder.State is PrintHistoryInitialState || PrintHistoryBuilder.State is PrintHistoryLoadingState)
+        {
+            <div class="mx-4 my-4">
+                <TelerikSkeleton Width="50px" Height="50px" ShapeType="@SkeletonShapeType.Circle" class="AO-search--skeletonCircle"></TelerikSkeleton>
+                <div class="d-flex flex-column">
+                    <TelerikSkeleton Width="400px" Height="23px" ShapeType="@SkeletonShapeType.Rectangle" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                    <TelerikSkeleton Width="300px" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                    <TelerikSkeleton Width="200px" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                </div>
+            </div>
+        }
+        else
+        {
+
+            if (PrintHistoryBuilder.State is PrintHistoryLoadedState)
+            {
+                var currentState = (PrintHistoryBuilder.State as PrintHistoryLoadedState)!;
+                <TelerikGrid Data="@currentState.Reports" Class="table-noHeader">
+                    <GridColumns>
+                        <GridColumn OnCellRender="@((e) => e.Class = "Cell17 AO-detailed--cell")">
+                            <Template>
+                                @if (currentState.Reports.Any())
+                                {
+                                    var data = context as ReportHistoryResult;
+                                    if (data is not null)
+                                    {
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex w-70 gp-16">
+                                                <div class=" d-flex ps-4 justify-content-center align-items-center ">
+                                                    <CircleIcon Icon=@GetFileIcon(Path.GetExtension(data.FileName)) Title="Download file" Id="BottomTooltip" Class="circle-btn iconSize-50 circle-background" />
+                                                </div>
+                                                <div>
+                                                    <H3 Class="my-0">@data.CreatedOn.ToString("MMMM d, yyyy")</H3>
+                                                        <H2 Class="my-0">@data.Application.@data.FileName</H2>
+                                                        <H3 Class="my-0">@data.Description</H3>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="d-flex justify-content-center">
+                                                    <TextButton Label="Re-print" Enabled="true" LeftIcon="icon-Arrow-down" OnClick="@(() =>DownloadFileFromUrl(data.FileName,data.FileId))"></TextButton>
+                                                </div>
+
+
+                                            </div>
+                                    }
+                                }
+
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                    <NoDataTemplate>
+                        <NoRecordsFound />
+                    </NoDataTemplate>
+                </TelerikGrid>
+            }
+        }
+
+    </div>
+</div>
+<TelerikTooltip TargetSelector="#TooltipBottom" Position="TooltipPosition.Bottom"></TelerikTooltip>
+@* <CustomNotifications @ref="NotificationReference" /> *@
+
+@code {
+
+    private string Extension { get; set; } = string.Empty;
+
+    private string Reference { get; set; } = string.Empty;
+
+    public string Link { get; set; } = string.Empty;
+
+    private string msg = "You don't have permission to access customer dashboard";
+
+    // public CustomNotifications? NotificationReference { get; set; }
+
+    private string GetFileLink(Guid fileId) => $"/api/printHistory/{fileId}";
+
+    private string GetFileIcon(string fileExtension)
+    {
+        return fileExtension.ToLower() switch
+        {
+            ".png" or ".jpg" or ".jpeg" or ".tif" => "icon-ImageFile",
+            ".pdf" => "icon-FilePdf",
+            ".doc" or ".docx" => "icon-TextFile",
+            ".xls" or ".xlsx" => "icon-Excel",
+            _ => "icon-File-download"
+        };
+    }
+
+    private async Task DownloadFileFromUrl(string FileName, Guid FileId)
+    {
+        // if (!AuthManager.HasPermission(Permissions.CreditCardDashboard.Access()))
+        // {
+        //     Notification.Failure(message: msg);
+        //     return;
+        // }
+
+        await JS.InvokeVoidAsync("triggerFileDownload", FileName, GetFileLink(FileId));
+    }
+
+    private BlocBuilder<PrintHistoryCubit, PrintHistoryState> PrintHistoryBuilder { get; set; }
+    private bool LoadingReports { get; set; } = true;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        PrintHistoryBuilder = new BlocBuilder<PrintHistoryCubit, PrintHistoryState>(new(PrintHistoryCommonApi));
+        PrintHistoryBuilder.Bloc.OnStateChanged += ListenToPrintHistoryState;
+        if (PrintHistoryBuilder.State is PrintHistoryInitialState)
+        {
+            PrintHistoryBuilder.Bloc.Load();
+        }
+        return Task.CompletedTask;
+    }
+
+    private void ListenToPrintHistoryState(PrintHistoryState printHistoryState)
+    {
+        if (printHistoryState is PrintHistoryLoadedState || printHistoryState is PrintHistoryErrorState)
+        {
+            StateHasChanged();
+        }
+    }
+
+
+}

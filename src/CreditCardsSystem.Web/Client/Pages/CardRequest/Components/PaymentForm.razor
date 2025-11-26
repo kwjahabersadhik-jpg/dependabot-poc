@@ -1,0 +1,94 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+@inject IJSRuntime JS
+
+@inherits WorkflowComponent
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+    <TelerikForm EditContext="formEditContext">
+        <FormValidation>
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+        </FormValidation>
+        <FormItems>
+            <FormItem>
+                <Template>
+                    @{
+                        decimal TotalDueAmount = (SelectedCard?.ApproveLimit - SelectedCard?.AvailableLimit) ?? 0;
+                        TotalDueAmount = TotalDueAmount < 0 ? 0 : TotalDueAmount;
+                    }
+                    @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+
+                    <FormList>
+                        
+                            <li>
+                                <div class="mt-6">
+                                    <H5>Due Amount  @CardCurrency?.CurrencyIsoCode</H5>
+                                    <H3>@TotalDueAmount.ToMoney(" ") <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2></H3>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="mt-6">
+
+                                    <AccountDropDownList For="@(() => Model.DebitAccountNumber)" ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Debit Account"
+                                                         OnCardAccountChanged="async (acno)=> { Model.DebitAccountNumber =acno; await OnChangeDebitAccountNumber(); }" SelectedCardAccount="@SelectedDebitAccount" />
+
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mt-6">
+                                    <H5>Amount*</H5>
+                                    <div style="position: relative;">
+                                        <TelerikNumericTextBox Class="shadow-sm textfield-input" Arrows="false" T="decimal" @bind-Value="@Model.Amount" OnBlur="@(()=> OnChangeAmountHandler())"></TelerikNumericTextBox>
+                                        <div class='@($"textfield-RightAddOn")'>
+                                            <SubH2>@(SelectedDebitAccount?.Currency ?? "")</SubH2>
+                                        </div>
+                                    </div>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Amount)"></ValidationMessage></SubH2>
+                                </div>
+                            </li>
+                            @if (IsForeignCurrencyCard)
+                            {
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Transfer Amount</H5>
+                                        <div style="position: relative;">
+                                            <TelerikNumericTextBox Class="shadow-sm textfield-input" Arrows="false" T="decimal" @bind-Value="@Model.ForeignAmount" OnBlur="@(()=> OnChangeAmountHandler(isSourceForeignAmount:true))"></TelerikNumericTextBox>
+                                            <div class='@($"textfield-RightAddOn")'>
+                                                <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Exchange Rate</H5>
+                                        <H3>@CurrencyTransferData?.TransferRate</H3>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Amount In @ConfigurationBase.KuwaitCurrency</H5>
+                                        <H3>@CurrencyTransferData?.SrcAmount.ToMoney(ConfigurationBase.KuwaitCurrency)</H3>
+                                    </div>
+                                </li>
+                            }
+                    
+                    </FormList>
+                </Template>
+            </FormItem>
+        </FormItems>
+        <FormButtons>
+        </FormButtons>
+    </TelerikForm>
+}

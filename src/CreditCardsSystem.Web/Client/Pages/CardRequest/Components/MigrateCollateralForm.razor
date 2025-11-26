@@ -1,0 +1,121 @@
+﻿@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+@inherits WorkflowComponent
+
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+
+    @if (TaskDetail is not null)
+    {
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+    }
+    else
+    {
+        <TelerikForm EditContext="formEditContext">
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <div class="form-flex">
+                            <ul class="list">
+
+                                <li>
+                                    <H5>Card Number</H5>
+                                    <H3>@DisplayCardNumber(SelectedCard?.CardNumberDto)</H3>
+                                    </li>
+                                    <li>
+                                        <H5>Card Limit</H5>
+                                        <H3>@SelectedCard?.ApproveLimit</H3>
+                                    </li>
+                                    <li>
+                                        @*Collateral Selection Fields*@
+
+                                        <div class="mt-4">
+                                            <TelerikRadioGroup OnChange=OnChangeCollateral Data="@collateralData" TextField="name" ValueField="value" @bind-Value="@Model.Collateral" Layout="RadioGroupLayout.Horizontal"></TelerikRadioGroup>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Collateral)"></ValidationMessage></SubH2>
+                                        </div>
+                   
+
+                                    </li>
+
+                                    @if (Model.Collateral is not null)
+                                {
+                                    <li>
+
+                                        @{
+                                            bool showCurrentBalance = true;
+                                            string title = Model.Collateral switch
+                                            {
+                                                Collateral.AGAINST_DEPOSIT => "Deposit Account",
+                                                Collateral.AGAINST_MARGIN => "Debit Account",
+                                                _ => ""
+                                            };
+                                        }
+
+                                        <GridLayoutItem Row="2" Column="1">
+                                            <AccountDropDownList For="@(() => Model.CollateralAccountNumber)" ShowCurrentBalance="@showCurrentBalance" DataItem="@CardAccounts" Title="@title"
+                                                                 OnCardAccountChanged="async (acno)=> { Model.CollateralAccountNumber = acno;  await OnCardAccountChanged(acno); }" SelectedCardAccount="@SelectedCardAccount" />
+
+                                            @*Sowing option to create new margin account*@
+                                            @*    @if (Model.Collateral is Collateral.AGAINST_MARGIN && CardAccounts.Status == DataStatus.Success && string.IsNullOrEmpty(Model.CollateralAccountNumber))
+                                {
+                                <div class="checkbox">
+                                <TelerikCheckBox Id="agreemargin" TValue="bool" @bind-Value="@IsAgreeToCreateMargin" Size="lg" />
+                                <label for="agreemargin">I Accept Creating new margin account</label>
+                                </div>
+
+
+                                } *@
+                                        </GridLayoutItem>
+                                    </li>
+                                    @if (Model.Collateral is Collateral.AGAINST_MARGIN)
+                                    {
+                                        <li>
+                                            <H5>Margin Account Amount</H5>
+                                            <H3>@SelectedCard?.Limit</H3>
+                                            </li>
+                                    }
+                                    <li>
+                                        <H5 class="form-label">Seller ID*</H5>
+                                        <TelerikNumericTextBox Arrows=false @bind-Value="@Model.SellerId" PlaceHolder="Enter ID" OnChange=@OnChangeSellerId></TelerikNumericTextBox>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.SellerId)"></ValidationMessage></SubH2>
+                                        <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@(SellerNameData.Status==Domain.Enums.DataStatus.Loading)"></TelerikLoader>
+                                    </li>
+                                    <li>
+                                        @if (SellerNameData.Status == Domain.Enums.DataStatus.Success)
+                                        {
+                                            <div class="d-flex align-items-center mt-4">
+                                                <H5 class="form-label align-items-center">Seller Name </H5>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="clear-both"></div>
+                                                <H2> @SellerNameData.Data?.NameEn </H2>
+                                                </div>
+                                            <div class="checkbox mt-4">
+                                                <TelerikCheckBox Id="agreeSeller" TValue="bool" @bind-Value="@Model.IsConfirmedSellerId" Size="lg" />
+                                                <label for="agreeSeller">Confirm seller name</label>
+                                            </div>
+                                            <div class="clear-both">
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.IsConfirmedSellerId)"></ValidationMessage></SubH2>
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormButtons>
+
+            </FormButtons>
+        </TelerikForm>
+    }
+}

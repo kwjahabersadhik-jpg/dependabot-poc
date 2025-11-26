@@ -1,0 +1,391 @@
+﻿@page "/customer-view"
+
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile.Components
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Customer
+@using Kfh.Aurora.Blazor.Components.UI.ListTiles
+@using Kfh.Aurora.Blazor.Components.ViewModels.ListTiles
+@using Kfh.Aurora.Common.Components.UI.Customer
+@using Kfh.Aurora.Common.Shared.Interfaces.Customer
+@using Kfh.Aurora.Common.Shared.Models.Customer
+@using Kfh.Aurora.Utilities
+
+@inject ILogger<Index> Logger;
+@inject ICardIssuanceAppService cardIssuanceAppService;
+@inject IRequestAppService requestAppService;
+@inject IFeesAppService _feesAppService
+@inject IStandingOrderAppService _standingOrderAppService
+@inject ICustomerProfileAppService CustomerProfileAppService;
+@inject ICorporateProfileAppService CorporateProfileAppService;
+@inject ICardDetailsAppService CardDetailsAppService;
+@inherits CancellableComponent
+
+<PageTitle>Customer View</PageTitle>
+<CascadingValue Value="State" IsFixed=false>
+
+    <AuroraCustomerKycAlert @bind-CivilId="@CivilId">
+        <div class="main-container">
+            <div class="container-fluid">
+                <StickyContainer Top="66px" Zindex="7" ID="sticky-customerview">
+                    <div class="bg-surface pt-4">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-12">
+                                <div class="row align-items-center justify-content-between">
+
+                                    <div class="col-8">
+                                        <div class="d-flex align-items-center gp-16">
+                                            <CustomerListTile @bind-CivilId="@CivilId" />
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <TelerikSkeleton Width="20px" Visible=@(State?.GenericCustomerProfile.Status == DataStatus.Loading) Height="10px" ShapeType="SkeletonShapeType.Rectangle" />
+                                        @if (State?.GenericCustomerProfile.Status == DataStatus.Success)
+                                        {
+                                            <AuroraCustomerProfileIconButton IsOpenChanged="OpenProfileCanvas"></AuroraCustomerProfileIconButton>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Divider Class="mt-xxl-4" />
+                    </div>
+                </StickyContainer>
+
+                <div class="row mb-5 mt-3">
+                    <div class="col-xl-12">
+                        <CreditCardSummary @ref=CreditCardSummaryRef ReloadStandingOrders="GetStandingOrders" LoadCreditCards="GetCards" />
+                        <StandingOrderList />
+
+                        <AuroraCustomerProfileOffCanvas @ref=CustomerProfileOffCanvasRef ShowRelationManager="@ShowRelationManager"
+                                                        CivilId="@CivilId">
+                            <div>
+                                @{
+                                    bool isAuthorized = AuthManager.HasPermission(Permissions.CustomerProfile.Edit());
+                                    <div class="drawer-buttons justify-content-between align-items-end">
+                                        @*  <Button Type="btn-text btn-sm" OnClick="async()=>{ await ProfileDetailsDrawerRef.ToggleAsync(); }" Label="Cancel" /> *@
+                                        @if (isAuthorized)
+                                        {
+                                            <Button Type="btn-primary btn-sm" Enabled=isAuthorized ButtonType="@ButtonType.Button" Label="Edit" OnClick="@(async () => { await EditProfile(); })"></Button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                        </AuroraCustomerProfileOffCanvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </AuroraCustomerKycAlert>
+</CascadingValue>
+
+@code
+{
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "CivilId")]
+    public string CivilId
+    {
+        get { return civilId.Decode()!; }
+        set { civilId = value; }
+    }
+
+    private string civilId;
+
+    // public string CivilIdQuery { get; set; } = default!;
+    // public string CivilId => CivilIdQuery.Decode()!;
+
+
+    // This parameter is added to trigger the state change even when we
+    // search with the same civil ID. Do not remove this parameter.
+    // If this is removed, searching with the same civil id will not work
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "state")]
+    public string StateVar { get; set; } = default!;
+
+    public CreditCardSummary CreditCardSummaryRef { get; set; } = default!;
+    public OffCanvas ProfileDetailsDrawerRef { get; set; } = default!;
+    private AuroraCustomerProfileOffCanvas CustomerProfileOffCanvasRef { get; set; } = default!;
+
+
+    //Todo Check if user has access to view customer profile
+    private bool HasPermissionToViewCustomerProfile { get; set; } = true;
+
+    //Todo Check if user has access to view staff salary
+    private bool HasPermissionToViewStaffSalary { get; set; } = false;
+
+    public Task<ApiResponseModel<GenericCustomerProfileDto>> GetCustomerProfileTask { get; set; } = default!;
+
+
+    //Note: Enable this flag if you want to show relationship manager
+    //By uncommenting the below and call the api GetCustomerRelationManager(int rimNo) from the interface ICustomerProfileCommonApi
+    [Inject] public required ICustomerProfileCommonApi CustomerProfileCommonApi { get; set; }
+    private bool ShowRelationManager { get; set; }
+
+    private CommonRelationManager? RelationShipManager { get; set; }
+
+    protected override void OnInitialized()
+    {
+        State = State ?? new();
+        State.GenericCorporateProfile = new();
+
+        CurrentState = CurrentState ?? new AppState();
+        CurrentState.GenericCustomerProfile = new();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await BindCustomerProfile();
+    }
+
+
+    private async Task OpenProfileCanvas(bool isOpen)
+    {
+        if (CustomerProfileOffCanvasRef != null)
+        {
+            if (isOpen)
+            {
+                await CustomerProfileOffCanvasRef.ExpandAsync();
+            }
+            else
+            {
+                await CustomerProfileOffCanvasRef.CollapseAsync();
+            }
+        }
+    }
+
+    public async Task EditProfile()
+    {
+        var queryParams = new Dictionary<string, string>
+            {
+                ["civilId"] = CivilId.Encode()! ?? ""
+            };
+
+        NavigateTo("edit-customer-profile", queryParams);
+
+        await Task.CompletedTask;
+    }
+
+    private CommonRelationManager? MapRelationShipManager()
+    {
+        if (State.RelationManager is not null && State.RelationManager.Status == DataStatus.Success)
+        {
+            return new CommonRelationManager()
+                {
+                    ArabicName = State.RelationManager.Data.ArabicName,
+                    EnglishName = State.RelationManager.Data.EnglishName,
+                    Name = State.RelationManager.Data.Name,
+                    Email = State.RelationManager.Data.Email,
+                    EmployeeId = State.RelationManager.Data.EmployeeId,
+                    EmployeeNumber = State.RelationManager.Data.EmployeeNumber,
+                    OfficeLocation = State.RelationManager.Data.OfficeLocation,
+                    OfficePhone = State.RelationManager.Data.OfficePhone,
+                    UserName = State.RelationManager.Data.UserName
+                };
+        }
+
+        return null;
+    }
+
+    private async Task BindCustomerProfile(CommonCustomerProfileDetails? customerProfileDetails = null)
+    {
+        HasPermissionToViewStaffSalary = AuthManager.HasPermission("viewStaffSalary");
+
+        if ((!string.IsNullOrEmpty(CivilId) && State.GenericCustomerProfile.Status == DataStatus.Uninitialized) ||
+            (!string.IsNullOrEmpty(CivilId) && CurrentState.GenericCustomerProfile.CivilId != CivilId))
+        {
+            State.GenericCustomerProfile.Loading();
+            CurrentState.GenericCustomerProfile.CivilId = CivilId;
+
+            var customerProfile = await CustomerProfileAppService.GetCustomerProfileMinimal(new() { CivilId = CivilId });
+            if (!customerProfile.IsSuccess)
+            {
+                State.GenericCustomerProfile.Error(new(customerProfile.Message));
+                return;
+            }
+
+            State.GenericCustomerProfile.SetData(customerProfile.Data ?? new());
+            CurrentState.GenericCustomerProfile = State.GenericCustomerProfile.Data!;
+
+
+            var profile = State.GenericCustomerProfile.Data;
+
+            if (!await IsValidProfile(profile!.CustomerType!, CivilId))
+            {
+                return;
+            }
+
+            if (profile is not null)
+            {
+                CurrentState.CustomerProfile ??= new();
+                CurrentState.CustomerProfile.RimCode = profile.RimCode.ToString();
+                CurrentState.CustomerProfile.CustomerType = profile.CustomerType ?? "";
+                CurrentState.CustomerProfile.DateOfBirth = profile.BirthDate;
+                CurrentState.CustomerProfile.FirstName = profile.FirstName ?? "";
+                CurrentState.CustomerProfile.LastName = profile.LastName ?? "";
+                CurrentState.GenericCustomerProfile = State.GenericCustomerProfile.Data!;
+            }
+
+            CurrentState.CurrentCivilId = CivilId;
+
+            StateHasChanged();
+
+            var tasks = new List<Task>();
+            await Task.Run(() =>
+            {
+                tasks.Add(GetCards());
+                tasks.Add(GetStandingOrders());
+                tasks.Add(GetCustomerRelationManager(profile));
+            });
+        }
+    }
+
+
+    private async Task<bool> IsValidProfile(string customerType, string civilId)
+    {
+        var profileResponse = await CustomerProfileAppService.GetCustomerProfileFromFdRlocalDb(civilId);
+        if (!profileResponse.IsSuccess)
+        {
+            Notification.Failure(profileResponse.Message);
+            State?.GenericCustomerProfile.Error(new(profileResponse.Message));
+            return false;
+        }
+
+
+        bool isPersonalCivilID = customerType.Trim().Equals("Personal", StringComparison.InvariantCultureIgnoreCase);
+
+        var queryParams = new Dictionary<string, string> { ["civilId"] = civilId.Encode()! };
+
+        if (!isPersonalCivilID)
+        {
+            NavigateTo("corporate-view", queryParams);
+            return false;
+        }
+
+        if (profileResponse.Data is null)
+        {
+            NavigateTo("edit-customer-profile", queryParams);
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task GetCustomerRelationManager(GenericCustomerProfileDto profile)
+    {
+
+        if (profile.CustomerType.Equals("Personal", StringComparison.InvariantCultureIgnoreCase))
+            return;
+
+        try
+        {
+            State.RelationManager.Loading();
+
+            var relationManager = await CustomerProfileAppService.GetCustomerRelationManager(profile.RimNo);
+
+            State.RelationManager.SetData(relationManager!);
+            RelationShipManager = MapRelationShipManager();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, nameof(GetCustomerRelationManager));
+            State.RelationManager.Error(ex);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    // private async Task GetSingleCardData(decimal requestId)
+    // {
+    //     var cardData = State.CreditCards.Data?.FirstOrDefault(x => x.RequestId == requestId);
+    //     if (cardData is null) return;
+
+
+    //     cardData.CardBalance.SubStatus = DataStatus.Loading;
+
+    //     var cardTask = CustomerProfileAppService.GetCustomerCard(requestId.ToString());
+    //     var cardInfoTask = CardDetailsAppService.GetCardInfo(requestId, includeCardBalance: true, cancellationToken: CancellationToken);
+    //     Task[] tasks = [cardTask, cardInfoTask];
+    //     await Task.WhenAll(tasks);
+
+    //     var cards = cardTask.Result;
+    //     var cardBalance = cardInfoTask.Result;
+
+    //     if (!cards.IsSuccess)
+    //     {
+    //         Notification.Failure("Unable to load updated card data!");
+    //     }
+
+
+    //     cardData = cards.Data;
+
+    //     if (cardBalance.IsSuccessWithData)
+    //     {
+    //         cardData!.CardBalance.SetData(cardBalance.Data!);
+    //     }
+    //     else
+    //     {
+    //         cardData!.CardBalance.Error(new(cardBalance.Message));
+    //         cardData.CardBalance.SubStatus = DataStatus.Error;
+    //     }
+
+    //     StateHasChanged();
+    //     await Task.CompletedTask;
+    // }
+
+    private async Task GetCards()
+    {
+        try
+        {
+            if (!IsAllowTo(Permissions.CreditCards.View()))
+                return;
+
+            State.CreditCards.Loading();
+
+            var cards = await CustomerProfileAppService.GetCustomerCards(new()
+                {
+                    CivilId = CivilId
+                });
+
+
+            if (!cards.IsSuccess)
+                throw new Exception(cards.Message);
+
+            State.CreditCards.SetData(cards?.Data!);
+            CreditCardSummaryRef.IsLoadedAllCardBalances = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "GetCards");
+            State.CreditCards.Error(ex);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetStandingOrders()
+    {
+        try
+        {
+            State.StandingOrders.Loading();
+            var response = await _standingOrderAppService.GetAllStandingOrders(CurrentState?.CurrentCivilId ?? "");
+            if (response.IsSuccess)
+                State.StandingOrders.SetData(response!.Data!);
+            else
+                State.StandingOrders.Error(new Exception(response.Message));
+        }
+        catch (Exception ex)
+        {
+            State.StandingOrders.Error(ex);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+}

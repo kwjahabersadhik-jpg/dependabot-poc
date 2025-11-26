@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/CreditCardStandingOrderClose/WLS_CloseCreditCardStandingOrder.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, CloseCreditCardStandingOrderServiceReference"
+    ],
+    "outputFile": "CloseCreditCardStandingOrderServiceReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

@@ -1,0 +1,272 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CreditCardUpdateProfileServicesService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.175_80_KFHCreditCardApplicationWebServices_kfh_creditcard_webservices_CreditCardUpdateProfileServicesService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="getCreditCardCustomerProfile">
+    <part name="parameters" element="tns:getCreditCardCustomerProfile">
+    </part>
+  </message>
+  <message name="getCreditCardCustomerProfileResponse">
+    <part name="parameters" element="tns:getCreditCardCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="deleteCreditCardCustomerProfileResponse">
+    <part name="parameters" element="tns:deleteCreditCardCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="insertCreditCardCustomerProfile">
+    <part name="parameters" element="tns:insertCreditCardCustomerProfile">
+    </part>
+  </message>
+  <message name="insertCreditCardCustomerProfileResponse">
+    <part name="parameters" element="tns:insertCreditCardCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="updateCreditCardCustomerNoResponse">
+    <part name="parameters" element="tns:updateCreditCardCustomerNoResponse">
+    </part>
+  </message>
+  <message name="performAccountBoardResponse">
+    <part name="parameters" element="tns:performAccountBoardResponse">
+    </part>
+  </message>
+  <message name="updateCreditCardNoAndFDAcctNo">
+    <part name="parameters" element="tns:updateCreditCardNoAndFDAcctNo">
+    </part>
+  </message>
+  <message name="updateCreditCardAndProfileResponse">
+    <part name="parameters" element="tns:updateCreditCardAndProfileResponse">
+    </part>
+  </message>
+  <message name="updateCreditCardNoAndFDAcctNoResponse">
+    <part name="parameters" element="tns:updateCreditCardNoAndFDAcctNoResponse">
+    </part>
+  </message>
+  <message name="updateCreditCardCustomerProfile">
+    <part name="parameters" element="tns:updateCreditCardCustomerProfile">
+    </part>
+  </message>
+  <message name="updateCreditCardCustomerProfileResponse">
+    <part name="parameters" element="tns:updateCreditCardCustomerProfileResponse">
+    </part>
+  </message>
+  <message name="updateCreditCardAndProfile">
+    <part name="parameters" element="tns:updateCreditCardAndProfile">
+    </part>
+  </message>
+  <message name="updateCreditCardCustomerNo">
+    <part name="parameters" element="tns:updateCreditCardCustomerNo">
+    </part>
+  </message>
+  <message name="BusinessException">
+    <part name="fault" element="tns:BusinessException">
+    </part>
+  </message>
+  <message name="performAccountBoard">
+    <part name="parameters" element="tns:performAccountBoard">
+    </part>
+  </message>
+  <message name="deleteCreditCardCustomerProfile">
+    <part name="parameters" element="tns:deleteCreditCardCustomerProfile">
+    </part>
+  </message>
+  <portType name="CreditCardUpdateProfileServicesService">
+    <operation name="getCreditCardCustomerProfile">
+      <input message="tns:getCreditCardCustomerProfile" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/getCreditCardCustomerProfileRequest">
+    </input>
+      <output message="tns:getCreditCardCustomerProfileResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/getCreditCardCustomerProfileResponse">
+    </output>
+      <fault name="BusinessException" message="tns:BusinessException" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/getCreditCardCustomerProfile/Fault/BusinessException">
+    </fault>
+    </operation>
+    <operation name="performAccountBoard">
+      <input message="tns:performAccountBoard" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/performAccountBoardRequest">
+    </input>
+      <output message="tns:performAccountBoardResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/performAccountBoardResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/performAccountBoard/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateCreditCardNoAndFDAcctNo">
+      <input message="tns:updateCreditCardNoAndFDAcctNo" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardNoAndFDAcctNoRequest">
+    </input>
+      <output message="tns:updateCreditCardNoAndFDAcctNoResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardNoAndFDAcctNoResponse">
+    </output>
+      <fault name="BusinessException" message="tns:BusinessException" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardNoAndFDAcctNo/Fault/BusinessException">
+    </fault>
+    </operation>
+    <operation name="updateCreditCardCustomerNo">
+      <input message="tns:updateCreditCardCustomerNo" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardCustomerNoRequest">
+    </input>
+      <output message="tns:updateCreditCardCustomerNoResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardCustomerNoResponse">
+    </output>
+    </operation>
+    <operation name="updateCreditCardAndProfile">
+      <input message="tns:updateCreditCardAndProfile" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardAndProfileRequest">
+    </input>
+      <output message="tns:updateCreditCardAndProfileResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardAndProfileResponse">
+    </output>
+    </operation>
+    <operation name="deleteCreditCardCustomerProfile">
+      <input message="tns:deleteCreditCardCustomerProfile" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/deleteCreditCardCustomerProfileRequest">
+    </input>
+      <output message="tns:deleteCreditCardCustomerProfileResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/deleteCreditCardCustomerProfileResponse">
+    </output>
+    </operation>
+    <operation name="updateCreditCardCustomerProfile">
+      <input message="tns:updateCreditCardCustomerProfile" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardCustomerProfileRequest">
+    </input>
+      <output message="tns:updateCreditCardCustomerProfileResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/updateCreditCardCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="insertCreditCardCustomerProfile">
+      <input message="tns:insertCreditCardCustomerProfile" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/insertCreditCardCustomerProfileRequest">
+    </input>
+      <output message="tns:insertCreditCardCustomerProfileResponse" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/insertCreditCardCustomerProfileResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardUpdateProfileServicesService/insertCreditCardCustomerProfile/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CreditCardUpdateProfileServicesServiceSoapBinding" type="tns:CreditCardUpdateProfileServicesService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getCreditCardCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="BusinessException">
+        <soap:fault name="BusinessException" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="performAccountBoard">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCreditCardNoAndFDAcctNo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="BusinessException">
+        <soap:fault name="BusinessException" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCreditCardCustomerNo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateCreditCardAndProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="deleteCreditCardCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateCreditCardCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="insertCreditCardCustomerProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_CreditCardUpdateProfileServicesService">
+    <port name="CreditCardUpdateProfileServicesServiceSoap3" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardUpdateProfileServicesService.CreditCardUpdateProfileServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap4" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap5" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardUpdateProfileServicesService.CreditCardUpdateProfileServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap6" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap7" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap8" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_CreditCardUpdateProfileServicesService.CreditCardUpdateProfileServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap9" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+    <port name="CreditCardUpdateProfileServicesServiceSoap2" binding="tns:CreditCardUpdateProfileServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_CreditCardUpdateProfileServicesService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

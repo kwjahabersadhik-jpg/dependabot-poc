@@ -1,0 +1,281 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+@inherits WorkflowComponent
+@implements IDisposable
+@inject IFeesAppService _feesAppService
+@inject IStandingOrderAppService _standingOrderAppService
+@inject IAccountsAppService _accountAppService
+@inject ICardDetailsAppService _cardDetailsAppService
+@inject NavigationManager navigationManager
+
+
+<div class="form-flex">
+    @if (IsAuthorized == false)
+    {
+        <AccessDenied />
+    }
+    else
+    {
+        <TelerikForm EditContext="formEditContext" ColumnSpacing="10px">
+
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <ul class="list">
+                            <FormList>
+                                @if (EnableBeneficiarySelection)
+                                {
+                                    <li>
+                                        <div class="mt-4">
+                                            <TelerikRadioGroup OnChange=resetSelection Data="@beneficiaryTypes" TextField="Text" ValueField="Value" @bind-Value="@SelectedBeneficiaryType" Layout="RadioGroupLayout.Horizontal"></TelerikRadioGroup>
+                                        </div>
+                                    </li>
+
+                                    @if (SelectedBeneficiaryType == (int)BeneficiaryTypes.OwnedCard)
+                                    {
+                                        <li>
+                                            <div class="mt-4">
+                                                <label class="editor-label mb-2">Owned Card Number*</label>
+                                                <TelerikDropDownList Enabled="@(string.IsNullOrEmpty(CurrentBeneficiaryCardNumber))" Id="ownedCardNumber" @bind-Value="SelectedOwnedCardNumber" Data="OwnedCards"
+                                                                     TextField="CardNumber" ValueField="CardNumber" AdaptiveMode="AdaptiveMode.Auto" DefaultText="Select Owned Card"
+                                                                     Filterable=true FilterOperator="StringFilterOperator.Contains" OnChange="@OnChangeOwnedCardNumber" Class="mega-dropdown dropdown-v2">
+                                                    <DropDownListSettings>
+                                                        <DropDownListPopupSettings Height="50vh" />
+                                                    </DropDownListSettings>
+                                                    <ItemTemplate>
+                                                        @{
+                                                            var item = context as OwnedCreditCardsResponse;
+                                                            <div class="card-drop-down-item">
+                                                                <div class="card">
+                                                                    <picture class="p-2">
+                                                                        <img src=@GetCreditCardImage(item?.CardType) />
+                                                                    </picture>
+                                                                </div>
+                                                                <div>
+                                                                    <p>@DisplayCardNumber(item.CardNumberDto)</p>
+                                                                    <p>@item.ProductName</p>
+                                                                    <p class="@(item.ApprovedLimit>0?"text-green":"text-red")">@item.ApprovedLimit.ToMoney() </p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </ItemTemplate>
+                                                </TelerikDropDownList>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.BeneficiaryCardNumber)"></ValidationMessage></SubH2>
+
+                                            </div>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <div class="mt-4">
+                                                <label class="editor-label mb-2">Supplementary Card Number*</label>
+                                                <TelerikDropDownList Enabled="@(string.IsNullOrEmpty(CurrentBeneficiaryCardNumber))" Id="SupplementaryCardNumber" @bind-Value="SelectedSupplementaryCardNumber" Data="SupplementaryCards"
+                                                                     TextField="CardNumber" ValueField="CardNumber" AdaptiveMode="AdaptiveMode.Auto" DefaultText="Select Supplementary Card"
+                                                                     Filterable=true FilterOperator="StringFilterOperator.Contains" OnChange="@OnChangeSupplementaryCardNumber" Class="mega-dropdown dropdown-v2">
+                                                    <DropDownListSettings>
+                                                        <DropDownListPopupSettings Height="50vh"></DropDownListPopupSettings>
+                                                    </DropDownListSettings>
+                                                    <ItemTemplate>
+                                                        @{
+                                                            var item = context as SupplementaryCardDetail;
+                                                            <div class="card-drop-down-item">
+                                                                <div class="card">
+                                                                    <picture class="p-2">
+                                                                        <img src=@GetCreditCardImage(item?.CardData?.CardType) />
+                                                                    </picture>
+                                                                </div>
+                                                                <div>
+                                                                    <p>@DisplayCardNumber(item.CardNumberDto)</p>
+                                                                    <p>@item.FullName</p>
+                                                                    <p>@item.Description</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </ItemTemplate>
+                                                </TelerikDropDownList>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.BeneficiaryCardNumber)"></ValidationMessage></SubH2>
+
+                                            </div>
+                                        </li>
+                                    }
+
+                                }
+                                @if (SelectedCard is not null)
+                                {
+
+
+                                    <Form Label="Beneficiary Limit">
+
+                                        <div class="card-drop-down-item">
+
+                                            <div>
+
+                                                <H3 class="@(SelectedCard.ApproveLimit>0?"text-green":"text-red")">@SelectedCard.ApproveLimit.ToMoney() </H3>
+                                                @if (SelectedCard.IsSupplementaryCard && SelectedBeneficiaryType == (int)BeneficiaryTypes.SupplementaryCard)
+                                                {
+                                                    <p>Full Name : @SupplementaryCardFullName</p>
+                                                    <p>Description : @SupplementaryCardDescription</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </Form>
+
+
+
+
+                                    <Divider />
+                                }
+                                <Form>
+                                    <AccountDropDownList For="@(() => Model.DebitAccountNumber)" ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Debit Account"
+                                                         OnCardAccountChanged="async (acno)=> { Model.DebitAccountNumber =acno; await OnChangeDebitAccountNumber(); }" SelectedCardAccount="@SelectedDebitAccount" />
+                                </Form>
+
+
+
+
+
+                                <Form Label="Amount*">
+                                    <TelerikNumericTextBox Arrows="false" T="decimal" @bind-Value="@Model.Amount"></TelerikNumericTextBox>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Amount)"></ValidationMessage></SubH2>
+                                </Form>
+
+
+
+
+                                @if (!string.IsNullOrEmpty(CurrentBeneficiaryCardNumber))
+                                {
+                                    <li>
+                                        <H5>Current Card Number</H5>
+                                        <H3>@DisplayCardNumber(CurrentBeneficiaryCardNumber)</H3>
+                                    </li>
+                                }
+
+
+
+
+                                <Form Label="Order duration">
+                                    <H4><TelerikRadioGroup Data="@durationTypes.AsEnumerable()" @bind-Value="SelectedDuration" Layout="RadioGroupLayout.Horizontal" ValueField="Value" TextField="Text"></TelerikRadioGroup></H4>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.OrderDuration)"></ValidationMessage></SubH2>
+
+                                    <div class="mt-4">
+                                        <Form Label="Start Date">
+                                            <TelerikDatePicker Format="@ConfigurationBase.DateFormat" @bind-Value="Model.StartDate"></TelerikDatePicker>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.StartDate)"></ValidationMessage></SubH2>
+                                        </Form>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        @if (SelectedDuration == (int)DurationTypes.Date)
+                                        {
+                                            <H5>End Date</H5>
+                                            <TelerikDatePicker Format="@ConfigurationBase.DateFormat" @bind-Value="Model.EndDate"></TelerikDatePicker>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.EndDate)"></ValidationMessage></SubH2>
+                                        }
+                                        else if (SelectedDuration == (int)DurationTypes.Count)
+                                        {
+                                            <H5>Count</H5>
+                                            <TelerikNumericTextBox Arrows="false" T="int?" @bind-Value="Model.NumberOfTransfer"></TelerikNumericTextBox>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.NumberOfTransfer)"></ValidationMessage></SubH2>
+                                        }
+                                    </div>
+                                </Form>
+
+
+
+
+
+
+
+                                @if (Model.ChargeAmount > 0)
+                                {
+
+                                    <div class="row mb-3">
+                                        <div class="col ps-2 address-flex component-div">
+                                            <H5>With Charge</H5>
+                                            <TelerikSwitch id="enableCharge" @bind-Value="@IsWithCharge" OffLabel="No" OnLabel="Yes"></TelerikSwitch>
+                                        </div>
+                                    </div>
+
+                                    @if (IsWithCharge)
+                                    {
+                                        <div class="row">
+                                            <div class="col ps-2 component-div">
+                                                <H5>Charge Amount</H5>
+                                                <H3>@Model.ChargeAmount</H3>
+                                            </div>
+                                            <div class="col ps-2 component-div">
+                                                <H5>Vat Amount</H5>
+                                                <H3>@Model.VatAmount</H3>
+                                            </div>
+                                            <div class="col ps-2 component-div">
+                                                <H5>Total Amount</H5>
+                                                <H3>@Model.TotalAmount</H3>
+                                            </div>
+                                        </div>
+
+                                        if (DebitAccounts != null && DebitAccounts.Data.Any())
+                                        {
+                                            <div class="tables mt-3">
+                                                <div class="KFHnopadding kfh-data-table">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <Title Text="Charge Accounts"> </Title>
+                                                    </div>
+                                                    <TelerikGrid Pageable="true" PageSize="5" Data=@DebitAccounts.Data SelectionMode="GridSelectionMode.Single" SelectedItems="@SelectedCharge">
+                                                        <GridColumns>
+                                                            <GridCheckboxColumn HeaderClass="Cell2" OnCellRender="@((e) => e.Class = "Cell2 AO-cell--removepr AO-cell--removepl")" SelectAll="false"></GridCheckboxColumn>
+                                                            <GridColumn HeaderClass="Cell2" OnCellRender="@((e) => e.Class = "Cell2 AO-cell--removepr AO-cell--removepl")" Field="Account Number">
+                                                                <Template>
+                                                                    @{
+                                                                        var item = context as AccountDetailsDto;
+                                                                        <H3>@item?.Acct</H3>
+                                                                    }
+                                                                </Template>
+                                                            </GridColumn>
+                                                            <GridColumn HeaderClass="Cell3" OnCellRender="@((e) => e.Class = "Cell3 AO-cell--removepr AO-cell--removepl")" Field="Balance">
+                                                                <Template>
+                                                                    @{
+                                                                        var item = context as AccountDetailsDto;
+                                                                        @if (IsAllowTo(Permissions.AccountsBalance.View()))
+                                                                        {
+                                                                            <H3>@item?.AvailableBalance</H3>
+                                                                        }
+                                                                    }
+                                                                </Template>
+                                                            </GridColumn>
+                                                            <GridColumn HeaderClass="Cell2" OnCellRender="@((e) => e.Class = "Cell2 AO-cell--removepr AO-cell--removepl")" Field="Currency">
+                                                                <Template>
+                                                                    @{
+                                                                        var item = context as AccountDetailsDto;
+                                                                        <H3>@item?.Currency</H3>
+                                                                    }
+                                                                </Template>
+                                                            </GridColumn>
+                                                        </GridColumns>
+                                                    </TelerikGrid>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </FormList>
+                        </ul>
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+            </FormValidation>
+            <FormButtons>
+            </FormButtons>
+        </TelerikForm>
+    }
+
+</div>

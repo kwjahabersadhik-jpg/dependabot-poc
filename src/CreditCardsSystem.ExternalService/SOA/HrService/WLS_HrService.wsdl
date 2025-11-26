@@ -1,0 +1,254 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="HrService" targetNamespace="http://www.openuri.org/">
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___integration_80_KFHHrBusinessWebServices_kfh_hr_webservices_HrService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="getSalaryMonths">
+    <part name="parameters" element="tns:getSalaryMonths">
+    </part>
+  </message>
+  <message name="getEmployeeLoanDetailResponse">
+    <part name="parameters" element="tns:getEmployeeLoanDetailResponse">
+    </part>
+  </message>
+  <message name="getEmployeeNo">
+    <part name="parameters" element="tns:getEmployeeNo">
+    </part>
+  </message>
+  <message name="getEmployeeNoResponse">
+    <part name="parameters" element="tns:getEmployeeNoResponse">
+    </part>
+  </message>
+  <message name="getEmployeeNoByAcct">
+    <part name="parameters" element="tns:getEmployeeNoByAcct">
+    </part>
+  </message>
+  <message name="getEmployeeNoByAcctResponse">
+    <part name="parameters" element="tns:getEmployeeNoByAcctResponse">
+    </part>
+  </message>
+  <message name="getEmployeeLeaves">
+    <part name="parameters" element="tns:getEmployeeLeaves">
+    </part>
+  </message>
+  <message name="getEmployeeSalaryDetail">
+    <part name="parameters" element="tns:getEmployeeSalaryDetail">
+    </part>
+  </message>
+  <message name="getEmployeeInfo">
+    <part name="parameters" element="tns:getEmployeeInfo">
+    </part>
+  </message>
+  <message name="getEmployeeLoanDetail">
+    <part name="parameters" element="tns:getEmployeeLoanDetail">
+    </part>
+  </message>
+  <message name="getEmployeeLeavesResponse">
+    <part name="parameters" element="tns:getEmployeeLeavesResponse">
+    </part>
+  </message>
+  <message name="getSalaryMonthsResponse">
+    <part name="parameters" element="tns:getSalaryMonthsResponse">
+    </part>
+  </message>
+  <message name="getEmployeeInfoResponse">
+    <part name="parameters" element="tns:getEmployeeInfoResponse">
+    </part>
+  </message>
+  <message name="getEmployeeSalaryDetailResponse">
+    <part name="parameters" element="tns:getEmployeeSalaryDetailResponse">
+    </part>
+  </message>
+  <portType name="HrService">
+    <operation name="getEmployeeNo">
+      <input message="tns:getEmployeeNo" wsam:Action="http://www.openuri.org/HrService/getEmployeeNoRequest">
+    </input>
+      <output message="tns:getEmployeeNoResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeNoResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeNo/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEmployeeInfo">
+      <input message="tns:getEmployeeInfo" wsam:Action="http://www.openuri.org/HrService/getEmployeeInfoRequest">
+    </input>
+      <output message="tns:getEmployeeInfoResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeInfoResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeInfo/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getSalaryMonths">
+      <input message="tns:getSalaryMonths" wsam:Action="http://www.openuri.org/HrService/getSalaryMonthsRequest">
+    </input>
+      <output message="tns:getSalaryMonthsResponse" wsam:Action="http://www.openuri.org/HrService/getSalaryMonthsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getSalaryMonths/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEmployeeNoByAcct">
+      <input message="tns:getEmployeeNoByAcct" wsam:Action="http://www.openuri.org/HrService/getEmployeeNoByAcctRequest">
+    </input>
+      <output message="tns:getEmployeeNoByAcctResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeNoByAcctResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeNoByAcct/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEmployeeSalaryDetail">
+      <input message="tns:getEmployeeSalaryDetail" wsam:Action="http://www.openuri.org/HrService/getEmployeeSalaryDetailRequest">
+    </input>
+      <output message="tns:getEmployeeSalaryDetailResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeSalaryDetailResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeSalaryDetail/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEmployeeLoanDetail">
+      <input message="tns:getEmployeeLoanDetail" wsam:Action="http://www.openuri.org/HrService/getEmployeeLoanDetailRequest">
+    </input>
+      <output message="tns:getEmployeeLoanDetailResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeLoanDetailResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeLoanDetail/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getEmployeeLeaves">
+      <input message="tns:getEmployeeLeaves" wsam:Action="http://www.openuri.org/HrService/getEmployeeLeavesRequest">
+    </input>
+      <output message="tns:getEmployeeLeavesResponse" wsam:Action="http://www.openuri.org/HrService/getEmployeeLeavesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/HrService/getEmployeeLeaves/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="HrServiceSoapBinding" type="tns:HrService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getEmployeeNo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEmployeeInfo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getSalaryMonths">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEmployeeNoByAcct">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEmployeeSalaryDetail">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEmployeeLoanDetail">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getEmployeeLeaves">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_HrService">
+    <port name="HrServiceSoap5" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_HrService.HrServiceSoap/1.0"/>
+    </port>
+    <port name="HrServiceSoap4" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_HrService/1.0"/>
+    </port>
+    <port name="HrServiceSoap3" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_HrService.HrServiceSoap/1.0"/>
+    </port>
+    <port name="HrServiceSoap2" binding="tns:HrServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_HrService/1.0"/>
+    </port>
+    <port name="HrServiceSoap" binding="tns:HrServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/WLS_HrService.HrServiceSoap/1.0"/>
+    </port>
+    <port name="HrServiceSoap9" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/HrService/1.0"/>
+    </port>
+    <port name="HrServiceSoap8" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/HrService/1.0"/>
+    </port>
+    <port name="HrServiceSoap7" binding="tns:HrServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/HrService/1.0"/>
+    </port>
+    <port name="HrServiceSoap6" binding="tns:HrServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_HrService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

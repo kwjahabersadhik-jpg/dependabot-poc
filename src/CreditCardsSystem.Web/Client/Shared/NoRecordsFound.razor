@@ -1,0 +1,18 @@
+﻿@inherits ApplicationComponent
+
+@* <div class="hadmptystates">
+    <span class="icon-No-record AO-emptyState--icon"></span>
+    <h5>No records available</h5>
+</div> *@
+
+<EmptyState VectorName="search" Heading="@(Message??DefaultMessage)"></EmptyState>
+
+
+@code {
+
+    private string DefaultMessage = "No records available";
+
+    [Parameter]
+    public string? Message { get; set; }
+
+}

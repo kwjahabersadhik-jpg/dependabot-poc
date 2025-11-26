@@ -1,0 +1,267 @@
+﻿@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+
+@page "/requests"
+@inject IRequestsOpsAppService RequestsOpsAppService
+@inject RequestStateContainer RequestStateContainer
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits ApplicationComponent
+
+<div class="main-container">
+    <div class="container-fluid">
+                <div class="table-header mx-0">
+                     <Title Text="Requests"></Title>
+                        <div>
+                            <OnClickComponent OnClick="@OpenRequestsFilter">
+                                <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                            </OnClickComponent>
+                            <TelerikTooltip TargetSelector="#opennewacc" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                        </div>
+                </div>
+               
+     
+            <div class="KFHnopadding kfh-data-table">
+                @if (RequestsResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@RequestsResponse.Data"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%">
+
+                        <GridToolBarTemplate>
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(RequestActivityDto.RequestActivityId)" Title="Request Details" OnCellRender="@((e) => e.Class = "col-xl-2 text-start px-4")" HeaderClass="col-xl-2 text-start px-4">
+                                <Template>
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        var item1 = context as RequestActivityDto;
+
+                                        <OnClickComponent OnClick="() => OpenRequestDetails(item!)">
+                                            <div class="d-flex align-items-center gp-16">
+                                                    <div>
+                                                        <CircleIcon Icon="icon-Cards" CircleSize="40px" IconSize="20px" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="d-flex flex-column text-start px-2">
+                                                                <H3 class="text-start my-0 text-gray50">ID : @item!.RequestActivityId</H3>
+                                                                <H2 class="my-0 text-start">@item!.ActivityTypeName @item!.ActivityFormName</H2>
+                                                                <H4 class="my-0 text-start text-gray50 my-0">Requested by : @item!.MakerName </H4>
+                                                                <H4 class="my-0 text-start text-gray50 my-0">Checked by : @item!.CheckerName </H4>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </OnClickComponent>
+                                    }
+
+                                    @{
+                                    
+                                    }
+                                </Template>
+                            </GridColumn>
+
+
+                            @* <GridColumn Field="@nameof(RequestActivityDto.RequestActivityId)" Title="Request ID" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.RequestActivityId</H4>
+                                    }
+                                </Template>
+                            </GridColumn> *@
+
+                            @* <GridColumn Field="@nameof(RequestActivityDto.ActivityFormName)" Title="Form" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.ActivityForm</H4>
+                                    }
+                                </Template>
+                            </GridColumn> *@
+
+                            @* <GridColumn Field="@nameof(RequestActivityDto.ActivityTypeName)" Title="Form Action" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.ActivityTypeName</H4>
+                                    }
+                                </Template>
+                            </GridColumn> *@
+
+                            <GridColumn Field="@nameof(RequestActivityDto.CreationDate)" Title="Created on" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.CreationDate.ToString("MMMM dd, yyyy")</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            @* <GridColumn Field="@nameof(RequestActivityDto.MakerName)" Title="Maker" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.MakerName</H4>
+                                    }
+                                </Template>
+                            </GridColumn> *@
+
+                            @* <GridColumn Field="@nameof(RequestActivityDto.CheckerName)" Title="Checker" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.CheckerName</H4>
+                                    }
+                                </Template>
+                            </GridColumn> *@
+
+                            <GridColumn Field="@nameof(RequestActivityDto.Reason)" Title="Reason" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <H4>@item!.Reason</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(RequestActivityDto.ActivityStatusName)" Title="Status" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @* @{
+                                       
+                                        <H4>@item!.ActivityStatusName</H4>
+                                    } *@
+
+                                     @{ 
+                                         var item = context as RequestActivityDto;
+                                        @if (@item!.ActivityStatusName == "Approved")
+                                        {       
+                                                @* <H4 class="text-green">Approved</H4> *@
+                                                <Status StatusClass="greenStatus" StatusTitle="Approved"> </Status> 
+                                            
+                                        }
+                                        else 
+                                        {       <div class="d-flex justify-content-center">
+                                                    <Status StatusClass="yellowStatus" StatusTitle="Pending"> </Status> 
+                                                    @* <H4 class="text-orange">Pending</H4> *@
+                                                </div>
+
+                                        }
+                                        @* <H4>@item!.Status</H4> *@
+                                    }
+
+
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="Action" Title=" " OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as RequestActivityDto;
+                                        <div class="d-flex justify-content-center"> 
+                                             <TextButton Label="View details" Enabled="true" RightIcon="icon-LTR" OnClick="() => OpenRequestDetails(item!)"></TextButton>
+                                        </div>
+                                        @* <Button Label="Details" OnClick="() => OpenRequestDetails(item!)"></Button> *@
+
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (RequestsResponse.Status == DataStatus.Loading)
+                {
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (RequestsResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+         </div>
+    </div>
+
+<RequestsFilter @ref="RequestsFilterComp"
+                SearchRequests="Search">
+</RequestsFilter>
+
+@code {
+
+    public RequestsFilter RequestsFilterComp { get; set; } = new();
+    public DataItem<List<RequestActivityDto>> RequestsResponse { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Search();
+    }
+
+    async Task Search()
+    {
+        RequestsResponse.Loading();
+        var response = await RequestsOpsAppService.GetRequestsByCriteria(new RequestsSearchCriteria()
+            {
+                MakerID = 0,
+                ActivityType = (ActivityType)RequestsFilterComp?.Action!,
+                ActivityForm = (ActivityForm)RequestsFilterComp?.Form!,
+                ActivityStatus = (ActivityStatus)RequestsFilterComp?.Status!
+            });
+
+        if (response.IsSuccess)
+            RequestsResponse.SetData(response.Data!);
+        else
+        {
+            RequestsFilterComp.ShowLoader = false;
+            RequestsResponse.Error(new Exception(response.Message));
+        }
+    }
+
+    async Task OpenRequestsFilter()
+    {
+        await RequestsFilterComp?.OpenRequestsFilter()!;
+    }
+
+    async Task OpenRequestDetails(RequestActivityDto request)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
+
+        RequestStateContainer.RequestHeader = request;
+        RequestStateContainer.RequestDetails = request.RequestActivityDetails!;
+        RequestStateContainer.UserId = userId;
+        NavigationManager.NavigateTo("/request/details");
+    }
+
+
+}

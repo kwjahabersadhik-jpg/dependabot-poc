@@ -1,0 +1,283 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardRequest;
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using Kfh.Aurora.Auth;
+
+@inject ICardDetailsAppService CardDetailsAppService;
+@inject AppState appState;
+@inject IAuthManager authManager;
+@inherits ApplicationComponent
+
+@{
+    var Status = (Data?.CardBalance?.Status ?? DataStatus.Uninitialized);
+    var wrapperClass = (IsCircle ? "circle color-secondary d-flex" : "");
+
+    if (ShowWraperSkeleton)
+    {
+        Status = CardBalanceStatus;
+    }
+
+}
+<div>
+
+
+    @if (Status is (DataStatus.Loading or DataStatus.Uninitialized) && ShowWraperSkeleton is false)
+    {
+        <div class="@wrapperClass">
+            <ActionsMenu>
+                <ChildContent>
+                    <TelerikSkeleton AnimationType=SkeletonAnimationType.Pulse ShapeType="SkeletonShapeType.Text" Width="120px" Height="15px"></TelerikSkeleton>
+                </ChildContent>
+            </ActionsMenu>
+        </div>
+    }
+
+    @if (Status is (DataStatus.Loading or DataStatus.Uninitialized) && ShowWraperSkeleton is true)
+    {
+        <div class="d-flex flex-row  justify-content-center align-items-center">
+            <SkeletonBuilder Type="Shape" ShapeType="Rectangle" ColHeight="5" ColWidth="5"></SkeletonBuilder>
+        </div>
+    }
+
+    @if (Status == DataStatus.Error)
+    {
+        <div class="@wrapperClass">
+            <ActionsMenu>
+                <ChildContent>
+                    <ActionMenuItem ItemIcon=" " ItemText="Retry" OnClickAction=@(async()=> { await LoadCardBalance();})></ActionMenuItem>
+                </ChildContent>
+            </ActionsMenu>
+        </div>
+
+    }
+
+    @if (Status is (DataStatus.Success) && Data?.CardBalance?.Data?.EligibleActions?.Count > 0)
+    {
+        <div class="@wrapperClass">
+            <ActionsMenu>
+                <ChildContent>
+                    @{
+                        var generalActions = Data?.CardBalance?.Data?.EligibleActions?.Where(x => x.Group == RequestTypeGroup.General);
+                        var updateActions = Data?.CardBalance?.Data?.EligibleActions?.Where(x => x.Group == RequestTypeGroup.Update);
+                        var criticalActions = Data?.CardBalance?.Data?.EligibleActions?.Where(x => x.Group == RequestTypeGroup.Critical);
+                    }
+
+                    @if (generalActions.AnyWithNull())
+                    {
+                        @foreach (var action in generalActions)
+                        {
+                            <ActionMenuItem ItemIcon=" " ItemText="@action.Text" OnClickAction=@(async()=> { await OnChangeAction(action);})></ActionMenuItem>
+                        }
+                    }
+
+                    @if (updateActions.AnyWithNull())
+                    {
+                        @if (generalActions.Count() != 0)
+                        {
+                            <Divider />
+                        }
+                        @foreach (var action in updateActions)
+                        {
+                            <ActionMenuItem ItemIcon=" " ItemText="@action.Text" OnClickAction=@(async()=> { await OnChangeAction(action);})></ActionMenuItem>
+                        }
+
+                    }
+
+                    @if (criticalActions.AnyWithNull())
+                    {
+                        @if (updateActions.Count() != 0)
+                        {
+                            <Divider />
+                        }
+
+                        @foreach (var action in criticalActions)
+                        {
+                            <ActionMenuItem ItemIcon=" " Class="item-cancel" ItemText="@action.Text" OnClickAction=@(async()=> { await OnChangeAction(action);})></ActionMenuItem>
+                        }
+                    }
+
+
+                    @*   @if (CardBalanceStatus == DataStatus.Loading)
+                {
+                <span class="">Loading other actions...</span>
+                } *@
+                </ChildContent>
+            </ActionsMenu>
+        </div>
+
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public CreditCardDto? Data { get; set; }
+
+    [Parameter]
+    public DataStatus CardBalanceStatus { get; set; } = DataStatus.Success;
+
+    [Parameter]
+    public List<RequestType>? IgnoredItems { get; set; }
+
+    [Parameter]
+    public EventCallback<CardRequestFormRequest> LoadForm { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshData { get; set; }
+
+    [Parameter]
+    public bool IsCircle { get; set; }
+
+    [Parameter]
+    public bool ShowWraperSkeleton { get; set; }
+
+    public CreditCardStatus CardStatus => (CreditCardStatus)(Data?.StatusId ?? 0);
+
+    List<ListItemGroup<RequestType>> PendingCardActions = new() {
+        new(RequestType.DownloadEForm,RequestTypeGroup.General),
+          new(RequestType.ChangeStatus,RequestTypeGroup.General),
+        new(RequestType.Cancel,RequestTypeGroup.Critical) };
+
+    List<ListItemGroup<RequestType>> NonPendingCardActions = new() {
+        new(RequestType.Detail,RequestTypeGroup.General) };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Data.CardBalance.Data.EligibleActions = await GetCardOperationActions();
+        await Task.CompletedTask;
+
+    }
+
+
+
+    private bool IsChargeCard => Data?.CardBalance?.Data?.ProductType == ProductTypes.ChargeCard;
+    private bool IsTayseerCard => Data?.CardBalance?.Data?.ProductType == ProductTypes.Tayseer;
+
+    async Task LoadCardBalance()
+    {
+        try
+        {
+            Data?.CardBalance.Loading();
+
+            await RefreshData.InvokeAsync();
+
+            var cardBalance = await CardDetailsAppService.GetCardInfo(Data.RequestId, includeCardBalance: true);
+            if (cardBalance.IsSuccessWithData)
+                Data.CardBalance.SetData(cardBalance.Data!);
+            else
+                Data.CardBalance.Error(new(cardBalance.Message));
+        }
+        catch (Exception)
+        {
+            Data?.CardBalance.Error(new("Error"));
+        }
+        finally
+        {
+            await RefreshData.InvokeAsync();
+        }
+    }
+
+    public bool IsAccountBoardingAuthorized()
+    {
+        // if (authManager.InRole(Roles.m_isActivator)
+        //      || authManager.InRole(Roles.AreaManager)
+        //      || authManager.InRole(Roles.BcdUser)
+        //      || authManager.InRole(Roles.BranchManager)
+        //      || authManager.InRole(Roles.BranchOfficer)
+        //      || authManager.InRole(Roles.FdrReportsAnalysts)
+        //      || authManager.InRole(Roles.SuperUser)
+        //      || authManager.InRole(Roles.BcdCreditChecking)
+        //      || authManager.InRole(Roles.BCdCreditApproval)
+        //     && (IsBranchAllowed())
+        // )
+        return true;
+
+        // return false;
+    }
+
+
+    async Task GetCardOperationActions()
+    {
+        if (Data?.CardBalance?.Data is null && IgnoredItems is null)
+            return;
+
+        Data!.CardBalance.Data.EligibleActions.RemoveAll(x => IgnoredItems.Any(igItm => igItm == x.Value));
+
+    }
+
+
+    async Task OnChangeAction(RequestType selectedRequestType)
+    {
+
+        await LoadForm.InvokeAsync(new() { RequestType = selectedRequestType, Card = Data });
+    }
+
+    async Task OnChangeAction(ListItemGroup<RequestType> group)
+    {
+        if (await ValidateKyc(group))
+        {
+            await LoadForm.InvokeAsync(new() { RequestType = group.Value, Card = Data });
+        }
+    }
+
+
+    async Task<bool> ValidateKyc(ListItemGroup<RequestType> group)
+    {
+        if (CurrentState.GenericCustomerProfile is null)
+            return true;
+
+        bool IsPendingBioMetric = CurrentState.GenericCustomerProfile.IsPendingBioMetric;
+        bool IsKYCExpired = CurrentState.GenericCustomerProfile.IsKYCExpired;
+
+        RequestType[] bioRequestType = [RequestType.ReplaceTrackReport,
+    RequestType.CardPayment,
+    RequestType.StandingOrder,
+    RequestType.ReplacementForDamage,
+    RequestType.ChangeAddress,
+    RequestType.ChangeCardHolderName,
+    RequestType.ChangeLinkAccountNumber,
+    RequestType.ChangeLimit];
+
+        RequestType[] kycRequestType = [RequestType.ChangeLimit];
+
+
+        if (bioRequestType.Any(t => t == group.Value) && IsPendingBioMetric){
+            Notification.Failure(GlobalResources.BioMetricRestriction);
+            return false;
+        }
+
+        if (kycRequestType.Any(t => t == group.Value) && IsKYCExpired)
+        {
+            Notification.Failure(GlobalResources.KYCExpired);
+            return false;
+        }
+
+        return true;
+    }
+
+    async Task<bool> ValidateNonKFHCustomer(ListItemGroup<RequestType> group)
+    {
+        if (CurrentState.GenericCustomerProfile is null)
+            return true;
+
+        if(CurrentState.GenericCustomerProfile.IsKFHCustomer)
+        {
+            RequestType[] requestTypes = [RequestType.ChangeLinkAccountNumber];
+            if (requestTypes.Any(t => t == group.Value))
+            {
+                Notification.Failure(GlobalResources.NotAllowedChangeLinkeAccountForNonKFH);
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

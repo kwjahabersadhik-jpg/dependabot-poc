@@ -1,0 +1,210 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.CardIssuance
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+
+@inject ICardDefsAppService CardDefsAppService
+@inject ILogger<CardDefDetails> Logger
+@inject NavigationManager NavigationManager
+@inherits ApplicationComponent
+
+
+
+
+<OffCanvas @ref="DetailsDrawerRef" Title="Edit card definitions">
+    <OffcanvasContent>
+        <div class="d-flex flex-column gp-0 nosvgIcon">
+            <div class="formField">
+                <div class="form-flex gp-8">
+
+                    @* <H3>Card Definitions</H3>  *@
+                    <TelerikForm Id="frm" OnValidSubmit="CreateEditCardDef" Model="CardDef">
+                        
+                        <FormValidation>
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                        </FormValidation>
+
+                        <FormItems>
+                            <FormList>
+                                <Form Label="Card Type">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.CardType" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.CardType"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Card Name">
+                                    <TelerikTextBox @bind-Value="CardDef.Name" ReadOnly="IsReadOnly"></TelerikTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.Name"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="System No">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.SystemNo" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.SystemNo"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Bin No">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.BinNo" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.BinNo"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Duality">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.Duality" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.Duality"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Merchant Account">
+                                    <TelerikTextBox @bind-Value="CardDef.MerchantAcct" ReadOnly="IsReadOnly"></TelerikTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.MerchantAcct"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Max Limit">
+                                    <TelerikTextBox @bind-Value="CardDef.MaxLimit" ReadOnly="IsReadOnly"></TelerikTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.MaxLimit"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Min Limit ">
+                                    <TelerikTextBox @bind-Value="CardDef.MinLimit" ReadOnly="IsReadOnly"></TelerikTextBox>
+                                    <ValidationMessage class="text-red" For="() => CardDef.MinLimit"></ValidationMessage>
+                                </Form>
+
+                                <Form Label="Installments">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.Installments" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                </Form>
+
+                                <Form Label="Monthly Max Due">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.MonthlyMaxDue" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                </Form>
+
+                                <Form Label="Fees">
+                                    <TelerikNumericTextBox @bind-Value="CardDef.Fees" ReadOnly="IsReadOnly"></TelerikNumericTextBox>
+                                </Form>
+
+                                <Divider class="mt-4"> </Divider>
+
+                                <Form>
+                                    <CardExtensions DisplayOnly="false" CardDef="CardDef"></CardExtensions>
+                                </Form>
+
+                            </FormList>
+                        </FormItems>
+                        
+                        <FormButtons></FormButtons>
+
+                    </TelerikForm>
+
+                </div>
+            </div>
+        </div>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-end">
+
+            @* <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Reset"></Button> *@
+
+            @if (!IsReadOnly)
+            {
+                @if ((!CardDef.IsLocked.HasValue) || (CardDef.IsLocked.HasValue && !CardDef.IsLocked.Value))
+                {
+                    <TelerikButton Class="btn btn-primary btn-sm" ButtonType="@ButtonType.Submit" Form="frm">Save</TelerikButton>
+                }
+            }
+
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+
+
+
+@code {
+
+ 
+    private OffCanvas DetailsDrawerRef { get; set; } = new();
+    private PostCardDefDto CardDef { get; set; } = new();
+    private PostCardDefDto CardDefBackup { get; set; } = new();
+
+    private bool IsAddNew { get; set; }
+    private bool IsReadOnly { get; set; }
+
+    public async Task OpenCardDetailsDrawer(CardDefinitionDto cardDefinitionDto)
+    {
+        CardDef = new();
+
+        if (cardDefinitionDto != null!)
+        {
+            CardDef = new PostCardDefDto
+            {
+                Name = cardDefinitionDto.Name,
+                BinNo = cardDefinitionDto.BinNo,
+                CardType = cardDefinitionDto.CardType,
+                MinLimit = cardDefinitionDto.MinLimit.ToString(),
+                MaxLimit = cardDefinitionDto.MaxLimit.ToString(),
+                Duality = cardDefinitionDto.Duality,
+                Fees = cardDefinitionDto.Fees,
+                Installments = cardDefinitionDto.Installments,
+                MerchantAcct = cardDefinitionDto.MerchantAcct,
+                MonthlyMaxDue = cardDefinitionDto.MonthlyMaxDue,
+                SystemNo = cardDefinitionDto.SystemNo,
+                CardDefExts = cardDefinitionDto.CardDefExts,
+                IsLocked = cardDefinitionDto.Islocked
+            };
+
+            CardDefBackup = new()
+            {
+                Name = cardDefinitionDto.Name,
+                BinNo = cardDefinitionDto.BinNo,
+                CardType = cardDefinitionDto.CardType,
+                MinLimit = cardDefinitionDto.MinLimit.ToString(),
+                MaxLimit = cardDefinitionDto.MaxLimit.ToString(),
+                Duality = cardDefinitionDto.Duality,
+                Fees = cardDefinitionDto.Fees,
+                Installments = cardDefinitionDto.Installments,
+                MerchantAcct = cardDefinitionDto.MerchantAcct,
+                MonthlyMaxDue = cardDefinitionDto.MonthlyMaxDue,
+                SystemNo = cardDefinitionDto.SystemNo,
+                CardDefExts = cardDefinitionDto.CardDefExts,
+                IsLocked = cardDefinitionDto.Islocked
+            };
+
+        }
+
+        IsAddNew = !(CardDef.CardType.HasValue && CardDef.CardType.Value != 0);
+        IsReadOnly = !IsAllowTo(Permissions.CardDefinitions.Edit());
+
+        await DetailsDrawerRef.ToggleAsync();
+        StateHasChanged();
+    }
+
+    async Task CreateEditCardDef()
+    {
+        try
+        {
+            var request = new RequestDto<PostCardDefDto>()
+                {
+                    ActivityForm = (int)ActivityForm.CardDef,
+                    NewData = CardDef,
+                    OldData = !IsAddNew ? CardDefBackup : null!,
+                    ActivityType = !IsAddNew ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await CardDefsAppService.AddCardDefinitionRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                NavigationManager.NavigateTo("/requests");
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(CreateEditCardDef));
+        }
+    }
+
+
+}

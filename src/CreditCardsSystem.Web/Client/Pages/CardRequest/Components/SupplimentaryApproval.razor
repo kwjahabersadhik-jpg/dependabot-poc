@@ -1,0 +1,108 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.SupplementaryCard
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Skeletons
+@using Kfh.Aurora.Auth
+
+@inherits WorkflowComponent
+
+<CGrid ViewAddNew=false Label="Supplementary Cards" DataItem="Cards">
+
+    @if (Cards.Status == DataStatus.Success)
+    {
+        <TelerikGrid Data=@Cards.Data
+                     Pageable="true" PageSize="10" Width="100%" Resizable="false" Reorderable="false"
+                     Groupable="true"
+                     Sortable="false"
+                     SelectionMode="GridSelectionMode.Multiple" SortMode="@SortMode.Multiple" @bind-SelectedItems="@SelectedItems">
+
+            <GridColumns>
+
+                <GridColumn HeaderClass="Cell5" OnCellRender="@((e) => e.Class = "Cell5")">
+                    <Template>
+                        @{
+                            var item = context as SupplementaryCardDetail;
+                            if (item?.CardStatus is not CreditCardStatus.Active or CreditCardStatus.Pending)
+                            {
+                                <TelerikCheckBox @bind-Value="item!.IsSelected"></TelerikCheckBox>
+                            }
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderClass="Cell15 AO-detailed--cell" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell")" Field="Card Details">
+                    <Template>
+                        @{
+
+                            var item = context as SupplementaryCardDetail;
+                            <H2>@DisplayCardNumber(item?.CardNumberDto)</H2>
+                            <H3>@(item?.FullName)</H3>
+                            <SubH1>Branch @item?.CardData!.BranchID</SubH1>
+                        }
+                    </Template>
+
+                </GridColumn>
+
+                <GridColumn HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")" Field="Account Number">
+                    <Template>
+                        @{
+                            var item = context as SupplementaryCardDetail;
+                            <H3>@item?.CardData!.BankAcctNo</H3>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")" Field="Open Date">
+                    <Template>
+                        @{
+                            var item = context as SupplementaryCardDetail;
+                            <H3>@item?.CardData!.RequestDate.Formed()</H3>
+                        }
+                    </Template>
+
+                </GridColumn>
+                <GridColumn HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")" Field="Expiry Date">
+                    <Template>
+                        @{
+                            var item = context as SupplementaryCardDetail;
+                            <H3>@item?.CardData!.Expiry?.Formed()</H3>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderClass="Cell10" OnCellRender="@((e) => e.Class = "Cell10")" Field="Status">
+                    <Template>
+                        @{
+                            var item = context as SupplementaryCardDetail;
+                            <Status StatusClass="@Helpers.GetStatusClass(item!.CardStatus)" StatusTitle="@item.CardStatus.ToString()"></Status>
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+            <NoDataTemplate>
+                <NoRecordsFound />
+            </NoDataTemplate>
+        </TelerikGrid>
+    }
+    else if (Cards.Status == DataStatus.Loading)
+    {
+        <CardDetailSkeleton />
+    }
+
+    else if (Cards.Status == DataStatus.Error)
+    {
+        <EmptyState IconName="tech-error" Heading="Technical Error" Description="@Cards.Exception?.Message" />
+    }
+
+</CGrid>
+
+@code {
+    [Inject]
+    public IAuthManager AuthManager { get; set; } = default!;
+
+    [Parameter]
+    public DataItem<List<SupplementaryCardDetail>> Cards { get; set; } = new();
+
+    [Parameter]
+    public IEnumerable<SupplementaryCardDetail> SelectedItems { get; set; } = new List<SupplementaryCardDetail>();
+}

@@ -1,0 +1,66 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@typeparam TValue
+
+<div>
+
+    @if (Status is (DataStatus.Loading or DataStatus.Uninitialized))
+    {
+        @* <TelerikSkeleton AnimationType=SkeletonAnimationType.Pulse ShapeType="SkeletonShapeType.Text" Width="20px" Height="10px"></TelerikSkeleton> *@
+
+        <ActionsMenu>
+            <ChildContent>
+                <TelerikSkeleton AnimationType=SkeletonAnimationType.Pulse ShapeType="SkeletonShapeType.Text" Width="120px" Height="15px"></TelerikSkeleton>
+            </ChildContent>
+        </ActionsMenu>
+    }
+
+
+    @if (Status == DataStatus.Error)
+    {
+        <ActionsMenu>
+            <ChildContent>
+                <ActionMenuItem ItemIcon=" " ItemText="Retry" OnClickAction=@(async()=> { await Retry.InvokeAsync();})></ActionMenuItem>
+            </ChildContent>
+        </ActionsMenu>
+        
+    }
+   
+    @if (Status is (DataStatus.Success))
+    {
+        <ActionsMenu>
+            <ChildContent>
+                @{
+                    var menuClass = "";
+                }
+                @foreach (var action in Data)
+                {
+
+                    if (action.Text is "Stop Card" or "Cancel Card" or "Delete" or "Close Card" or "Report Lost/Stolen")
+                    {
+                        menuClass = "item-cancel";
+                    }
+
+                    <ActionMenuItem Class="@menuClass" ItemIcon=" " ItemText="@action.Text" OnClickAction=@(async()=> { await Callback.InvokeAsync(action);})></ActionMenuItem>
+                }
+            </ChildContent>
+        </ActionsMenu>
+    }
+</div>
+@code {
+    // bool dividerAdded = false;
+    public TValue value { get; set; }
+
+    [Parameter]
+    public DataStatus Status { get; set; } = DataStatus.Uninitialized;
+
+    [Parameter]
+    public List<ListItem<TValue>>? Data { get; set; }
+
+    [Parameter]
+    public EventCallback<ListItem<TValue>> Callback { get; set; }
+
+    [Parameter]
+    public EventCallback Retry { get; set; }
+    
+}

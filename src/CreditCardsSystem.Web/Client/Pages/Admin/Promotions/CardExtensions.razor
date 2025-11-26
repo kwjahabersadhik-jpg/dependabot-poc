@@ -1,0 +1,226 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@using Telerik.FontIcons
+
+@inherits ApplicationComponent
+
+@* <H2 class="ps-2">Card Extensions</H2> *@
+
+<p class="text-red">@Error</p>
+
+
+@if (!IsAllowTo(Permissions.CardExtensions.View()))
+{
+    <AccessDenied />
+}
+else
+{
+        <div class="KFHnopadding kfh-data-table ">
+            <TelerikGrid Data="@CardDef.CardDefExts"
+                        EditMode="GridEditMode.Inline"
+                        Pageable="true"
+                        PageSize="10"
+                        Width="100%"
+                        @ref="GridRef">
+
+                <GridToolBarTemplate>
+
+                    @if (!DisplayOnly)
+                    {
+                        @if (IsAllowTo(Permissions.CardExtensions.Create()) && (CardDef.IsLocked.HasValue && !CardDef.IsLocked.Value || !CardDef.IsLocked.HasValue))
+                        {
+                            <GridCommandButton Command="Add"
+                                            Class="btn-secondary"
+                                            OnClick="@((e) => { IsAttributeEditable = true ; Error = string.Empty; })">
+                                Add Attribute
+
+                            </GridCommandButton>
+
+                        }
+
+                    }
+
+                </GridToolBarTemplate>
+
+                <GridColumns>
+
+                    <GridColumn Visible="false" Field="@nameof(CardDefExtDto.ExtensionId)" Title="Id" HeaderClass="Cell15 detailsCenter" OnCellRender="@((e) => e.Class = "Cell15 ")">
+                        <Template>
+
+                            @{
+                                var item = context as CardDefExtDto;
+                                <H3>@item!.ExtensionId</H3>
+                            }
+                        </Template>
+                    </GridColumn>
+
+                    <GridColumn Field="@nameof(CardDefExtDto.Attribute)" Title="Attribute" Editable="IsAttributeEditable" HeaderClass="Cell15 detailsCenter" OnCellRender="@((e) => e.Class = "Cell15 ")">
+                        <Template>
+
+                            @{
+                                var item = context as CardDefExtDto;
+                                <H3>@item!.Attribute</H3>
+                            }
+                        </Template>
+                    </GridColumn>
+
+                    <GridColumn Field="@nameof(CardDefExtDto.Value)" Title="Value" HeaderClass="Cell7 detailsCenter" OnCellRender="@((e) => e.Class = "Cell7 ")">
+                        <Template>
+
+                            @{
+                                var item = context as CardDefExtDto;
+                                <H3>@item!.Value</H3>
+                            }
+
+                        </Template>
+                    </GridColumn>
+
+                    @if (!DisplayOnly)
+                    {
+                        @if ((!CardDef.IsLocked.HasValue) || (CardDef.IsLocked.HasValue && !CardDef.IsLocked.Value))
+                        {
+                            <GridCommandColumn HeaderClass="Cell5 detailsCenter" OnCellRender="@((e) => e.Class = "Cell5")">
+                                @{
+                                    var item = context as CardDefExtDto;
+
+                                    @if (IsAllowTo(Permissions.CardExtensions.Edit()))
+                                    {
+                                        <GridCommandButton Command="Save" Icon="FontIcon.Save" ShowInEdit="true" OnClick="(e) => AddOrEditAttribute(item! , e)">Save</GridCommandButton>
+
+                                        <GridCommandButton Command="Edit"
+                                                        Icon="FontIcon.Pencil"
+                                                        OnClick="@(() => OnEditCardExt(item!))">
+
+                                        </GridCommandButton>
+                                    }
+
+                                    <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+
+                                    // if (IsAllowTo(Permissions.CardExtensions.Delete()) && ExtensionBackup.FirstOrDefault(e => e.Attribute == item!.Attribute) == null)
+                                    // {
+                                    //     <GridCommandButton Command="Delete" OnClick="() => DeleteAttribute(item!)" Icon="FontIcon.Trash"></GridCommandButton>
+                                    // }
+                                }
+
+                            </GridCommandColumn>
+
+                        }
+                    }
+
+                </GridColumns>
+
+                <NoDataTemplate>
+                    <NoRecordsFound />
+                </NoDataTemplate>
+
+            </TelerikGrid>
+        </div>
+}
+@code {
+
+    [Parameter]
+    public PostCardDefDto CardDef { get; set; } = new();
+
+    [Parameter]
+    public bool DisplayOnly { get; set; }
+
+    public List<CardDefExtDto> ExtensionBackup { get; set; } = new();
+    public TelerikGrid<CardDefExtDto> GridRef { get; set; } = new();
+
+    public string Error { get; set; } = string.Empty;
+    // public bool CanEdit { get; set; }
+    public bool IsAttributeEditable { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        foreach (var cardDefCardDefExt in CardDef.CardDefExts)
+        {
+            cardDefCardDefExt.ExtensionId = Guid.NewGuid().ToString();
+        }
+        ExtensionBackup.AddRange(CardDef.CardDefExts);
+        // CanEdit = (!CardDef.IsLocked.HasValue) || (CardDef.IsLocked.HasValue && CardDef.IsLocked.Value);
+    }
+
+    void EditAttribute(CardDefExtDto cardDefExtDto)
+    {
+        Error = string.Empty;
+
+        if (string.IsNullOrEmpty(cardDefExtDto.Value))
+        {
+            Error = "you must enter value";
+            return;
+        }
+
+        var oldCardExt = CardDef.CardDefExts.FirstOrDefault(e => e.ExtensionId == cardDefExtDto.ExtensionId);
+        oldCardExt!.Value = cardDefExtDto.Value;
+        oldCardExt.Attribute = cardDefExtDto.Attribute!;
+        oldCardExt.CardType = cardDefExtDto.CardType;
+        GridRef.Rebind();
+    }
+
+    void AddOrEditAttribute(CardDefExtDto cardDefExtDto, GridCommandEventArgs args)
+    {
+        Error = string.Empty;
+
+        if (args.IsNew)
+        {
+            cardDefExtDto.ExtensionId = Guid.NewGuid().ToString();
+
+            if (string.IsNullOrEmpty(cardDefExtDto.Attribute) || string.IsNullOrEmpty(cardDefExtDto.Value))
+            {
+                Error = "you must enter attribute name and value ";
+                return;
+            }
+
+            if (cardDefExtDto.Attribute.Trim().Length > 50)
+            {
+                Error = "attribute cannot be more than 50 characters";
+                return;
+            }
+
+            if (cardDefExtDto.Value.Trim().Length > 100)
+            {
+                Error = "attribute value cannot be more than 100 characters";
+                return;
+            }
+
+            var isAttributeExist = CardDef.CardDefExts.Any(e => e.Attribute.ToLower() == cardDefExtDto.Attribute.ToLower());
+            if (isAttributeExist)
+            {
+                Error = "attribute name already exists";
+                return;
+            }
+
+            if (CardDef.CardType != null)
+                CardDef.CardDefExts.Add(new CardDefExtDto()
+                    {
+                        Attribute = cardDefExtDto.Attribute,
+                        Value = cardDefExtDto.Value,
+                        CardType = CardDef.CardType.Value
+                    });
+            else
+                Error = "you must enter card type";
+
+        }
+        else
+            EditAttribute(cardDefExtDto);
+
+    }
+
+    void DeleteAttribute(CardDefExtDto item)
+    {
+        CardDef.CardDefExts.Remove(item);
+        GridRef.Rebind();
+    }
+
+    private void OnEditCardExt(CardDefExtDto item)
+    {
+        Error = string.Empty;
+        if (ExtensionBackup.All(e => e.Attribute != item.Attribute))
+            IsAttributeEditable = true;
+        else
+            IsAttributeEditable = false;
+    }
+
+}

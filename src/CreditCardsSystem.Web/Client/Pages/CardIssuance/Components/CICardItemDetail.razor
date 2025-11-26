@@ -1,0 +1,87 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Domain.Shared.Models.Account;
+@using CreditCardsSystem.Utility.Extensions;
+
+@inherits ApplicationComponent;
+
+<div class="card-item-detail pt-3">
+    @if (Card is not null)
+    {
+        var cardStatus = (CreditCardStatus)Card.CardStatus;
+        var image = GetCreditCardImage(Card.ProductId);
+        <div class="card">
+            <picture class="p-2">
+                <img src="@image" onerror="if (this.src != '@image') this.src = '@DefaultImage';" />
+            </picture>
+        </div>
+        <div class="col col-md">
+            <div class="row">
+                <div class="col"><H3> @Card.Message</H3></div>
+            </div>
+            <div class="row">
+                <div class="col"><H4>Card Number</H4></div>
+                <div class="col"><H4>@DisplayCardNumber(Card.CreditCardNumber)</H4>  <Status StatusClass="@Helpers.GetStatusClass(cardStatus)" StatusTitle="@cardStatus.GetDescription()"></Status></div>
+            </div>
+            <div class="row">
+                <div class="col"><H4>Card Name</H4></div>
+                <div class="col"><H4>@Card.ProductName</H4></div>
+            </div>
+            <div class="row">
+                <div class="col"><H4 Class="d-inline">Due Amount</H4></div>
+                <div class="col"><H4>@Card.CardBalance</H4></div>
+            </div>
+
+            @if (Collat is Collateral.AGAINST_DEPOSIT)
+            {
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">DepositAccount</H4></div>
+                    <div class="col"><H4>@Card.DepositAccount</H4></div>
+                </div>
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">DepositAmount</H4></div>
+                    <div class="col"><H4>@Card.DepositAmount</H4></div>
+                </div>
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">HoldId</H4></div>
+                    <div class="col"><H4>@Card.HoldId</H4></div>
+                </div>
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">HoldStatus</H4></div>
+                    <div class="col"><H4>@Card.HoldStatus</H4></div>
+                </div>
+            }
+            @if (Collat is Collateral.AGAINST_MARGIN)
+            {
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">MarginAccount</H4></div>
+                    <div class="col"><H4>@Card.MarginAccount</H4></div>
+                </div>
+
+                <div class="row">
+                    <div class="col"><H4 Class="d-inline">MarginBalance</H4></div>
+                    <div class="col"><H4>@Card.MarginBalance</H4></div>
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <p> @NoCardMessage </p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? NoCardMessage { get; set; }
+
+    [Parameter]
+    public CreditCardApplication? Card { get; set; }
+
+    [Parameter]
+    public Collateral? Collat { get; set; } = Collateral.EXCEPTION;
+
+}

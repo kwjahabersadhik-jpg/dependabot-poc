@@ -1,0 +1,127 @@
+﻿@page "/corporate-view"
+
+@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.Customer;
+@using CreditCardsSystem.Web.Client.Pages.CorporateProfile;
+@using CreditCardsSystem.Web.Client.Pages.CorporateProfile.Components
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+
+@using CreditCardsSystem.Utility.Extensions;
+@using Kfh.Aurora.Blazor.Components.UI.ListTiles
+@using Kfh.Aurora.Blazor.Components.ViewModels.ListTiles
+@using Kfh.Aurora.Common.Components.UI.Customer
+
+
+@inject ILogger<Index> Logger;
+@inject ICardIssuanceAppService cardIssuanceAppService;
+@inject IRequestAppService requestAppService;
+@inject IFeesAppService _feesAppService
+@inject IStandingOrderAppService _standingOrderAppService
+@inject ICustomerProfileAppService GenericCustomerProfileAppService
+@inject ICustomerProfileAppService CustomerProfileAppService;
+@inject ICorporateProfileAppService CorporateProfileAppService;
+@inherits ApplicationComponent
+
+
+<PageTitle>Corporate View</PageTitle>
+
+<CascadingValue Value="State" IsFixed=false>
+    <div class="maincontent">
+
+        <div class="main-container">
+
+            <div class="AO-sticky">
+                <div class="AO-Top--container">
+
+                    <div class="AO-flex--row">
+                        <CustomerListTile @bind-CivilId="@CivilId" />
+                    </div>
+                    <div class="AO-profile--btn">
+
+                        <TelerikSkeleton Width="20px" Visible=@(State.GenericCorporateProfile.Status == DataStatus.Loading) Height="10px" ShapeType="SkeletonShapeType.Rectangle" />
+                        @if (State.GenericCorporateProfile.Status == DataStatus.Success)
+                        {
+                            <AuroraCustomerProfileIconButton IsOpenChanged="OpenProfileCanvas" />
+                        }
+
+                    </div>
+                </div>
+                <div class="divider mt-4"> </div>
+            </div>
+
+        </div>
+        @if (State.GenericCorporateProfile.Status is DataStatus.Success)
+        {
+
+            <CorporateCreditCardList Cards="corporateProfileDto?.CorporateCards" @ref=CreditCardLisRef />
+
+
+
+
+
+
+        }
+        @if (State.GenericCorporateProfile.Status is DataStatus.Error)
+        {
+
+            <TechError Message="@State.GenericCorporateProfile.Exception?.Message"></TechError>
+
+        }
+
+        <AuroraCustomerProfileOffCanvas @ref=CustomerProfileOffCanvasRef CivilId="@CivilId">
+            <div class="drawer-buttons justify-content-between align-items-end">
+                <Button Type="btn-text btn-sm" OnClick="async()=>{ await ProfileDetailsDrawerRef.ToggleAsync(); }" Label="Cancel" />
+                @if (IsAuthorizedToEdit)
+                {
+                    <Button Type="btn-primary btn-sm" ButtonType="@ButtonType.Button" Label="@Action" OnClick="async()=>{ await editProfileCanvas!.ToggleAsync();}"></Button>
+                }
+            </div>
+
+        </AuroraCustomerProfileOffCanvas>
+
+        <OffCanvas @ref=editProfileCanvas Title="@(Action +" Corporate Profile")">
+            <OffcanvasContent>
+                @if (actionStatus.IsAccessDenied)
+                {
+                    @* <Unauthorized Description="@actionStatus.Message" /> *@
+                    <Unauthorized></Unauthorized>
+                }
+                else
+                {
+                    <EditCorporateProfile ReadyForAction="ReadyForAction" Listen="Listen" IsForCanvas=true CustomerProfileFromFDR=corporateProfileDto ShowButtons=false @ref=editProfileRef CivilId="@corporateProfileDto?.CorporateCivilId"></EditCorporateProfile>
+                }
+            </OffcanvasContent>
+            <OffcanvasFooterContent>
+                <div class="drawer-buttons justify-content-between align-items-end">
+                    <Button Type="btn-text btn-sm" OnClick="async()=>{ await editProfileCanvas.ToggleAsync();}" Label="Cancel" />
+                    @if (IsAuthorizedToEdit)
+                    {
+                        <Button Type="btn-primary btn-sm" Enabled="@(isReadyForAction && ProcessStatus!=DataStatus.Loading)" Loader="ProcessStatus==DataStatus.Loading" ButtonType="@ButtonType.Button" Label="@EditAction" OnClick="()=>{ConfirmDialogVisible= true;}"></Button>
+                    }
+                </div>
+            </OffcanvasFooterContent>
+        </OffCanvas>
+    </div>
+</CascadingValue>
+
+
+<TelerikDialog @bind-Visible="@ConfirmDialogVisible" Class="modal-dialog" Width="30%" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <H2>Update Profile</H2>
+            </div>
+            <H4>Are you sure ? </H4>
+            <div class="dialog-buttons">
+                <Button Type="btn-text btn-sm" Label="Cancel" OnClick="@(() => { ConfirmDialogVisible = false; })" />
+                <Button Type="btn-primary btn-sm" Label="Yes" OnClick="@SubmitRequest" />
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+

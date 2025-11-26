@@ -1,0 +1,8 @@
+﻿<ul class="offcanvas-list">
+    @ChildContent
+</ul>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

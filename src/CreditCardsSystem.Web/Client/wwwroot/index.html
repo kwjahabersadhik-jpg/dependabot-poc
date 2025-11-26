@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Aurora</title>
+    <base href="/" />
+    <link rel="stylesheet" href="dist/css/app.css"   />
+    <link rel="stylesheet" href="_content/Kfh.Aurora.Blazor.Components/css/aurora.css" />
+    <link rel="stylesheet" href="_content/Kfh.Aurora.Blazor.Components/css/aurora-ar.css" />
+
+    <link rel="shortcut icon" href="dist/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="dist/images/favicon.ico">
+
+    <link href="CreditCardsSystem.Web.Client.styles.css" rel="stylesheet" />
+    <script src="_content/Telerik.UI.for.Blazor/js/telerik-blazor.js"  defer></script>
+</head>
+
+<body>
+    <div id="app">
+        <Loader class="page-loader"></Loader>
+    </div>
+
+    <!--<div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>-->
+
+    <script>
+        window.setDarkTheme = () => {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        };
+
+        window.setLightTheme = () => {
+            document.documentElement.removeAttribute('data-theme');
+        };
+
+        window.blazorCulture = {
+            get: () => localStorage.getItem('BlazorCulture'),
+            set: (value) => localStorage['BlazorCulture'] = value
+        };
+
+        window.triggerFileDownload = (fileName, url) => {
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+        }
+    </script>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="Report/Custom.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CreditCardDelegationServicesService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___integration_80_KFHCreditCardApplicationWebServices_kfh_creditcard_webservices_CreditCardDelegationServicesService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="delegateResponse">
+    <part name="parameters" element="tns:delegateResponse">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="updateDelegate">
+    <part name="parameters" element="tns:updateDelegate">
+    </part>
+  </message>
+  <message name="getDelegationList">
+    <part name="parameters" element="tns:getDelegationList">
+    </part>
+  </message>
+  <message name="updateDelegateResponse">
+    <part name="parameters" element="tns:updateDelegateResponse">
+    </part>
+  </message>
+  <message name="delegate">
+    <part name="parameters" element="tns:delegate">
+    </part>
+  </message>
+  <message name="getDelegationListResponse">
+    <part name="parameters" element="tns:getDelegationListResponse">
+    </part>
+  </message>
+  <portType name="CreditCardDelegationServicesService">
+    <operation name="delegate">
+      <input message="tns:delegate" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/delegateRequest">
+    </input>
+      <output message="tns:delegateResponse" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/delegateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/delegate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="updateDelegate">
+      <input message="tns:updateDelegate" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/updateDelegateRequest">
+    </input>
+      <output message="tns:updateDelegateResponse" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/updateDelegateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/updateDelegate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getDelegationList">
+      <input message="tns:getDelegationList" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/getDelegationListRequest">
+    </input>
+      <output message="tns:getDelegationListResponse" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/getDelegationListResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardDelegationServicesService/getDelegationList/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CreditCardDelegationServicesServiceSoapBinding" type="tns:CreditCardDelegationServicesService">
+    
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="delegate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateDelegate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getDelegationList">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_CreditCardDelegationServicesService">
+    <port name="CreditCardDelegationServicesServiceSoap9" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CreditCardDelegationServicesService/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap3" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardDelegationServicesService.CreditCardDelegationServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardDelegationServicesService.CreditCardDelegationServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap4" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CreditCardDelegationServicesService/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap2" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CreditCardDelegationServicesService/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap7" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/CreditCardDelegationServicesService/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap8" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CreditCardDelegationServicesService/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap5" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardDelegationServicesService.CreditCardDelegationServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardDelegationServicesServiceSoap6" binding="tns:CreditCardDelegationServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CreditCardDelegationServicesService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    
+</definitions>

@@ -1,0 +1,58 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Models.Card
+
+@inherits ApplicationComponent
+
+<div class="cardDetails-drawerHeader @CustomClass" style="@CustomStyle">
+    @if (SelectedCard is not null && Hide is false)
+    {
+        <div class="AO-card--header">
+            <picture>
+                @{
+                    var image = @GetCreditCardImage(SelectedCard?.CardType);
+                }
+                <img src=@image onerror="if(this.src != '@image') this.src = '@DefaultImage';" />
+            </picture>
+        </div>
+        <div class="card-basicInfo">
+            @if (!string.IsNullOrEmpty(CustomerName))
+            {
+                <H3 Class="px-2 text-center my-0 text-clamped-2" Id="CustomerNameTooltip" Title="@CustomerName">@CustomerName</H3>
+            }
+            <H2 class="my-1">@DisplayCardNumber(SelectedCard?.CardNumberDto)</H2>
+            <H4 class="my-1 text-gray50">@SelectedCard?.ProductName </H4>
+            @if (SelectedCard?.ProductType is not Domain.Enums.ProductTypes.PrePaid && SelectedCard?.ProductType is not Domain.Enums.ProductTypes.All)
+            {
+                <SubH2>Limit Range (@SelectedCard?.MinLimit - @SelectedCard?.MaxLimit)</SubH2>
+            }
+            @if (SelectedCard.CardStatus != Domain.Enums.CreditCardStatus.None)
+            {
+                <div class="mt-1"><Status StatusClass="@Helpers.GetStatusClass(SelectedCard.CardStatus)" StatusTitle="@SelectedCard.CardStatus.ToString()"></Status></div>
+            }
+
+        </div>
+    }
+</div>
+
+
+
+<TelerikTooltip TargetSelector="#CustomerNameTooltip" Position="TooltipPosition.Bottom"></TelerikTooltip>
+
+
+@code {
+
+    [Parameter]
+    public CardDetailsResponse? SelectedCard { get; set; } = default!;
+
+    [Parameter]
+    public string? CustomerName { get; set; } = default!;
+
+    [Parameter]
+    public string? CustomClass { get; set; } = default!;
+
+    [Parameter]
+    public string? CustomStyle { get; set; } = default!;
+
+    [Parameter]
+    public bool Hide { get; set; }
+}

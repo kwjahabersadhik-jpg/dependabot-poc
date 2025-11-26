@@ -1,0 +1,236 @@
+﻿@page "/credit-cards"
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Models.Card
+@using CreditCardsSystem.Web.Client.Pages.Admin.Promotions
+@using Telerik.FontIcons
+@using Telerik.SvgIcons
+@using Kfh.Aurora.Blazor.Components.UI.Responsiveness
+@inherits ApplicationComponent
+
+@inject ICreditCardArtworkAppService CreditCardArtworkAppServiceRefit
+
+
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="table-header mx-0">
+            <Title Text="Credit Card Configuration"></Title>
+        </div>
+
+        <div class="KFHnopadding kfh-data-table">
+
+            @if (CreditCards.Status == Domain.Enums.DataStatus.Loading)
+            {
+                <div class="col-12 p-5">
+                    <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                </div>
+                @* <DataTableSkeleton /> *@
+            }
+            else if (CreditCards.Status == Domain.Enums.DataStatus.Success)
+            {
+                <TelerikGrid Data="@CreditCards.Data"
+                             @ref=gridRef
+                             Pageable="false"
+                             Resizable="false"
+                             Reorderable="false"
+                             Groupable="false"
+                             Sortable="false">
+                    <GridToolBarTemplate>
+                        <GridCommandButton OnClick="SyncCreditCards" Class="btn-secondary">Sync Credit Cards</GridCommandButton>
+                        <GridCommandButton OnClick="ShowBulkUpdateWindow" Class="btn-secondary">Update Multiple Card Images</GridCommandButton>
+                    </GridToolBarTemplate>
+                    <GridColumns>
+                        <GridColumn Field="@nameof(CardTypeDto.Type)" Title="Type" OnCellRender="@((e) => e.Class = "col-md-1")" HeaderClass="col-md-1">
+
+                            <Template>
+                                @{
+                                    var item = context as CardTypeDto;
+                                    <H4>@item!.Type</H4>
+                                }
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn Field="@nameof(CardTypeDto.Name)" Title="Name English" OnCellRender="@((e) => e.Class = "col-xl-2 text-start ")" HeaderClass="col-xl-2 text-start ">
+                            <Template>
+                                @{
+                                    var item = context as CardTypeDto;
+                                    <H4 class="text-start">@item!.Name</H4>
+                                }
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn Field="@nameof(CardTypeDto.NameAr)" Title="Name Arabic" OnCellRender="@((e) => e.Class = "col-xl-2  ")" HeaderClass="col-xl-2">
+                            <Template>
+                                @{
+                                    var item = context as CardTypeDto;
+                                    <H4>@item!.NameAr</H4>
+                                }
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn Field="@nameof(CardTypeDto.Image)" Title="Image" OnCellRender="@((e) => e.Class = "col-xl-3 ")" HeaderClass="col-xl-3">
+                            <Template>
+                                <TelerikButton class="AO-image--button">
+                                    <picture>
+                                        @{
+                                            var card = (context as CardTypeDto)!;
+
+                                            if (!string.IsNullOrEmpty(card.FileName))
+                                            {
+                                                var image = GetCreditCardImage(card.Type.ToInt());
+
+                                                @if (!string.IsNullOrEmpty(image))
+                                                {
+                                                    <div class="row">
+                                                        <img src="@image" width="50px" height="50px" alt="@card.Name (@card.Type)" onerror="if (this.src != '@DefaultImage') this.src = '@DefaultImage';" />
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </picture>
+                                </TelerikButton>
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn Field="@(nameof(CardTypeDto.IsActive))" Title="Status" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                            <Template>
+                                <TelerikButton class="AO-image--button">
+                                    @{
+                                        var item = (context as CardTypeDto)!;
+                                        <Status StatusClass="@(item.IsActive? "blueStatus":"grayStatus")" StatusTitle="@(item.IsActive? "Active":"Disabled")"></Status>
+                                    }
+                                </TelerikButton>
+                            </Template>
+
+                        </GridColumn>
+
+                        <GridColumn>
+                            <Template>
+                                <div class="d-flex flex-row justify-content-center align-items-center">
+                                    @{
+                                        var item = context as CardTypeDto;
+
+                                        <ActionsMenu>
+                                            <ActionMenuItem OnClickAction="async ()=> {await OpenEditForm(item);}" ItemText="Edit"></ActionMenuItem>
+                                            <ActionMenuItem OnClickAction="async ()=> { await OpenConfirmationDialog(item);}" ItemText="Delete"></ActionMenuItem>
+                                        </ActionsMenu>
+                                    }
+                                </div>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                    <NoDataTemplate>
+                        <NoRecordsFound />
+                    </NoDataTemplate>
+                </TelerikGrid>
+            }
+            else if (CreditCards.Status == Domain.Enums.DataStatus.Error)
+            {
+                <EmptyState IconName="tech-error" Heading="Technical Error" Description="@CreditCards.Exception?.Message"></EmptyState>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+<TelerikDialog Width="800px" Height="auto" Class="KFH-dialog ApprovalModal table-dialog" @bind-Visible="@ViewBulkUpdateWindowVisible" ShowCloseButton="true">
+    <DialogTitle>
+        <strong>Update Multiple Card Images</strong>
+    </DialogTitle>
+    <DialogContent>
+        <UpdateMultipleCardImages CreditCards="@CreditCards.Data" OnUpdateEvent="OnEditCallback" />
+    </DialogContent>
+</TelerikDialog>
+
+<DeleteConfirmation DeleteRecord="OnConfirmDelete" ShowConfirmation="ShowConfirmationDialog"></DeleteConfirmation>
+
+<UpdateCardTypes @ref=CardConfigRef OnUpdateEvent="OnEditCallback"></UpdateCardTypes>
+
+
+
+@code {
+
+    public UpdateCardTypes CardConfigRef { get; set; } = new();
+
+    [CascadingParameter]
+    public DialogFactory? Dialog { get; set; }
+
+    private DataItem<List<CardTypeDto>> CreditCards { get; set; } = new();
+    private CardTypeDto CreditCard { get; set; } = new();
+    private CardTypeDto SelectedCreditCard { get; set; } = new();
+    private bool ViewBulkUpdateWindowVisible { get; set; }
+    public bool ShowConfirmationDialog { get; set; }
+
+    private TelerikGrid<CardTypeDto> gridRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCreditCardsTypes();
+
+    }
+
+    async Task OpenEditForm(CardTypeDto creditCard)
+    {
+        await CardConfigRef.ToggleAsync(creditCard);
+    }
+
+    async Task OpenConfirmationDialog(CardTypeDto card)
+    {
+        SelectedCreditCard = card;
+        ShowConfirmationDialog = true;
+        await Task.CompletedTask;
+    }
+
+
+    async Task OnConfirmDelete()
+    {
+        ShowConfirmationDialog = false;
+        Notification.Loading("Deleting card type is in process..");
+        await CreditCardArtworkAppServiceRefit.DeleteCreditCardType(SelectedCreditCard.Id);
+        await GetCreditCardsTypes();
+        Notification.Success("Card type deleted successfully!");
+    }
+
+    private async Task SyncCreditCards()
+    {
+        ShowConfirmationDialog = false;
+        Notification.Loading("Syncing card types is in process..");
+        await CreditCardArtworkAppServiceRefit.PopulateCreditCards();
+        await GetCreditCardsTypes();
+        Notification.Success("Card type synced successfully!");
+    }
+
+    private async Task GetCreditCardsTypes()
+    {
+        CreditCards.Loading();
+        try
+        {
+            CreditCards.SetData(await CreditCardArtworkAppServiceRefit.GetCreditCardsTypes());
+            CreditCard = CreditCards?.Data?.FirstOrDefault() ?? new();
+        }
+        catch (Exception ex)
+        {
+            CreditCards.Error(ex);
+        }
+
+    }
+
+
+
+
+
+    private async Task ShowBulkUpdateWindow()
+    {
+        ViewBulkUpdateWindowVisible = true;
+        gridRef.Rebind();
+    }
+
+    private async Task OnEditCallback(bool success)
+    {
+        // await Task.Delay(3000);
+        ViewBulkUpdateWindowVisible = false;
+        gridRef.Rebind();
+
+    }
+
+}

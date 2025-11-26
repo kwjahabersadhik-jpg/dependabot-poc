@@ -1,0 +1,14 @@
+﻿@using CreditCardsSystem.Domain.Models.Workflow
+
+@inherits WorkflowComponent
+
+
+
+
+<CheckerField Label="CivilId" Value="@TaskDetail?.Payload.GetValueOrDefault(WorkflowVariables.CivilId)?.ToString()"></CheckerField>
+<CheckerField Label="ClubMembershipId" Value="@TaskDetail?.Payload.GetValueOrDefault(WorkflowVariables.ClubMembershipId)?.ToString()"></CheckerField>
+<CheckerField Label="CivilId" Value="@TaskDetail?.Payload.GetValueOrDefault(WorkflowVariables.CompanyId)?.ToString()"></CheckerField>
+<CheckerField Label="Reason">
+    <TelerikTextArea @bind-Value="ApprovalReason" Placeholder="Enter reason for approval" />
+</CheckerField>
+

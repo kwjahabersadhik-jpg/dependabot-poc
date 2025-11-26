@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/BankingCustomerProfileService/BankingCustomerProfileService.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, BankingCustomerProfileReference"
+    ],
+    "outputFile": "BankingCustomerProfileReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

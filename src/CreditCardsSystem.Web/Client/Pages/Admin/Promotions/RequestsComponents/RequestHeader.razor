@@ -1,0 +1,72 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@inject RequestStateContainer RequestStateContainer
+
+<div class="d-flex flex-column ">
+    @* <Alert Type="alert-info" Class="m-0" Message="Request has been re-assigned by Bilal-92128"></Alert> *@
+        
+        <div class="d-flex flex-column gp-16">
+            @* <H2 Class="col-4 my-0 text-gray">Form Type/Operation</H2> *@
+            <H2 Class="col-8 my-0">@RequestStateContainer.RequestHeader.ActivityFormName/@RequestStateContainer.RequestHeader.ActivityTypeName</H2>
+            <H4 Class="col-4 my-0 text-gray mb-6">Created on @RequestStateContainer.RequestHeader.CreationDate.ToString("D") </H4>
+        </div>
+
+        <div class="d-flex flex-column gp-16 mt-6">
+
+            <div class="row justify-content-between align-items-center">
+                <H4 Class="col-4 my-0 text-gray">Maker Name</H4>
+                <H3 Class="col-8 my-0">@RequestStateContainer.RequestHeader.MakerName</H3>
+            </div>
+            <Divider/>
+
+            <div class="row justify-content-between align-items-center">
+                <H4 Class="col-4 my-0 text-gray">Maker ID</H4>
+                <H3 Class="col-8 my-0">@RequestStateContainer.RequestHeader.MakerId</H3>
+            </div>
+            <Divider/>
+
+
+            @if (RequestStateContainer.RequestHeader.CheckerId != 0)
+            {
+
+            <div class="row justify-content-between align-items-center">
+                <H4 Class="col-4 my-0 text-gray">Checker ID</H4>
+                <H3 Class="col-8 my-0">@RequestStateContainer.RequestHeader.CheckerId</H3>
+            </div>
+             <Divider/>
+            }
+
+             <div class="row justify-content-between align-items-center mb-3">
+                <H4 Class="col-4 my-0 text-gray">Status</H4>
+                <H3 Class="col-8 my-0">@RequestStateContainer.RequestHeader.ActivityStatus.ToString()</H3>
+            </div>
+
+        </div>
+            @* <div class="d-flex justify-content-end gp-16">
+
+        <div class="AO-card--header">
+        <picture>
+        <source srcset="" />
+        <img style="width:120px !important; height: 76px !important; display: block" src="@DefaultImage" onerror="if (this.src != '@DefaultImage') this.src = '@DefaultImage';" />
+        </picture>
+
+        <H3>400601XXXXXX7129 </H3>
+        <SubH1>PrePaid </SubH1>
+        <div class="mt-3">
+        <Status StatusClass="blueStatus" StatusTitle="Pending"></Status>
+        </div>
+
+        </div>
+        <OnClickComponent>
+        <TelerikTooltip TargetSelector="#printStm" Position="TooltipPosition.Bottom"></TelerikTooltip>
+        <CircleIcon Icon="icon-Print" Id="statmentDownload" Title="Print statement" />
+        <TelerikTooltip TargetSelector="#statmentDownload" Position="TooltipPosition.Bottom"></TelerikTooltip>
+        </OnClickComponent>
+        </div> *@
+    </div>
+
+
+
+
+@code {
+
+}

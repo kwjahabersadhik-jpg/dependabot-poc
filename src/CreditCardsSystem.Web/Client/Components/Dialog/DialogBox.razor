@@ -1,0 +1,69 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card;
+
+@inject DialogBoxService dialogService;
+
+
+<TelerikDialog @bind-Visible="@ShowDialog" Class="modal-dialog" CloseOnOverlayClick="true" ShowCloseButton="false">
+    <DialogContent>
+        <div class="dialog-content">
+            <div class="dialog-header"><H2>@options.Title </H2></div>
+                <H4>@DialogContent</H4>
+                <H3>@options.Message</H3>
+                <div class="dialog-buttons">
+                    @if (!string.IsNullOrEmpty(options.ExtraButtonLabel))
+                {
+                    <Button Type="btn-territory btn-sm" ButtonType="@ButtonType.Button" Label="@options.ExtraButtonLabel" OnClick="@(()=> options.ExtraButtonCallback.InvokeAsync())"></Button>
+                }
+                <Button Type="btn-territory btn-sm" ButtonType="@ButtonType.Button" Label="@options.CancelLabel" OnClick="@(() => { ShowDialog = false; })"></Button>
+                <Button Type="@( $"{(string.IsNullOrEmpty(options.ConfirmClass) ? "btn-primary":options.ConfirmClass)} btn-sm")" Enabled="@( ProcessStatus!=DataStatus.Loading)" Loader="ProcessStatus==DataStatus.Loading" ButtonType="@ButtonType.Button" Label="@options.ConfirmLabel" OnClick="@(()=> options.ConfirmCallback.InvokeAsync())"></Button>
+            </div>
+        </div>
+    </DialogContent>
+</TelerikDialog>
+
+
+ 
+
+@code {
+
+    TelerikDialog dialogRef { get; set; }
+
+    [Parameter]
+    public RenderFragment? DialogContent { get; set; }
+
+    [Parameter]
+    public DataStatus ProcessStatus { get; set; } = DataStatus.Uninitialized;
+
+
+    [Parameter]
+    public bool IsReadyForAction { get; set; } = false;
+
+    private DialogBoxOptions options { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dialogService.Instance += (DialogBoxOptions option) =>
+        {
+            this.InvokeAsync(() =>
+            {
+                this.options = option;
+                this.ShowDialog = true;
+                dialogRef.Refresh();
+                this.StateHasChanged();
+            });
+
+        };
+
+        dialogService.HideDialog += () => { ShowDialog = false; this.StateHasChanged(); };
+
+        await Task.CompletedTask;
+    }
+    private bool ShowDialog { get; set; } = false;
+
+
+
+
+    public void Refresh() => dialogRef.Refresh();
+}

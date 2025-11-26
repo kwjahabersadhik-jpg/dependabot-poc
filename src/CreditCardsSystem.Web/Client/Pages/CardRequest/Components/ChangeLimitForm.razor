@@ -1,0 +1,366 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Account
+@using CreditCardsSystem.Domain.Models.CardOperation
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+@inherits WorkflowComponent
+
+@{
+    _ = Enum.TryParse(SelectedCard?.Parameters?.Collateral, out Collateral collateral);
+    bool IsChargeCard = collateral is Collateral.AGAINST_DEPOSIT or Collateral.AGAINST_DEPOSIT_USD or Collateral.AGAINST_MARGIN;
+}
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+    @if (TaskDetail is not null)
+    {
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+    }
+    else
+    {
+        <div class="wrapper-1columns ps-2">
+
+            @if (ChangeLimitHistory.Status is Domain.Enums.DataStatus.Error)
+            {
+                <span>@ChangeLimitHistory?.Exception?.Message</span>
+            }
+
+            @if (ChangeLimitHistory!.Status is Domain.Enums.DataStatus.Loading)
+            {
+                <H2><TelerikSkeleton Width="140px" Height="20" ShapeType="@SkeletonShapeType.Text" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton></H2>
+                <div class="KFHnopadding kfh-data-table">
+                    <Repeater Count="2">
+                        <div class="d-flex flex-row align-items-center justify-content-center gp-8 mt-4 mb-4">
+                            <div>
+                                <TelerikSkeleton Width="140px" ShapeType="@SkeletonShapeType.Text" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                            </div>
+                            <div>
+                                <TelerikSkeleton Width="140px" ShapeType="@SkeletonShapeType.Text" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                            </div>
+                            <div>
+                                <TelerikSkeleton Width="140px" ShapeType="@SkeletonShapeType.Text" class="d-inline-flex AO-skeleton-rectangle"></TelerikSkeleton>
+                            </div>
+
+                        </div>
+                    </Repeater>
+                </div>
+            }
+            else if (ChangeLimitHistory.Status is not Domain.Enums.DataStatus.Loading && (ChangeLimitHistory.Data?.Any() ?? false))
+            {
+                <div class="col">
+                    <Title Text="Old changes"> </Title>
+                    <div class="KFHnopadding kfh-data-table">
+                        <TelerikGrid Data="ChangeLimitHistory.Data">
+                            <GridColumns>
+                                <GridColumn Field=@nameof(ChangeLimitHistoryDto.OldLimit) Title="Old limit" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                    <Template>
+                                        @{
+                                            var item = context as ChangeLimitHistoryDto;
+                                            <SubH1>@item!.OldLimit <SubH2>KWD</SubH2></SubH1>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(ChangeLimitHistoryDto.NewLimit) Title="New limit" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                    <Template>
+                                        @{
+                                            var item = context as ChangeLimitHistoryDto;
+                                            <SubH1>@item!.NewLimit <SubH2>KWD</SubH2></SubH1>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(ChangeLimitHistoryDto.ChangeType) Title="Is Temp" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                    <Template>
+                                        @{
+                                            var item = context as ChangeLimitHistoryDto;
+                                            <SubH1>@item!.ChangeType</SubH1>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field="" HeaderClass="Cell3" OnCellRender="@((e) => e.Class = "Cell3")">
+                                    <Template>
+                                        @{
+                                            var history = context as ChangeLimitHistoryDto;
+                                            List<ListItem<ChangeLimitHistoryDto>> Actions = new();
+                                            bool isApprover = AuthManager.GetUser()?.KfhId == history.ApproverId;//Approver not allowd to delete
+                                            var nonActionStatus = history.Status.Equals("CANCEL_TEMP_LIMIT") || history.Status.Equals("REJECTED") || history.Status.Equals("TEMP_LIMIT_CANCELED");
+
+                                            var isAllowedToCancel = !nonActionStatus && (history!.ApproveDate != DateTime.MinValue && history.CurrentLimitExpiryDate >= DateTime.Now);
+                                            var isAllowedToDelete = !nonActionStatus && (!isApprover && history.Status.Equals("PENDING") && !history.Status.Equals("APPROVED"));
+
+                                            if (isAllowedToCancel)
+                                            {
+                                                Actions.Add(new("Cancel", history));
+                                                // <GridCommandButton Command="Cancel" Icon="FontIcon.Cancel" OnClick=@(()=> Cancel(history.Id)) />
+                                            }
+
+                                            if (isAllowedToDelete)
+                                            {
+                                                Actions.Add(new("Delete", history));
+                                                // <GridCommandButton Command="Delete" Icon="FontIcon.Trash" OnClick=@(()=> Delete(history.Id))></GridCommandButton>
+                                            }
+
+                                            Actions.Add(new("More Detail", history));
+                                            <ActionMenuNew Data="@Actions" Status="DataStatus.Success" Callback="@(async (ListItem<ChangeLimitHistoryDto> selectedItem)=> { await OnChangeAction(selectedItem); } )" />
+                                        }
+                                    </Template>
+                                </GridColumn>
+                            </GridColumns>
+                            <NoDataTemplate>
+                                <NoRecordsFound />
+                            </NoDataTemplate>
+                        </TelerikGrid>
+                    </div>
+
+                    <OffCanvas @ref=ChangeLimitHistoryDetail Title="ChangeLimitHistoryDetail">
+                        <OffcanvasContent>
+                            <ListFieldWrapper>
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.OldLimit)" Value="@SelectedHistory?.OldLimit.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.NewLimit)" Value="@SelectedHistory?.NewLimit.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.ChangeType)" Value="@SelectedHistory?.ChangeType.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.LogDate)" Value="@SelectedHistory?.LogDate.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.InitiatorId)" Value="@SelectedHistory?.InitiatorId.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.ApproverId)" Value="@SelectedHistory?.ApproverId?.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.PurgeDays)" Value="@SelectedHistory?.PurgeDays.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.ApproveDate)" Value="@SelectedHistory?.ApproveDate.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.RejectDate)" Value="@SelectedHistory?.RejectDate.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.CurrentLimitExpiryDate)" Value="@SelectedHistory?.CurrentLimitExpiryDate.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.RefuseReason)" Value="@SelectedHistory?.RefuseReason?.ToString()" />
+                                <ListField Label="@nameof(ChangeLimitHistoryDto.Status)" Value="@SelectedHistory?.Status.ToString()" />
+                            </ListFieldWrapper>
+                        </OffcanvasContent>
+                        <OffcanvasFooterContent>
+                            <div class="drawer-buttons justify-content-between align-items-end">
+                                <Button Type="btn-text btn-sm" OnClick=@(async()=>await ChangeLimitHistoryDetail!.ToggleAsync()) Label="Back" />
+
+                            </div>
+                        </OffcanvasFooterContent>
+                    </OffCanvas>
+                </div>
+            }
+
+            <div class="col">
+                @if (!IsHavingPendingRequest)
+                {
+                    <TelerikForm EditContext="formEditContext" OnSubmit="()=> SubmitRequest(null)">
+                        <FormValidation>
+                            <ObjectGraphDataAnnotationsValidator />
+                        </FormValidation>
+                        <FormItems>
+                            <FormItem>
+                                <Template>
+                                    <FormList>
+                                        @if (Supplementary.Data?.Any() ?? false)
+                                        {
+                                            <div class="col mb-4">
+                                                <SupplimentaryCards Cards="Supplementary" IsViewOnly=true />
+                                            </div>
+                                        }
+
+                                        @if (EnableTemporary)
+                                        {
+                                            <div class="col">
+                                                <div class="d-flex flex-row gp-4">
+                                                    <div>
+                                                        <TelerikCheckBox Id="isTemp" Enabled=EnableTemporary TValue="bool" @bind-Value="@Model.IsTemporary" Size="lg" />
+                                                    </div>
+                                                    <div class="d-flex ps-2">
+                                                        <Label for="isTemp">Is Temporary</Label>
+                                                    </div>
+                                                </div>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.IsTemporary)"></ValidationMessage></SubH2>
+                                            </div>
+                                        }
+
+                                        @if (IsChargeCard)
+                                        {
+                                            var title = $"{collateral.GetDescription().Replace("Against ", "")} Account";
+
+                                            <Form>
+                                                <AccountDropDownList For="@(() => Model.CardAccount)" ShowCurrentBalance="true" DataItem="@CardAccounts" Title="@title"
+                                                                     OnCardAccountChanged="async (acno)=> {  Model.CardAccount = acno; await OnChangCardAccount(acno); }" SelectedCardAccount="SelectedTransferCardAccount" />
+                                            </Form>
+
+
+                                            @if (collateral is Collateral.AGAINST_DEPOSIT or Collateral.AGAINST_DEPOSIT_USD && HoldList.Status != DataStatus.Uninitialized)
+                                            {
+                                                <div class="col mt-6">
+
+                                                    @if (HoldList.Status is Domain.Enums.DataStatus.Error)
+                                                    {
+                                                        <span>@HoldList?.Exception?.Message</span>
+                                                    }
+
+                                                    @if (HoldList.Status is Domain.Enums.DataStatus.Loading)
+                                                    {
+                                                        <DataTableSkeleton></DataTableSkeleton>
+                                                    }
+
+                                                    @if (HoldList.Status is Domain.Enums.DataStatus.Success)
+                                                    {
+                                                        <div class="kfh-data-table d-flex">
+                                                            <TelerikGrid Height="200px" Width="100%" @bind-SelectedItems="@SelectedHold" SelectionMode="GridSelectionMode.Single" Data="HoldList.Data?.HoldDetailsList">
+                                                                <GridColumns>
+                                                                    <GridCheckboxColumn CheckBoxOnlySelection=true Width="9%" />
+                                                                    <GridColumn Field=@nameof(HoldDetailsListDto.HoldId) Title="Hold#" Width="25%" />
+                                                                    <GridColumn Field=@nameof(HoldDetailsListDto.Amount) Title="Amount" />
+                                                                    <GridColumn Field=@nameof(HoldDetailsListDto.Description) Title="Desc." />
+                                                                    @* <GridColumn Field=@nameof(HoldDetailsListDto.StartDate) Title="Start Date" DisplayFormat="{0:D}" /> *@
+                                                                    <GridColumn Field=@nameof(HoldDetailsListDto.ExpiryDate) Title="Expiry" DisplayFormat="{0:d/M/yyyy}" />
+                                                                </GridColumns>
+                                                                <NoDataTemplate>
+                                                                    <NoRecordsFound />
+                                                                </NoDataTemplate>
+                                                            </TelerikGrid>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+
+
+                                        <Form Label="Card Number">
+                                            <H3>@DisplayCardNumber(SelectedCard.CardNumberDto)</H3>
+                                        </Form>
+
+
+                                        @if (SelectedCard.IsSupplementaryCard)
+                                        {
+
+                                            <Form Label="Primary Card Number">
+                                                <H3>@DisplayCardNumber(SelectedCard.Parameters?.PrimaryCardNumber)</H3>
+                                            </Form>
+
+                                            <Form Label="Primary Civil Id">
+                                                <H3>@SelectedCard.Parameters?.PrimaryCardCivilId</H3>
+                                            </Form>
+
+
+                                        }
+
+
+                                        <Form Label="Current Limit">
+                                            <H3>@SelectedCard.ApproveLimit<SubH2>@SelectedCard.Currency.CurrencyIsoCode</SubH2></H3>
+                                        </Form>
+
+                                        <Form Label="New Limit">
+                                            <H3>
+                                                <TelerikNumericTextBox Arrows=false @bind-Value="Model.NewLimit" />
+                                                <SubH2>Limit Range (@SelectedCard?.MinLimit - @SelectedCard?.MaxLimit)</SubH2>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.NewLimit)"></ValidationMessage></SubH2>
+                                            </H3>
+                                        </Form>
+
+
+
+
+                                        @if (Model.IsTemporary)
+                                        {
+                                            <Form Label="Purge Days">
+                                                <H3><TelerikNumericTextBox Arrows=false @bind-Value="Model.PurgeDays" /> </H3>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.PurgeDays)"></ValidationMessage></SubH2>
+                                            </Form>
+
+
+                                        }
+
+                                        @if (EnableKfhSalary)
+                                        {
+                                            <Form Label="KFH Salary">
+                                                <H3><TelerikNumericTextBox Arrows=false @bind-Value="Model.KFHSalary" /> </H3>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.KFHSalary)"></ValidationMessage></SubH2>
+                                            </Form>
+
+                                        }
+
+                                        @if (EnableTayseerCreditChecking)
+                                        {
+
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.IsRetiree" Size="lg" />
+                                                <label class="k-label k-form-label">Is Retiree Days</label>
+                                            </div>
+
+
+
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.IsGuarantor" Size="lg" />
+                                                <label class="k-label k-form-label">Is Guarantor</label>
+                                            </div>
+
+                                            <div class="col">
+                                                <H5>Cinet Salary</H5>
+                                                <H3> <TelerikNumericTextBox Arrows=false @bind-Value="Model.CinetSalary" /></H3>
+                                                <SubH3><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.CinetSalary)"></ValidationMessage></SubH3>
+
+                                            </div>
+                                            <div class="col">
+                                                <H5>Cinet Installment</H5>
+                                                <H3> <TelerikNumericTextBox Arrows=false @bind-Value="Model.CinetInstallment" /></H3>
+                                                <SubH3><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.CinetInstallment)"></ValidationMessage></SubH3>
+
+                                            </div>
+                         
+                                            <div class="col">
+                                                <H5>Caps Type</H5>
+                                                <H3>
+                                                    <TelerikRadioGroup Data="@(new Dictionary<string,int>(){ { "Consumer finance",1},{ "Housing finance",2}})" @bind-Value="@Model.CapsType" Layout="RadioGroupLayout.Horizontal" ValueField="Value" TextField="Key"></TelerikRadioGroup>
+                                                </H3>
+                                            </div>
+                                            <div class="col">
+                                                <H5>Caps Date</H5>
+                                                <H3> <TelerikDatePicker Format="@ConfigurationBase.DateFormat" @bind-Value="Model.CapsDate" /></H3>
+                                            </div>
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.InDelinquent" Size="lg" />
+                                                <label class="k-label k-form-label">In Delinquent List</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.InKFHBlackList" Size="lg" />
+                                                <label class="k-label k-form-label">In Black List</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.InCinetBlackList" Size="lg" />
+                                                <label class="k-label k-form-label">In Cinet Black List</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.IsException" Size="lg" />
+                                                <label class="k-label k-form-label">Exception</label>
+                                            </div>
+
+                                            <div class="col">
+                                                <H5>Remarks</H5>
+                                                <H3> <TelerikTextArea @bind-Value="Model.Remarks" /></H3>
+                                                <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Remarks)"></ValidationMessage></SubH2>
+                                            </div>
+
+
+                                        }
+
+                                        <Form Label="User Comments">
+                                            <Form>
+                                                <H3> <TelerikTextArea @bind-Value="Model.Comments" /></H3>
+                                            </Form>
+                                        </Form>
+
+                               
+
+                                    </FormList>
+
+                                </Template>
+                            </FormItem>
+                        </FormItems>
+
+                        <FormButtons></FormButtons>
+                    </TelerikForm>
+                }
+            </div>
+        </div>
+    }
+}

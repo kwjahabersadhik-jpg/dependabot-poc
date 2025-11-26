@@ -1,0 +1,143 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.CardOperation
+
+
+
+@inherits WorkflowComponent
+
+
+@* <TelerikSkeleton AnimationType="SkeletonAnimationType.Pulse" Visible="@(FormStatus is Domain.Enums.DataStatus.Loading)" ShapeType="SkeletonShapeType.Text"></TelerikSkeleton> *@
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+    @if (TaskDetail is not null)
+    {
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+    }
+    else
+    {
+
+        <TelerikForm EditContext="formEditContext" ColumnSpacing="10px">
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <ul class="wrapper-1columns ps-2">
+                            <li>
+                                <H5>Replace For</H5>
+                                <H3>@Model.ReplaceOn.ToString()</H3>
+                            </li>
+                            @* <li><H3>Card Name</H3><H5>@Data.ProductName</H5></div> *@
+                            <li>
+                                <H5>Card Number</H5>
+                                <H3>@DisplayCardNumber(Model.CardNumberDto)</H3>
+                            </li>
+
+                            <li>
+                                <H5>Card Holder Name</H5>
+                                <H3><TelerikTextBox @bind-Value="@Model.HolderName" Placeholder="Enter Card Holder Name..." /></H3>
+                            </li>
+
+
+                            @if (Model.OldMembershipId > 0)
+                            {
+                                <li><H5>Current MemberShip Id</H5><H3>@Model.OldMembershipId</H3></li>
+                                <li>
+                                    <H5>Requested MemberShip Id</H5>
+                                    <H3>
+
+                                        @* <IconButton IsEnabled=true OnClick=@(async ()=> { IsAllowToEditMembershipId=!IsAllowToEditMembershipId; })></IconButton></H5>  *@
+                                        <TelerikNumericTextBox Arrows="false" @bind-Value="@Model!.NewMemberShipId" PlaceHolder="Enter MemberShipId..." OnBlur=OnChangeMemberShipId></TelerikNumericTextBox>
+                                        <SubH2><ValidationMessage For="@(()=> Model!.NewMemberShipId)" class="kfhtexterror text-red"></ValidationMessage> </SubH2>
+                                    </H3>
+                                </li>
+
+                                @if (IsAllowToDeleteMemberShip)
+                                {
+                                    <li>
+                                        <H5 class="form-label">Reason For Delete</H5>
+                                        <TelerikTextArea @bind-Value="@Model!.ReasonForDeleteRequest" PlaceHolder="Enter reason"></TelerikTextArea>
+                                        <Button Type="btn-primary btn-l mt-2" Label="Send Request" OnClick=@(()=> {ShowRequestDeleteMemberShipConfirmation = true; })></Button>
+                                    </li>
+                                }
+                            }
+                            <li>
+                                <H5>Deliver By</H5>
+                                <H3>
+
+                                    <TelerikRadioGroup Data="@DeliveryOptions" @bind-Value="@Model.DeliveryOption" Layout="RadioGroupLayout.Horizontal" ValueField="value" TextField="name"></TelerikRadioGroup>
+
+                                </H3>
+                            </li>
+                            @if (Model.DeliveryOption == DeliveryOption.BRANCH)
+                            {
+                                <li>
+                                    <H5>Branch Name</H5>
+                                    <H5>
+
+                                        <TelerikDropDownList Filterable="true" Data="@Branches" @bind-Value="@Model.BranchId" ValueField="BranchId" TextField="Name"></TelerikDropDownList>
+
+                                    </H5>
+                                </li>
+                            }
+                            @if (AuthManager.HasPermission(Permissions.Fees.Waive()))
+                            {
+                                <li>
+                                    <div class="d-flex flex-row align-items-center gp-16">
+                                        <div>
+                                            <H3><TelerikCheckBox TValue="bool" @bind-Value="@Model.IsNoFees" Size="lg" /></H3>
+                                        </div>
+                                        <div>
+                                            <H5>Waive Fees</H5>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                @if (Model.IsNoFees)
+                                {
+                                    <li>
+                                        <H5>Replacement Reason</H5>
+                                        <H3>
+                                            <TelerikDropDownList DefaultText="-- Select a reason --" Data="replacementReasons" @bind-Value="Model.Reason"> </TelerikDropDownList>
+                                        </H3>
+                                    </li>
+                                }
+
+                            }
+
+                            @if (IsAllowTo(Permissions.PinMailer.Issue()))
+                            {
+                                <li>
+                                    <div class="d-flex flex-row align-items-center gp-16">
+
+                                        <div>
+                                            <H3>
+
+                                                <TelerikCheckBox TValue="bool" @bind-Value="@Model.IssueWithPinMailer" Size="lg" />
+
+                                            </H3>
+                                        </div>
+
+                                        <div>
+                                            <H5>Issue with PIN Mailer</H5>
+                                        </div>
+
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+            </FormValidation>
+            <FormButtons>
+            </FormButtons>
+        </TelerikForm>
+    }
+
+}

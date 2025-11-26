@@ -1,0 +1,253 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CustmerStatementService" targetNamespace="http://www.openuri.org/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_CustmerStatementService.jws_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="http___172.16.123.176_7001_KFHIntegrationWebServices_kfh_banking_webservices_CustmerStatementService.jws_xsd=2"/>
+</xsd:schema>
+  </types>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="verifySalaryResponse">
+    <part name="parameters" element="tns:verifySalaryResponse">
+    </part>
+  </message>
+  <message name="getLastNStatementsResponse">
+    <part name="parameters" element="tns:getLastNStatementsResponse">
+    </part>
+  </message>
+  <message name="getStatementWithSOFResponse">
+    <part name="parameters" element="tns:getStatementWithSOFResponse">
+    </part>
+  </message>
+  <message name="getStatementsWithCriteria">
+    <part name="parameters" element="tns:getStatementsWithCriteria">
+    </part>
+  </message>
+  <message name="getLastNStatements">
+    <part name="parameters" element="tns:getLastNStatements">
+    </part>
+  </message>
+  <message name="getSOStatementResponse">
+    <part name="parameters" element="tns:getSOStatementResponse">
+    </part>
+  </message>
+  <message name="getLastNStatementWithSOF">
+    <part name="parameters" element="tns:getLastNStatementWithSOF">
+    </part>
+  </message>
+  <message name="getStatementsWithCriteriaResponse">
+    <part name="parameters" element="tns:getStatementsWithCriteriaResponse">
+    </part>
+  </message>
+  <message name="getStatementWithSOF">
+    <part name="parameters" element="tns:getStatementWithSOF">
+    </part>
+  </message>
+  <message name="verifySalary">
+    <part name="parameters" element="tns:verifySalary">
+    </part>
+  </message>
+  <message name="getSOStatement">
+    <part name="parameters" element="tns:getSOStatement">
+    </part>
+  </message>
+  <message name="getLastNStatementWithSOFResponse">
+    <part name="parameters" element="tns:getLastNStatementWithSOFResponse">
+    </part>
+  </message>
+  <message name="getStatements">
+    <part name="parameters" element="tns:getStatements">
+    </part>
+  </message>
+  <message name="getStatementsResponse">
+    <part name="parameters" element="tns:getStatementsResponse">
+    </part>
+  </message>
+  <portType name="CustomerStatementService">
+    <operation name="verifySalary">
+      <input message="tns:verifySalary" wsam:Action="http://www.openuri.org/CustomerStatementService/verifySalaryRequest">
+    </input>
+      <output message="tns:verifySalaryResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/verifySalaryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/verifySalary/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getStatements">
+      <input message="tns:getStatements" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementsRequest">
+    </input>
+      <output message="tns:getStatementsResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatements/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getSOStatement">
+      <input message="tns:getSOStatement" wsam:Action="http://www.openuri.org/CustomerStatementService/getSOStatementRequest">
+    </input>
+      <output message="tns:getSOStatementResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getSOStatementResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/getSOStatement/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getLastNStatementWithSOF">
+      <input message="tns:getLastNStatementWithSOF" wsam:Action="http://www.openuri.org/CustomerStatementService/getLastNStatementWithSOFRequest">
+    </input>
+      <output message="tns:getLastNStatementWithSOFResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getLastNStatementWithSOFResponse">
+    </output>
+    </operation>
+    <operation name="getLastNStatements">
+      <input message="tns:getLastNStatements" wsam:Action="http://www.openuri.org/CustomerStatementService/getLastNStatementsRequest">
+    </input>
+      <output message="tns:getLastNStatementsResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getLastNStatementsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/getLastNStatements/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getStatementsWithCriteria">
+      <input message="tns:getStatementsWithCriteria" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementsWithCriteriaRequest">
+    </input>
+      <output message="tns:getStatementsWithCriteriaResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementsWithCriteriaResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementsWithCriteria/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getStatementWithSOF">
+      <input message="tns:getStatementWithSOF" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementWithSOFRequest">
+    </input>
+      <output message="tns:getStatementWithSOFResponse" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementWithSOFResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CustomerStatementService/getStatementWithSOF/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CustmerStatementServiceSoapBinding" type="tns:CustomerStatementService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="verifySalary">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getStatements">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getSOStatement">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getLastNStatementWithSOF">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getLastNStatements">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getStatementsWithCriteria">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getStatementWithSOF">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="WLS_CustmerStatementService">
+    <port name="CustmerStatementServiceSoap" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CustmerStatementService.CustmerStatementServiceSoap/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap8" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap9" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap6" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap7" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/kfhsoa/ws/CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap4" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap5" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustmerStatementService.CustmerStatementServiceSoap/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap2" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP05:6655/ws/WLS_CustmerStatementService/1.0"/>
+    </port>
+    <port name="CustmerStatementServiceSoap3" binding="tns:CustmerStatementServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustmerStatementService.CustmerStatementServiceSoap/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

@@ -1,0 +1,18 @@
+﻿
+@inherits WorkflowComponent
+
+
+<div class="form-flex">
+
+
+    @if (!IsAuthorized)
+    {
+        <AccessDenied />
+    }
+    else
+    {
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+
+    }
+
+</div>

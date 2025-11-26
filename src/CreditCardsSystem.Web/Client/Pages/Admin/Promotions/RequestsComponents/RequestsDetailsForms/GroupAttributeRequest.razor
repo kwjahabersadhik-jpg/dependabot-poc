@@ -1,0 +1,76 @@
+﻿@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using Attribute = CreditCardsSystem.Domain.Models.BCDPromotions.Groups.Attribute
+
+@inject RequestStateContainer RequestStateContainer
+@inject IGroupsAppService GroupsAppService
+@inherits PromotionsRequestsHelpers
+
+<RequestDetails T="@(GroupAttributeDto)"></RequestDetails>
+
+@code {
+
+    public List<Attribute> Attributes { get; set; } = new();
+    public List<GroupAttributeLookupDto> NewAttributeLookup { get; set; } = new();
+    public List<GroupAttributeLookupDto> OldAttributeLookup { get; set; } = new();
+
+    public string NewAttributeTypeName { get; set; } = string.Empty;
+    public string OldAttributeTypeName { get; set; } = string.Empty;
+
+    public string NewAttributeValueName { get; set; } = string.Empty;
+    public string OldAttributeValueName { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAttributeTypesNames();
+        await GetAttributesValuesNames();
+    }
+
+    async Task GetAttributeTypesNames()
+    {
+
+        Attributes = await GroupsAppService.GetAttributesList();
+
+        var newAttributeType = GetParamValue(RequestStateContainer.RequestDetails , nameof(GroupAttributeDto.AttributeType));
+        NewAttributeTypeName = Attributes.FirstOrDefault(a => a.Type == newAttributeType)!.DisplayedName;
+
+        if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+        {
+            var oldAttributeType = GetParamValue(RequestStateContainer.RequestDetails, nameof(GroupAttributeDto.AttributeType) , true);
+            OldAttributeTypeName = Attributes.FirstOrDefault(a => a.Type == oldAttributeType)!.DisplayedName;
+        }
+        
+    }
+
+    async Task GetAttributesValuesNames()
+    {
+
+        var newAttributeValue = GetParamValue(RequestStateContainer.RequestDetails, nameof(GroupAttributeDto.AttributeValue));
+        var newAttributeTypeName = GetParamValue(RequestStateContainer.RequestDetails, nameof(GroupAttributeDto.AttributeType));
+        var newTypeId = Attributes.FirstOrDefault(a => a.Type == newAttributeTypeName)!.Id;
+
+        NewAttributeLookup = await GroupsAppService.GetAttributeLookupByType((GroupAttributeLookupDto.GroupAttributeType)newTypeId);
+        NewAttributeValueName = NewAttributeLookup.FirstOrDefault(a => a.Value == newAttributeValue)!.Attribute;
+
+
+        if (RequestStateContainer.RequestHeader.ActivityType == ActivityType.Edit)
+        {
+            var oldAttributeValue = GetParamValue(RequestStateContainer.RequestDetails, nameof(GroupAttributeDto.AttributeValue), true);
+            var oldAttributeTypeName = GetParamValue(RequestStateContainer.RequestDetails, nameof(GroupAttributeDto.AttributeType), true);
+            var oldTypeId = Attributes.FirstOrDefault(a => a.Type == oldAttributeTypeName)!.Id;
+
+
+            if (oldAttributeTypeName != newAttributeTypeName)
+            {
+                OldAttributeLookup = await GroupsAppService.GetAttributeLookupByType((GroupAttributeLookupDto.GroupAttributeType)oldTypeId);
+                OldAttributeValueName = OldAttributeLookup.FirstOrDefault(a => a.Value == oldAttributeValue)!.Attribute;
+            }
+            else
+                OldAttributeValueName = NewAttributeLookup.FirstOrDefault(a => a.Value == oldAttributeValue)!.Attribute;
+
+        }
+
+    }
+}

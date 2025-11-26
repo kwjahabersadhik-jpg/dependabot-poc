@@ -1,0 +1,256 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.kfh.com/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CustomerCustomizationService" targetNamespace="http://www.kfh.com/">
+<documentation>Straight Through Routing</documentation>
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="http___172.16.123.176_7001_KFHEServicesWebServices_CustomerCustomizationService_xsd=1"/>
+</xsd:schema>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.176_7001_KFHEServicesWebServices_CustomerCustomizationService_xsd=2"/>
+</xsd:schema>
+  </types>
+  <message name="getAniByAccountNoResponse">
+    <part name="parameters" element="tns:getAniByAccountNoResponse">
+    </part>
+  </message>
+  <message name="createMyFavouritesResponse">
+    <part name="parameters" element="tns:createMyFavouritesResponse">
+    </part>
+  </message>
+  <message name="createBlackListCustomer">
+    <part name="parameters" element="tns:createBlackListCustomer">
+    </part>
+  </message>
+  <message name="updateMyFavourites">
+    <part name="parameters" element="tns:updateMyFavourites">
+    </part>
+  </message>
+  <message name="getBlackListCustomerResponse">
+    <part name="parameters" element="tns:getBlackListCustomerResponse">
+    </part>
+  </message>
+  <message name="getMyFavourites">
+    <part name="parameters" element="tns:getMyFavourites">
+    </part>
+  </message>
+  <message name="deleteBlackListCustomerResponse">
+    <part name="parameters" element="tns:deleteBlackListCustomerResponse">
+    </part>
+  </message>
+  <message name="createMyFavourites">
+    <part name="parameters" element="tns:createMyFavourites">
+    </part>
+  </message>
+  <message name="updateBlackListCustomer">
+    <part name="parameters" element="tns:updateBlackListCustomer">
+    </part>
+  </message>
+  <message name="createBlackListCustomerResponse">
+    <part name="parameters" element="tns:createBlackListCustomerResponse">
+    </part>
+  </message>
+  <message name="updateBlackListCustomerResponse">
+    <part name="parameters" element="tns:updateBlackListCustomerResponse">
+    </part>
+  </message>
+  <message name="updateMyFavouritesResponse">
+    <part name="parameters" element="tns:updateMyFavouritesResponse">
+    </part>
+  </message>
+  <message name="deleteBlackListCustomer">
+    <part name="parameters" element="tns:deleteBlackListCustomer">
+    </part>
+  </message>
+  <message name="deleteMyFavourites">
+    <part name="parameters" element="tns:deleteMyFavourites">
+    </part>
+  </message>
+  <message name="deleteMyFavouritesResponse">
+    <part name="parameters" element="tns:deleteMyFavouritesResponse">
+    </part>
+  </message>
+  <message name="getBlackListCustomer">
+    <part name="parameters" element="tns:getBlackListCustomer">
+    </part>
+  </message>
+  <message name="getAniByAccountNo">
+    <part name="parameters" element="tns:getAniByAccountNo">
+    </part>
+  </message>
+  <message name="getMyFavouritesResponse">
+    <part name="parameters" element="tns:getMyFavouritesResponse">
+    </part>
+  </message>
+  <portType name="CustomerCustomizationService">
+    <operation name="getMyFavourites">
+      <input message="tns:getMyFavourites" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getMyFavouritesRequest">
+    </input>
+      <output message="tns:getMyFavouritesResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getMyFavouritesResponse">
+    </output>
+    </operation>
+    <operation name="deleteMyFavourites">
+      <input message="tns:deleteMyFavourites" wsam:Action="http://www.kfh.com/CustomerCustomizationService/deleteMyFavouritesRequest">
+    </input>
+      <output message="tns:deleteMyFavouritesResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/deleteMyFavouritesResponse">
+    </output>
+    </operation>
+    <operation name="deleteBlackListCustomer">
+      <input message="tns:deleteBlackListCustomer" wsam:Action="http://www.kfh.com/CustomerCustomizationService/deleteBlackListCustomerRequest">
+    </input>
+      <output message="tns:deleteBlackListCustomerResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/deleteBlackListCustomerResponse">
+    </output>
+    </operation>
+    <operation name="updateMyFavourites">
+      <input message="tns:updateMyFavourites" wsam:Action="http://www.kfh.com/CustomerCustomizationService/updateMyFavouritesRequest">
+    </input>
+      <output message="tns:updateMyFavouritesResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/updateMyFavouritesResponse">
+    </output>
+    </operation>
+    <operation name="updateBlackListCustomer">
+      <input message="tns:updateBlackListCustomer" wsam:Action="http://www.kfh.com/CustomerCustomizationService/updateBlackListCustomerRequest">
+    </input>
+      <output message="tns:updateBlackListCustomerResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/updateBlackListCustomerResponse">
+    </output>
+    </operation>
+    <operation name="createMyFavourites">
+      <input message="tns:createMyFavourites" wsam:Action="http://www.kfh.com/CustomerCustomizationService/createMyFavouritesRequest">
+    </input>
+      <output message="tns:createMyFavouritesResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/createMyFavouritesResponse">
+    </output>
+    </operation>
+    <operation name="createBlackListCustomer">
+      <input message="tns:createBlackListCustomer" wsam:Action="http://www.kfh.com/CustomerCustomizationService/createBlackListCustomerRequest">
+    </input>
+      <output message="tns:createBlackListCustomerResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/createBlackListCustomerResponse">
+    </output>
+    </operation>
+    <operation name="getBlackListCustomer">
+      <input message="tns:getBlackListCustomer" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getBlackListCustomerRequest">
+    </input>
+      <output message="tns:getBlackListCustomerResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getBlackListCustomerResponse">
+    </output>
+    </operation>
+    <operation name="getAniByAccountNo">
+      <input message="tns:getAniByAccountNo" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getAniByAccountNoRequest">
+    </input>
+      <output message="tns:getAniByAccountNoResponse" wsam:Action="http://www.kfh.com/CustomerCustomizationService/getAniByAccountNoResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="CustomerCustomizationServiceSoapBinding" type="tns:CustomerCustomizationService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getMyFavourites">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="deleteMyFavourites">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="deleteBlackListCustomer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateMyFavourites">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateBlackListCustomer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="createMyFavourites">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="createBlackListCustomer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getBlackListCustomer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getAniByAccountNo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WLS_CustomerCustomizationService">
+    <port name="CustomerCustomizationServiceSoap3" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustomerCustomizationService.CustomerCustomizationServiceSoap/1.0"/>
+    </port>
+    <port name="CustomerCustomizationServiceSoap4" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/WLS_CustomerCustomizationService/1.0"/>
+    </port>
+    <port name="CustomerCustomizationServiceSoap5" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CustomerCustomizationService/1.0"/>
+    </port>
+    <port name="CustomerCustomizationServiceSoap6" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CustomerCustomizationService/1.0"/>
+    </port>
+    <port name="CustomerCustomizationServiceSoap" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustomerCustomizationService.CustomerCustomizationServiceSoap/1.0"/>
+    </port>
+    <port name="CustomerCustomizationServiceSoap2" binding="tns:CustomerCustomizationServiceSoapBinding">
+      <soap:address location="https://integration/ws/WLS_CustomerCustomizationService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

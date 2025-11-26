@@ -1,0 +1,446 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Card
+@using CreditCardsSystem.Domain.Models.CardOperation
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components.Elements
+
+@inherits WorkflowComponent
+
+<CheckerField Label="Installment" Value="@CardDetail.Installment.ToString()"></CheckerField>
+
+@if (previousInstallments is not null)
+{
+    <CheckerField Label="Previous KFHCardInstallment" Value="@previousInstallments?.PrevKFHCardInstallment.ToString()"></CheckerField>
+    <CheckerField Label="Previous KFHCardLimit" Value="@previousInstallments?.PrevKFHCardLimit.ToString()"></CheckerField>
+}
+
+<CGrid ViewAddNew=@ShowAddNewButton AddEvent="OpenForm" Label="Credit Checking" DataItem="TayseerCreditCheckings">
+    <TelerikGrid Data="@creditCheckLogs" @ref=CreditCheckingGrid Pageable="true" Sortable="false">
+
+        <GridColumns>
+            <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                    }
+                </Template>
+            </GridColumn>
+
+            <GridColumn Field="Details" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell")" HeaderClass="Cell15 AO-detailed--cell">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        <div class="detailedCell-content">
+                            <H2>@(((EntryType)(item!.EntryType ?? 1)).ToString())</H2>
+                            <SubH1>@(((CapsType)item!.CapsType).ToString())</SubH1>
+                            <SubH1>@item!.CapsDate?.ToString(ConfigurationBase.DateFormat)</SubH1>
+                        </div>
+                    }
+                </Template>
+            </GridColumn>
+
+            <GridColumn Field="Kfh Salary" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        <H2>@item?.KfhSalary</H2>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="New Limit" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        <H2>@item?.NewLimit</H2>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="Description" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        <H2>@item?.ExceptionDescription</H2>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="Status" HeaderClass="Cell5" OnCellRender="@((e) => e.Class = "Cell5")">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        @if (item?.Status is not null)
+                        {
+                            <H3>@(((CreditCheckStatus)item?.Status).ToString())</H3>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+
+            <GridColumn Field="" HeaderClass="Cell5" OnCellRender="@((e) => e.Class = "Cell5")">
+                <Template>
+                    @{
+                        var item = context as TayseerCreditCheckingDto;
+                        List<ListItem<TayseerCreditCheckingDto>> Actions = new();
+                        Actions.Add(new("More Detail", item));
+                        <ActionMenuNew Data="@Actions" Status="DataStatus.Success" Callback="@(async (ListItem<TayseerCreditCheckingDto> selectedItem)=> { await ActionSelectionChanged(selectedItem); } )" />
+                    }
+                </Template>
+            </GridColumn>
+
+        </GridColumns>
+        <NoDataTemplate>
+            <NoRecordsFound />
+        </NoDataTemplate>
+    </TelerikGrid>
+</CGrid>
+
+@if (creditCheckCalculation.Data is { IsValidCreditCheckData: false })
+{
+    <span class="kfhtexterror text-red"> Please add credit check entry to continue  </span>
+}
+
+<CreditCheckResult Label="Credit Checking Report" DataItem="creditCheckCalculation"></CreditCheckResult>
+
+
+<OffCanvas @ref=CreditCheckForm Title="Credit Check">
+    <OffcanvasContent>
+        <TelerikForm EditContext="CreditCheckFormContext">
+            <FormValidation>
+                <ObjectGraphDataAnnotationsValidator />
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <div class="form-flex">
+                            <ul class="list">
+                                <li>
+                                    <H5>Entry Type</H5>
+                                    <H3>
+                                        <TelerikDropDownList Enabled=false Filterable="true" FilterOperator="StringFilterOperator.StartsWith" Data="@EntryTypes" DefaultText="Select Entry Type" ValueField="Value" TextField="Text" @bind-Value="@CreditCheckModel.EntryType">
+                                        </TelerikDropDownList>
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CreditCheckModel.EntryType)"></ValidationMessage></SubH2>
+                                    </H3>
+                                </li>
+
+                                <li>
+                                    <H5>Is Retiree Days</H5>
+                                    <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsRetiree" Size="lg" />
+                                </li>
+                                <li class="col">
+                                    <H5>IsGuarantor</H5>
+                                    <H3>
+                                        <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsThereAguarantor" Size="lg" />
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>KFH Salary *</H5>
+                                    <H3> <TelerikNumericTextBox Arrows=false @bind-Value="@CreditCheckModel.KfhSalary" /></H3>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CreditCheckModel.KfhSalary)"></ValidationMessage></SubH2>
+                                </li>
+
+                                <li>
+                                    <H5>Cinet Salary *</H5>
+                                    <H3> <TelerikNumericTextBox Arrows=false @bind-Value="@CreditCheckModel.CinetSalary" /></H3>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CreditCheckModel.CinetSalary)"></ValidationMessage></SubH2>
+                                </li>
+                                <li>
+                                    <H5>Cinet Installment *</H5>
+                                    <H3> <TelerikNumericTextBox Arrows=false @bind-Value="@CreditCheckModel.CinetInstallment" /></H3>
+                                    <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => CreditCheckModel.CinetInstallment)"></ValidationMessage></SubH2>
+                                </li>
+                                <li>
+                                    <H5>Other Bank Limit</H5>
+                                    <H3> <TelerikNumericTextBox Arrows=false @bind-Value="@CreditCheckModel.OtherBankCreditLimit" /></H3>
+                                </li>
+                                <li>
+                                    <H5>New Limit</H5>
+                                    <H3> <TelerikNumericTextBox Arrows=false @bind-Value="@CreditCheckModel.NewLimit" /></H3>
+                                </li>
+                                <li>
+                                    <H5>Caps Type</H5>
+                                    <H3>
+                                        <TelerikDropDownList Filterable="true" FilterOperator="StringFilterOperator.StartsWith" Data="@CapsList" DefaultText="Select Caps Type" ValueField="Value" TextField="Text" @bind-Value="@CreditCheckModel.CapsType">
+                                        </TelerikDropDownList>
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>Caps Date</H5>
+                                    <H3><TelerikDatePicker Format="@ConfigurationBase.DateFormat" @bind-Value="@CreditCheckModel.CapsDate" /></H3>
+                                </li>
+                                <li>
+                                    <H5>In Delinquent List</H5>
+                                    <H3>
+                                        <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsInDelinquentList" Size="lg" />
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>In Black List</H5>
+                                    <H3>
+                                        <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsInKfhBlackList" Size="lg" />
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>In Cinet Black List</H5>
+                                    <H3>
+                                        <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsInCinetBalckList" Size="lg" />
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>Exception</H5>
+                                    <H3>
+                                        <TelerikCheckBox TValue="bool" @bind-Value="@CreditCheckModel.IsThereAnException" Size="lg" />
+                                    </H3>
+                                </li>
+                                <li>
+                                    <H5>Remarks</H5>
+                                    <H3> <TelerikTextArea @bind-Value="@CreditCheckModel.ExceptionDescription" /></H3>
+                                </li>
+
+
+                                @if (!string.IsNullOrEmpty(error))
+                                {
+                                    <li>
+                                        @error
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormButtons>
+            </FormButtons>
+        </TelerikForm>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-between align-items-end">
+            <Button Type="btn-text btn-sm" OnClick=@(async()=>await CreditCheckForm.ToggleAsync()) Label="Cancel" />
+            <Button Type="btn-primary btn-sm" Enabled="@(creditCheckCalculation.Status!=DataStatus.Loading)" Loader="creditCheckCalculation.Status==DataStatus.Loading" ButtonType="@ButtonType.Button" Label="Calculate And Add" OnClick="async()=>{ await CalculateCreditCheck();}"></Button>
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+<OffCanvas @ref=CreditCheckMoreDetail Title="Credit Check Details">
+    <OffcanvasContent>
+        <ListFieldWrapper>
+            <ListField Label="Kfh Salary" Value="@selectedCreditCheck?.KfhSalary.ToMoney()" />
+            <ListField Label="Cinet Salary" Value="@selectedCreditCheck?.CinetSalary.ToMoney()" />
+            <ListField Label="Cinet Installment" Value="@selectedCreditCheck?.CinetInstallment.ToMoney()" />
+            <ListField Label="Other Bank Limit" Value="@selectedCreditCheck?.OtherBankCreditLimit.ToMoney()" />
+            <ListField Label="New Limit" Value="@selectedCreditCheck?.NewLimit.ToMoney()" />
+            <ListField Label="Retired " Value="@selectedCreditCheck?.IsRetiree.ToText()" />
+            <ListField Label="Guarantor Exist" Value="@selectedCreditCheck?.IsThereAguarantor.ToText()" />
+            <ListField Label="In Delinquent List" Value="@selectedCreditCheck?.IsInDelinquentList.ToText()" />
+            <ListField Label="In KFH Black List" Value="@selectedCreditCheck?.IsInKfhBlackList.ToText()" />
+            <ListField Label="In Cinet Black List" Value="@selectedCreditCheck?.IsInCinetBalckList.ToText()" />
+            <ListField Label="Exception " Value="@selectedCreditCheck?.IsThereAnException.ToText()" />
+        </ListFieldWrapper>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+
+@code {
+    private bool ShowAddNewButton { get; set; }
+    private ListItem[] CapsList { get; set; } = null!;
+    private ListItem[] EntryTypes { get; set; } = null!;
+    private List<TayseerCreditCheckingDto>? creditCheckLogs { get; set; }
+    private EditContext? CreditCheckFormContext { get; set; }
+    private DataItem<TayseerCreditCheckingData> TayseerCreditCheckings { get; set; } = new();
+    private DataItem<CreditCheckCalculationResponse> creditCheckCalculation { get; set; } = new();
+    private PreviousInstallments? previousInstallments { get; set; }
+    private ValidationMessageStore? messageStoreCreditCheck;
+    private OffCanvas CreditCheckForm { get; set; } = default!;
+    private OffCanvas CreditCheckMoreDetail { get; set; } = default!;
+    private TayseerCreditCheckingDto selectedCreditCheck { get; set; }
+    private TelerikGrid<TayseerCreditCheckingDto>? CreditCheckingGrid { get; set; }
+
+
+    [Inject]
+    private IChangeLimitAppService changeLimitAppService { get; set; } = null!;
+
+
+    [CascadingParameter(Name = "CardDetail")]
+    public CardDetailsResponse? CardDetail { get; set; }
+
+
+    [Parameter]
+    public DateTime CustomerDateOfBirth { get; set; }
+
+    [Parameter]
+    public TayseerCreditCheckingDto? CreditCheckModel { get; set; }
+
+
+    private async Task ActionSelectionChanged(ListItem<TayseerCreditCheckingDto> item)
+    {
+        selectedCreditCheck = item.Value;
+        await CreditCheckMoreDetail.ToggleAsync();
+    }
+
+
+    async Task OpenForm()
+    {
+        CreditCheckModel ??= new() { EntryType = (int)EntryType.CreditChecking, RequestId = CardDetail.RequestId };
+        await BindEditContext();
+        await CreditCheckForm.ToggleAsync();
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        CapsList = Enum.GetValues(typeof(CapsType)).Cast<CapsType>().Select(x => new ListItem()
+            {
+                Text = x.GetDescription(),
+                Value = (int)x
+            }).ToArray();
+
+
+        EntryTypes = Enum.GetValues(typeof(EntryType)).Cast<EntryType>().Select(x => new ListItem()
+            {
+                Text = x.GetDescription(),
+                Value = (int)x
+            }).ToArray();
+
+        await LoadDetails();
+        await BindEditContext();
+    }
+    async Task BindEditContext()
+    {
+
+        if (CardDetail.CardStatus is (CreditCardStatus.PendingForCreditCheckingReview or CreditCardStatus.CreditCheckingReviewRejected))
+        {
+            CreditCheckModel = new() { EntryType = (int)EntryType.CreditChecking, RequestId = CardDetail.RequestId };
+            CreditCheckFormContext = new EditContext(CreditCheckModel);
+            CreditCheckFormContext.OnValidationRequested += (s, e) => messageStoreCreditCheck?.Clear();
+            messageStoreCreditCheck = new(CreditCheckFormContext);
+
+            CreditCheckFormContext.OnFieldChanged += (s, e) =>
+            {
+                messageStoreCreditCheck?.Clear(e.FieldIdentifier);
+            };
+        }
+    }
+
+    public async Task BindCreditCheckModel()
+    {
+        var pendingLog = TayseerCreditCheckings?.Data?.Logs?.FirstOrDefault(x => x.Id == -1);
+        var approvedLog = TayseerCreditCheckings?.Data?.ApprovedLog;
+        CreditCheckModel = approvedLog ?? pendingLog;
+    }
+
+    async Task LoadDetails()
+    {
+
+        previousInstallments = (await changeLimitAppService.GetPreviousInstallments(CardDetail.CivilId)) ?? new();
+
+        TayseerCreditCheckings.Loading();
+        var peviousLogs = await changeLimitAppService.GetCreditCardCheckingPreviousLog(CardDetail.RequestId);
+        TayseerCreditCheckings.SetData(peviousLogs);
+
+        if (peviousLogs.Logs.Count > 0)
+        {
+            creditCheckLogs = peviousLogs.Logs;
+        }
+
+        if (peviousLogs.ApprovedLog != null)
+        {
+            await ReadyForAction.InvokeAsync(true);
+        }
+
+        if (CardDetail.CardStatus is (CreditCardStatus.PendingForCreditCheckingReview or CreditCardStatus.CreditCheckingReviewed))
+        {
+            await CalculateCreditCheck();
+        }
+
+        Notification.Hide();
+    }
+
+    private string error { get; set; }
+
+    async Task CalculateCreditCheck()
+    {
+
+        if (CreditCheckForm.IsOpen)
+        {
+            if (!CreditCheckFormContext.Validate() || !CreditCheckFormContext.IsModified())
+            {
+                CreditCheckFormContext.NotifyValidationStateChanged();
+                Notification.Failure(string.Join(",", CreditCheckFormContext.GetValidationMessages()));
+                return;
+            }
+        }
+        else
+        {
+            CreditCheckModel = null;
+        }
+
+
+        await CalculateNewCreditCheck();
+
+        async Task CalculateNewCreditCheck()
+        {
+            creditCheckCalculation.Loading();
+
+            var calculateResp = await changeLimitAppService.CalculateCreditChecking(new()
+                {
+                    DateOfBirth = CustomerDateOfBirth,
+                    PreviousInstallments = previousInstallments,
+                    RequestId = CardDetail.RequestId,
+                    NewCreditCheck = CreditCheckModel
+                });
+
+            Notification.Hide();
+
+            await HandleApiResponse(calculateResp, CreditCheckFormContext, messageStoreCreditCheck, showToast: false);
+
+            if (calculateResp.IsSuccess)
+            {
+                creditCheckCalculation.SetData(calculateResp.Data!);
+
+                if (CreditCheckForm.IsOpen)
+                {
+                    TayseerCreditCheckings?.Data?.Logs.Add(CreditCheckModel);
+                    creditCheckLogs = TayseerCreditCheckings?.Data?.Logs;
+                    CreditCheckingGrid?.Rebind();
+                    await CreditCheckForm.ToggleAsync();
+                }
+
+               
+            }
+            else
+            {
+
+                if (calculateResp.ValidationErrors is not null)
+                {
+                    error = string.Join(",", calculateResp!.ValidationErrors!.Select(x => x.Error));
+                    Notification.Failure(error);
+                }
+                creditCheckCalculation.Error(new(error));
+            }
+
+            await ReadyForAction.InvokeAsync(calculateResp.IsSuccess);
+
+            if (creditCheckLogs is null)
+                ShowAddNewButton = true;
+            else
+                ShowAddNewButton = !creditCheckLogs!.Any(x => x.Id == -1 || x.Status == (int)CreditCheckStatus.Approved);
+
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (CreditCheckFormContext is not null)
+        {
+            CreditCheckFormContext.OnValidationRequested -= (s, e) => messageStoreCreditCheck?.Clear();
+            CreditCheckFormContext.OnFieldChanged -= (s, e) =>
+            {
+                messageStoreCreditCheck?.Clear(e.FieldIdentifier);
+            };
+        }
+    }
+}

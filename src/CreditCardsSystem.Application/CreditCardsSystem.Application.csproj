@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoWarn>1701;1702;SYSLIB0014</NoWarn>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNet.Mvc" />
+		<PackageReference Include="MiniExcel" />
+		<PackageReference Include="Aspose.PDF" />
+		<PackageReference Include="AdoNetCore.AseClient" />
+		<PackageReference Include="DocumentFormat.OpenXml" />
+		<PackageReference Include="Kfh.Aurora" />
+		<PackageReference Include="Kfh.Aurora.Application" />
+		<PackageReference Include="Kfh.Aurora.Common.Shared" />
+		<PackageReference Include="Mapster" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Http" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="System.ServiceModel.Http" />
+		<PackageReference Include="Telerik.DataSource" />
+		<PackageReference Include="Telerik.Reporting" />
+		<PackageReference Include="Telerik.Reporting.OpenXmlRendering" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\CreditCardsSystem.Data\CreditCardsSystem.Data.csproj" />
+		<ProjectReference Include="..\CreditCardsSystem.ExternalService\CreditCardsSystem.ExternalService.csproj" />
+		<ProjectReference Include="..\CreditCardsSystem.Utility\CreditCardsSystem.Utility.csproj" />
+	</ItemGroup>
+
+</Project>

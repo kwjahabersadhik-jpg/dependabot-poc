@@ -1,0 +1,29 @@
+﻿@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Workflow
+@using CreditCardsSystem.Utility.Extensions
+@using Kfh.Aurora.Workflow.Dto
+
+@inherits WorkflowComponent
+
+
+@if (TaskDetail?.Payload is not null)
+{
+    string[] bcolumns = [WorkflowVariables.Description, WorkflowVariables.IsYouthCard, WorkflowVariables.RequestId, WorkflowVariables.RequestActivityId, WorkflowVariables.RequestActivity];
+    <H2>@TaskDetail!.Payload.GetValueOrDefault(WorkflowVariables.Description)</H2>
+    foreach (var variable in TaskDetail!.Payload.Where(x => !bcolumns.Contains(x.Key) && string.IsNullOrEmpty(x.Value.ToString()) == false))
+    {
+
+        if (variable.Key is (WorkflowVariables.RequestedBy or WorkflowVariables.RequestType or WorkflowVariables.ProductType))
+            continue;
+
+        string? value = variable.Key switch
+        {
+            WorkflowVariables.CardNumber => DisplayCardNumber(variable.Value?.ToString()),
+            WorkflowVariables.AUBCardNumber => DisplayCardNumber(variable.Value?.ToString()),
+            WorkflowVariables.RequestType => ((CFUActivity)Enum.Parse(typeof(CFUActivity), variable.Value?.ToString())).GetDescription(),
+            _ => variable.Value?.ToString()
+        };
+
+        <CheckerField Label="@variable.Key" Value="@value" />
+    }
+}

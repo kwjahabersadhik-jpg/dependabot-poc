@@ -1,0 +1,720 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:tns="http://www.openuri.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="CreditCardInquiryServicesService" targetNamespace="http://www.openuri.org/">
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://www.openuri.org/" schemaLocation="http___172.16.123.176_7001_KFHCreditCardApplicationWebServices_kfh_creditcard_webservices_CreditCardInquiryServicesService.jws_xsd=1"/>
+</xsd:schema>
+  </types>
+  <message name="searchCreditCardHistory">
+    <part name="parameters" element="tns:searchCreditCardHistory">
+    </part>
+  </message>
+  <message name="searchMultipleCreditCardData">
+    <part name="parameters" element="tns:searchMultipleCreditCardData">
+    </part>
+  </message>
+  <message name="getArchivedMonthlyStatement">
+    <part name="parameters" element="tns:getArchivedMonthlyStatement">
+    </part>
+  </message>
+  <message name="getRequestParameters">
+    <part name="parameters" element="tns:getRequestParameters">
+    </part>
+  </message>
+  <message name="getCreditCardsByBankAccountsAndStatusResponse">
+    <part name="parameters" element="tns:getCreditCardsByBankAccountsAndStatusResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsIncludingDuality">
+    <part name="parameters" element="tns:getCreditCardsIncludingDuality">
+    </part>
+  </message>
+  <message name="getCreditCardIssuanceDetails">
+    <part name="parameters" element="tns:getCreditCardIssuanceDetails">
+    </part>
+  </message>
+  <message name="getExpiringCreditCards">
+    <part name="parameters" element="tns:getExpiringCreditCards">
+    </part>
+  </message>
+  <message name="getRequestParametersResponse">
+    <part name="parameters" element="tns:getRequestParametersResponse">
+    </part>
+  </message>
+  <message name="getPrepaidCardsLimit">
+    <part name="parameters" element="tns:getPrepaidCardsLimit">
+    </part>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception">
+    </part>
+  </message>
+  <message name="getCreditCardCountries">
+    <part name="parameters" element="tns:getCreditCardCountries">
+    </part>
+  </message>
+  <message name="getPrepaidCardsLimitResponse">
+    <part name="parameters" element="tns:getPrepaidCardsLimitResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsResponse">
+    <part name="parameters" element="tns:getCreditCardsResponse">
+    </part>
+  </message>
+  <message name="getCreditCardCountriesResponse">
+    <part name="parameters" element="tns:getCreditCardCountriesResponse">
+    </part>
+  </message>
+  <message name="getCloseToTransferResponse">
+    <part name="parameters" element="tns:getCloseToTransferResponse">
+    </part>
+  </message>
+  <message name="getCreditCardWithFDAccountNumberRequestResponse">
+    <part name="parameters" element="tns:getCreditCardWithFDAccountNumberRequestResponse">
+    </part>
+  </message>
+  <message name="getLastStatementLoadDate">
+    <part name="parameters" element="tns:getLastStatementLoadDate">
+    </part>
+  </message>
+  <message name="getCreditCardsByCreditCard">
+    <part name="parameters" element="tns:getCreditCardsByCreditCard">
+    </part>
+  </message>
+  <message name="searchCreditCardHistoryResponse">
+    <part name="parameters" element="tns:searchCreditCardHistoryResponse">
+    </part>
+  </message>
+  <message name="getCloseToTransfer">
+    <part name="parameters" element="tns:getCloseToTransfer">
+    </part>
+  </message>
+  <message name="getCreditCardBalanceStatusDisplayResponse">
+    <part name="parameters" element="tns:getCreditCardBalanceStatusDisplayResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsIncludingDualityResponse">
+    <part name="parameters" element="tns:getCreditCardsIncludingDualityResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsByBankAccountsAndStatus">
+    <part name="parameters" element="tns:getCreditCardsByBankAccountsAndStatus">
+    </part>
+  </message>
+  <message name="getLastStatementLoadDateResponse">
+    <part name="parameters" element="tns:getLastStatementLoadDateResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsRequest">
+    <part name="parameters" element="tns:getCreditCardsRequest">
+    </part>
+  </message>
+  <message name="getCurrentActivityResponse">
+    <part name="parameters" element="tns:getCurrentActivityResponse">
+    </part>
+  </message>
+  <message name="generateCreditCardNumber">
+    <part name="parameters" element="tns:generateCreditCardNumber">
+    </part>
+  </message>
+  <message name="getCurrentActivity">
+    <part name="parameters" element="tns:getCurrentActivity">
+    </part>
+  </message>
+  <message name="generateCreditCardNumberResponse">
+    <part name="parameters" element="tns:generateCreditCardNumberResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsByBankAccounts">
+    <part name="parameters" element="tns:getCreditCardsByBankAccounts">
+    </part>
+  </message>
+  <message name="getCreditCardIssuanceDetailsResponse">
+    <part name="parameters" element="tns:getCreditCardIssuanceDetailsResponse">
+    </part>
+  </message>
+  <message name="getBalanceStatusCardDetail">
+    <part name="parameters" element="tns:getBalanceStatusCardDetail">
+    </part>
+  </message>
+  <message name="getCreditCardsByCreditCardResponse">
+    <part name="parameters" element="tns:getCreditCardsByCreditCardResponse">
+    </part>
+  </message>
+  <message name="searchMultipleCreditCardDataResponse">
+    <part name="parameters" element="tns:searchMultipleCreditCardDataResponse">
+    </part>
+  </message>
+  <message name="getCreditCardWithFDAccountNumberRequest">
+    <part name="parameters" element="tns:getCreditCardWithFDAccountNumberRequest">
+    </part>
+  </message>
+  <message name="getAllProductsResponse">
+    <part name="parameters" element="tns:getAllProductsResponse">
+    </part>
+  </message>
+  <message name="getCreditCards">
+    <part name="parameters" element="tns:getCreditCards">
+    </part>
+  </message>
+  <message name="getCreditCardBalanceStatusDisplay">
+    <part name="parameters" element="tns:getCreditCardBalanceStatusDisplay">
+    </part>
+  </message>
+  <message name="getArchivedMonthlyStatementResponse">
+    <part name="parameters" element="tns:getArchivedMonthlyStatementResponse">
+    </part>
+  </message>
+  <message name="getExpiringCreditCardsResponse">
+    <part name="parameters" element="tns:getExpiringCreditCardsResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsByBankAccountsResponse">
+    <part name="parameters" element="tns:getCreditCardsByBankAccountsResponse">
+    </part>
+  </message>
+  <message name="getCreditCardsRequestResponse">
+    <part name="parameters" element="tns:getCreditCardsRequestResponse">
+    </part>
+  </message>
+  <message name="getCreditCardAreaCodesResponse">
+    <part name="parameters" element="tns:getCreditCardAreaCodesResponse">
+    </part>
+  </message>
+  <message name="validateCreditCardsResponse">
+    <part name="parameters" element="tns:validateCreditCardsResponse">
+    </part>
+  </message>
+  <message name="getBalanceStatusCardDetailResponse">
+    <part name="parameters" element="tns:getBalanceStatusCardDetailResponse">
+    </part>
+  </message>
+  <message name="getCreditCardAreaCodes">
+    <part name="parameters" element="tns:getCreditCardAreaCodes">
+    </part>
+  </message>
+  <message name="validateCreditCards">
+    <part name="parameters" element="tns:validateCreditCards">
+    </part>
+  </message>
+  <message name="getAllProducts">
+    <part name="parameters" element="tns:getAllProducts">
+    </part>
+  </message>
+  <portType name="CreditCardInquiryServicesService">
+    <operation name="getRequestParameters">
+      <input message="tns:getRequestParameters" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getRequestParametersRequest">
+    </input>
+      <output message="tns:getRequestParametersResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getRequestParametersResponse">
+    </output>
+    </operation>
+    <operation name="getCurrentActivity">
+      <input message="tns:getCurrentActivity" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCurrentActivityRequest">
+    </input>
+      <output message="tns:getCurrentActivityResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCurrentActivityResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCurrentActivity/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getArchivedMonthlyStatement">
+      <input message="tns:getArchivedMonthlyStatement" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getArchivedMonthlyStatementRequest">
+    </input>
+      <output message="tns:getArchivedMonthlyStatementResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getArchivedMonthlyStatementResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getArchivedMonthlyStatement/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCards">
+      <input message="tns:getCreditCards" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsRequest">
+    </input>
+      <output message="tns:getCreditCardsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCards/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getAllProducts">
+      <input message="tns:getAllProducts" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getAllProductsRequest">
+    </input>
+      <output message="tns:getAllProductsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getAllProductsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getAllProducts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getPrepaidCardsLimit">
+      <input message="tns:getPrepaidCardsLimit" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getPrepaidCardsLimitRequest">
+    </input>
+      <output message="tns:getPrepaidCardsLimitResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getPrepaidCardsLimitResponse">
+    </output>
+    </operation>
+    <operation name="getCreditCardsByCreditCard">
+      <input message="tns:getCreditCardsByCreditCard" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByCreditCardRequest">
+    </input>
+      <output message="tns:getCreditCardsByCreditCardResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByCreditCardResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByCreditCard/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchMultipleCreditCardData">
+      <input message="tns:searchMultipleCreditCardData" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchMultipleCreditCardDataRequest">
+    </input>
+      <output message="tns:searchMultipleCreditCardDataResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchMultipleCreditCardDataResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchMultipleCreditCardData/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardWithFDAccountNumberRequest">
+      <input message="tns:getCreditCardWithFDAccountNumberRequest" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardWithFDAccountNumberRequestRequest">
+    </input>
+      <output message="tns:getCreditCardWithFDAccountNumberRequestResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardWithFDAccountNumberRequestResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardWithFDAccountNumberRequest/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardCountries">
+      <input message="tns:getCreditCardCountries" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardCountriesRequest">
+    </input>
+      <output message="tns:getCreditCardCountriesResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardCountriesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardCountries/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getBalanceStatusCardDetail">
+      <input message="tns:getBalanceStatusCardDetail" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getBalanceStatusCardDetailRequest">
+    </input>
+      <output message="tns:getBalanceStatusCardDetailResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getBalanceStatusCardDetailResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getBalanceStatusCardDetail/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getLastStatementLoadDate">
+      <input message="tns:getLastStatementLoadDate" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getLastStatementLoadDateRequest">
+    </input>
+      <output message="tns:getLastStatementLoadDateResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getLastStatementLoadDateResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getLastStatementLoadDate/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardsIncludingDuality">
+      <input message="tns:getCreditCardsIncludingDuality" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsIncludingDualityRequest">
+    </input>
+      <output message="tns:getCreditCardsIncludingDualityResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsIncludingDualityResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsIncludingDuality/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardsByBankAccounts">
+      <input message="tns:getCreditCardsByBankAccounts" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccountsRequest">
+    </input>
+      <output message="tns:getCreditCardsByBankAccountsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccountsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccounts/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCloseToTransfer">
+      <input message="tns:getCloseToTransfer" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCloseToTransferRequest">
+    </input>
+      <output message="tns:getCloseToTransferResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCloseToTransferResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCloseToTransfer/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardAreaCodes">
+      <input message="tns:getCreditCardAreaCodes" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardAreaCodesRequest">
+    </input>
+      <output message="tns:getCreditCardAreaCodesResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardAreaCodesResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardAreaCodes/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="searchCreditCardHistory">
+      <input message="tns:searchCreditCardHistory" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchCreditCardHistoryRequest">
+    </input>
+      <output message="tns:searchCreditCardHistoryResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchCreditCardHistoryResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/searchCreditCardHistory/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="validateCreditCards">
+      <input message="tns:validateCreditCards" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/validateCreditCardsRequest">
+    </input>
+      <output message="tns:validateCreditCardsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/validateCreditCardsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/validateCreditCards/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardsRequest">
+      <input message="tns:getCreditCardsRequest" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsRequestRequest">
+    </input>
+      <output message="tns:getCreditCardsRequestResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsRequestResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsRequest/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardIssuanceDetails">
+      <input message="tns:getCreditCardIssuanceDetails" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardIssuanceDetailsRequest">
+    </input>
+      <output message="tns:getCreditCardIssuanceDetailsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardIssuanceDetailsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardIssuanceDetails/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getExpiringCreditCards">
+      <input message="tns:getExpiringCreditCards" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getExpiringCreditCardsRequest">
+    </input>
+      <output message="tns:getExpiringCreditCardsResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getExpiringCreditCardsResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getExpiringCreditCards/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="generateCreditCardNumber">
+      <input message="tns:generateCreditCardNumber" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/generateCreditCardNumberRequest">
+    </input>
+      <output message="tns:generateCreditCardNumberResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/generateCreditCardNumberResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/generateCreditCardNumber/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardsByBankAccountsAndStatus">
+      <input message="tns:getCreditCardsByBankAccountsAndStatus" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccountsAndStatusRequest">
+    </input>
+      <output message="tns:getCreditCardsByBankAccountsAndStatusResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccountsAndStatusResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardsByBankAccountsAndStatus/Fault/Exception">
+    </fault>
+    </operation>
+    <operation name="getCreditCardBalanceStatusDisplay">
+      <input message="tns:getCreditCardBalanceStatusDisplay" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardBalanceStatusDisplayRequest">
+    </input>
+      <output message="tns:getCreditCardBalanceStatusDisplayResponse" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardBalanceStatusDisplayResponse">
+    </output>
+      <fault name="Exception" message="tns:Exception" wsam:Action="http://www.openuri.org/CreditCardInquiryServicesService/getCreditCardBalanceStatusDisplay/Fault/Exception">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="CreditCardInquiryServicesServiceSoapBinding" type="tns:CreditCardInquiryServicesService">
+    <wsp:PolicyReference URI="#policy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getRequestParameters">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getCurrentActivity">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getArchivedMonthlyStatement">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCards">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getAllProducts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getPrepaidCardsLimit">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getCreditCardsByCreditCard">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchMultipleCreditCardData">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardWithFDAccountNumberRequest">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardCountries">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getBalanceStatusCardDetail">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getLastStatementLoadDate">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardsIncludingDuality">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardsByBankAccounts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCloseToTransfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardAreaCodes">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="searchCreditCardHistory">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="validateCreditCards">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardsRequest">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardIssuanceDetails">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getExpiringCreditCards">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="generateCreditCardNumber">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardsByBankAccountsAndStatus">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCreditCardBalanceStatusDisplay">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="CreditCardTransactionInquiryService">
+    <port name="CreditCardInquiryServicesServiceSoap2" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/CreditCardTransactionInquiryService/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap3" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/CreditCardTransactionInquiryService.CreditCardInquiryServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/ws/CreditCardTransactionInquiryService.CreditCardInquiryServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap6" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/CreditCardTransactionInquiryService/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap7" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="http://FZVDSOAAP04:6655/kfhsoa/ws/CreditCardInquiryService/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap4" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://integration/ws/CreditCardTransactionInquiryService/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap5" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/ws/CreditCardTransactionInquiryService.CreditCardInquiryServicesServiceSoap/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap8" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://integration/kfhsoa/ws/CreditCardInquiryService/1.0"/>
+    </port>
+    <port name="CreditCardInquiryServicesServiceSoap9" binding="tns:CreditCardInquiryServicesServiceSoapBinding">
+      <soap:address location="https://soa_apigw/kfhsoa/ws/CreditCardInquiryService/1.0"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp1_2:Policy wsu:Id="policy">
+<ns1:SupportingTokens xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512">
+<wsp1_2:Policy>
+<ns1:UsernameToken ns1:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200512/IncludeToken/AlwaysToRecipient">
+<wsp1_2:Policy>
+<ns1:WssUsernameToken10/>
+</wsp1_2:Policy>
+</ns1:UsernameToken>
+</wsp1_2:Policy>
+</ns1:SupportingTokens>
+</wsp1_2:Policy>
+</definitions>

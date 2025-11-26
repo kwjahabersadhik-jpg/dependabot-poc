@@ -1,0 +1,189 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Models.Reports
+
+@using Kfh.Aurora.Auth
+@using Microsoft.AspNetCore.Components
+@using CreditCardsSystem.Domain.Models.Card
+@using Telerik.Blazor.Components.FileSelect.Stream
+
+
+@inject ICreditCardArtworkAppService CreditCardArtworkAppServiceRefit
+
+
+@inherits ApplicationComponent;
+
+<div class="k-form k-form-horizontal">
+
+    @if (isProgress == false)
+    {
+        <div>
+            <Alert Type="alert-info" Message="File name should be cardType. example: 13.jpg, 2.jpg" />
+        </div>
+        <div class="d-flex flex-column gp-12">
+            <ul class="list">
+                <li>
+
+                    <FormList Class="d-flex gp-16 mt-0">
+                        <Form Label="Documents">
+                            <FileUpload Heading="Upload Document File"
+                                        Description="@(IsFileUploaded?"File is uploaded":"You didn't upload any file yet")"
+                                        OnSelect="@SelectedFiles"
+                                        OnRemove="@ClearData"
+                                        AllowedExtensions="@AllowedExtensions"
+                                        AllowMultipleFiles="true"></FileUpload>
+                        </Form>
+                    </FormList>
+                </li>
+                <li>
+                    Accepted file: <strong> jpg, jpeg, png and svg</strong>
+                    between <strong>1KB</strong> and <strong>1MB</strong>
+                </li>
+            </ul>
+            <div class="gp-2 mb-4" style="margin-block-start: 1.5rem;">
+                <Button Type="btn-secondary btn-l" Label="Upload" OnClick="async ()=> {await Submit();}"></Button>
+            </div>
+        </div>
+        
+    }
+    else if (string.IsNullOrEmpty(_successMessage))
+    {
+        <div class="d-flex flex-column gp-12">
+            <ul class="list">
+                <li>
+                    <TelerikProgressBar Max="Documents?.Count??0" Value="Documents?.Count(x=> x.IsUploaded)??0"></TelerikProgressBar>
+                </li>
+                <li>
+                    <div class="alert alert-success" role="alert">
+                        @_successMessage
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+
+</div>
+
+@code {
+
+
+    [Parameter]
+    public List<CardTypeDto> CreditCards { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<bool> OnUpdateEvent { get; set; }
+
+    private List<ImageFileDto> ImageFiles { get; set; }
+    private List<DocumentDto> Documents { get; set; }
+
+    public List<string> AllowedExtensions { get; set; } = new() { ".jpg", ".jpeg", ".png", ".svg" };
+
+    private string _successMessage = string.Empty;
+
+    private int completedCount = 0;
+
+    private bool isProgress { get; set; } = false;
+
+    private bool IsFileUploaded { get; set; }
+    private bool IsFileValid { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        completedCount = 0;
+        if (CreditCards is null)
+            CreditCards = await CreditCardArtworkAppServiceRefit.GetCreditCardsTypes();
+    }
+
+
+
+    async Task Submit()
+    {
+
+        if (Documents is null || Documents.Count == 0)
+        {
+            Notification.Failure("There is no files to upload!");
+            return;
+        }
+
+        isProgress = true;
+        await UploadDoc(Documents);
+
+        //Retry upload only failed documents
+        var failedDocuments = Documents.Where(x => x.IsUploaded == false);
+        await UploadDoc(failedDocuments);
+
+        Documents.RemoveAll(x => x.IsUploaded == true);
+
+        if (Documents.Count == 0)
+        {
+            await OnUpdateEvent.InvokeAsync(true);
+        }
+        else
+        {
+            isProgress = false;
+        }
+
+        async Task UploadDoc(IEnumerable<DocumentDto> documents)
+        {
+
+            foreach (var item in documents)
+            {
+                try
+                {
+                    await CreditCardArtworkAppServiceRefit.UploadCreditCardImageByFile(item);
+                    item.IsUploaded = true;
+                    StateHasChanged();
+                }
+                catch (Exception ex)
+                {
+                    item.IsUploaded = false;
+                    item.Message = ex.Message;
+                }
+            }
+        }
+
+
+    }
+
+    private async Task SelectedFiles(FileSelectEventArgs args)
+    {
+        if (args.Files.Count == 0)
+            return;
+
+
+        foreach (var file in args.Files)
+        {
+            var byteArray = new byte[file.Size];
+            await using MemoryStream ms = new MemoryStream(byteArray);
+            await file.Stream.CopyToAsync(ms);
+            var fileByteArray = ms.ToArray();
+            IsFileValid = Helpers.IsFileHeaderValid(fileByteArray);
+            IsFileUploaded = IsFileValid;
+
+            if (!IsFileValid)
+                return;
+
+            Documents ??= new();
+            _ = Enum.TryParse<FileExtension>
+                ($"{file.Extension.Replace(".", "")}", out FileExtension fileExtension);
+
+
+            Documents.Add(new DocumentDto(Content: fileByteArray, FileName: file.Name, FileExtension: fileExtension));
+        }
+
+    }
+
+    private void ClearData()
+    {
+        IsFileUploaded = false;
+    }
+
+
+
+    public record ImageFileDto(FileInfoStream Stream, string FileName, string FileExtension, string FilePath = "")
+    {
+        public bool IsUploaded { get; set; } = false;
+    }
+
+
+
+}

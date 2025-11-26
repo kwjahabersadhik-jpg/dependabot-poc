@@ -1,0 +1,151 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.SupplementaryCard
+@using CreditCardsSystem.Utility.Crypto
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+@inherits WorkflowComponent
+
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+
+    @if (TaskDetail is not null)
+    {
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+    }
+    else
+    {
+
+        <ul class="list">
+            <li><H5>Card Name</H5><H3>@SelectedCard?.ProductName</H3></li>
+            <li><H5>Card Number</H5><H3>@DisplayCardNumber(SelectedCard?.CardNumberDto)</H3></li>
+            <li><H5>Card Status</H5><H3>@SelectedCard?.CardStatus.GetDescription()</H3></li>
+            <li><H5>Civil ID</H5><H3>@SelectedCard!.CivilId</H3></li>
+            <li><H5>Approved Limit</H5><H3>@SelectedCard?.ApproveLimit</H3></li>
+            @if (SelectedCard?.ReqDate != null)
+            {
+                <li><H5>Request Date</H5><H3>@SelectedCard?.ReqDate.ToString(ConfigurationBase.DateFormat)</H3></li>
+            }
+            <li>
+                <H5>Expiry Date</H5><H3>
+                    @{
+                        var expiry = SelectedCard?.Expiry!.Trim().Length > 6 ? SelectedCard?.Expiry!.Trim().DeSaltThis() : SelectedCard?.Expiry;
+                    }
+                    @DateTime.ParseExact(expiry!, (expiry.Length == 6 ? "mmyyyy" : "mmyy"), CultureInfo.InvariantCulture).AddMonths(1).AddDays(-1).ToString(ConfigurationBase.DateFormat)
+                </H3>
+            </li>
+            <li><H5>Branch Id</H5><H3>@SelectedCard?.BranchId</H3></li>
+
+
+            @if (formDataItem.Status is DataStatus.Loading)
+            {
+                <ListSkeleton />
+            }
+            else
+            {
+                @if (formData is not null && formData.IsHavingInsufficientBalance)
+                {
+
+                    var balanceLabel = (formData?.Balance > 0 ? "Balance" : "Refund");
+                    var totalAmountLabel = (formData?.TotalAmount > 0 ? "Deduction" : "Refund");
+                    var balanceClass = (formData?.Balance < 0 ? "text-green" : "");
+                    var totalclass = (formData?.TotalAmount < 0 ? "text-green" : "");
+
+
+                    <li>
+                        <H5 Class="@balanceClass">@($"{balanceLabel} Amount")</H5>
+                        <H3 Class="@balanceClass">
+                            @((formData?.Balance < 0 ? (formData?.Balance * -1) : formData?.Balance).ToMoney(SelectedCard.Currency?.CurrencyIsoCode))
+                        </H3>
+                    </li>
+
+                    @if (SelectedCard.Currency.CurrencyIsoCode != ConfigurationBase.KuwaitCurrency)
+                    {
+                        <li>
+                            <H5 Class="@balanceClass">@($"{balanceLabel} Amount KWD")</H5>
+                            <H3 Class="@balanceClass">
+                                @((formData?.BalanceInKWD < 0 ? (formData?.BalanceInKWD * -1) : formData?.BalanceInKWD).ToMoney("KWD"))
+                        </H3>
+                    </li>
+                    }
+                    //-100
+                    <li><H5>Due Fee Amount</H5><H3>@formData?.FeeAmount.ToMoney(SelectedCard.Currency?.CurrencyIsoCode)</H3></li>
+                    //10
+                    <li><H5>VAT Amount (Fee)</H5><H3>@formData?.VATAmount.ToMoney(SelectedCard.Currency?.CurrencyIsoCode)</H3></li>
+                    //0
+                    <li><H5>Total Fee Amount</H5><H3>@formData?.TotalFee.ToMoney(SelectedCard.Currency?.CurrencyIsoCode)</H3></li>
+                    //10
+                    <li>
+                        <H5 Class="@totalclass">@($"Total {totalAmountLabel} Amount")</H5>
+                        <H3 Class="@totalclass">
+                            @((formData?.TotalAmount < 0 ? (formData?.TotalAmount * -1) : formData?.TotalAmount).ToMoney(SelectedCard.Currency?.CurrencyIsoCode))
+                        </H3>
+                    </li>
+
+                    @if (SelectedCard.Currency.CurrencyIsoCode != ConfigurationBase.KuwaitCurrency)
+                    {
+                        <li>
+                            <H5 Class="@balanceClass">@($"{balanceLabel} Amount KWD")</H5>
+                            <H3 Class="@balanceClass">
+                                @((formData?.TotalAmountInKWD < 0 ? (formData?.TotalAmountInKWD * -1) : formData?.TotalAmountInKWD).ToMoney("KWD"))
+                            </H3>
+                        </li>
+                    }
+                    <li>
+                        <H5 class="mb-2"></H5>
+                        <AccountDropDownList ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Debit Account No*"
+                                             OnCardAccountChanged="async (acno)=> {await OnChangeCardAccountNumber(acno); }" SelectedCardAccount="@SelectedDebitAccount" />
+
+                        @* <TelerikDropDownList Data="@formData.DebitAccounts" TextField="Acct" ValueField="Acct" OnChange="OnChangeCardAccountNumber" @bind-Value="@CardAccountNumber">
+        <DropDownListSettings>
+        <DropDownListPopupSettings MaxHeight="200px" />
+        </DropDownListSettings>
+        </TelerikDropDownList> *@
+                    </li>
+                }
+                else
+                {
+                    <li><H5>Debit Account No</H5><H3>@SelectedCard!.BankAccountNumber</H3></li>
+                }
+
+
+                @if (formDataItem.Status == DataStatus.Success)
+                {
+                    @*   @if (formData?.DebitAccounts?.Count > 0)
+    {
+    <li>
+    <H5>Debit Account Balance</H5>
+    @if (IsAllowTo(Permissions.AccountsBalance.View()))
+    {
+    <H3>
+    @formData?.DebitAccounts?.FirstOrDefault(x => x.Acct == CardAccountNumber)?.AvailableBalance
+    </H3>
+    }
+    else
+    {
+    <span class="permission-icon icon-Block" id="tooltipBottom" title="No Permission"></span>
+    }
+    </li>
+    } *@
+
+                    @if (formData?.SupplementaryCards is not null)
+                    {
+                        <Alert Type="alert-critical" Message="The following Supplementary Cards will be closed." ActionLabel=""></Alert>
+
+                        DataItem<List<SupplementaryCardDetail>> supplementaryCard = new();
+                        supplementaryCard.SetData(formData.SupplementaryCards.Where(x => x.CardStatus == CreditCardStatus.Approved || x.CardStatus == CreditCardStatus.Active).ToList());
+                        <SupplimentaryCards Cards="@supplementaryCard" IsViewOnly=true />
+                    }
+                }
+            }
+        </ul>
+
+    }
+}

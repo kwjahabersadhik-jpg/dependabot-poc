@@ -1,0 +1,204 @@
+﻿ @page "/replacement-tracking-report"
+
+@using CreditCardsSystem.Domain
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Domain.Models.Request
+
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+<PageTitle>Replacement Tracking Report</PageTitle>
+
+
+<div class="main-container">
+    <div class="container-fluid">
+
+        <div class="table-header mt-6 mx-0">
+            <Title Text="Replacement Tracking Report"></Title>
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+            <Button Type="btn-territory btn-sm" ButtonType="@ButtonType.Button" Label="Back" OnClick="Close"></Button>
+        </div>
+
+        @if (!IsAllowedToView)
+        {
+            <AccessDenied />
+        }
+        else if (ReportDataItem.Status is DataStatus.Loading)
+        {
+            <DataTableSkeleton />
+        }
+        else if (ReportDataItem.Status is DataStatus.Error)
+        {
+            <TechError Message="@ReportDataItem.Exception?.Message" />
+        }
+        else if (ReportDataItem.Status is DataStatus.Success)
+        {
+            <div class="row">
+                <div class="row">
+
+                    <div class="col-2">
+                        <H4>Card Holder Name</H4>
+                        <H3>@ReportDataItem.Data?.HolderName</H3>
+                    </div>
+                    <div class="col-2">
+                        <H4>CivilId</H4>
+                        <H3>@ReportDataItem.Data?.CivilId</H3>
+                    </div>
+                    <div class="col-2">
+                        <H4>FD Account Number</H4>
+                        <H3>@ReportDataItem.Data?.FdAcctNo</H3>
+                    </div>
+                    <div class="col-2">
+                        <H4>Card Number</H4>
+                        <H3>@DisplayCardNumber(ReportDataItem.Data?.CardNo)</H3>
+                    </div>
+
+                    <Divider></Divider>
+
+                </div>
+                <div>
+                    <div class="d-flex justify-content-end align-items-center gp-16 mt-4">
+                        <OnClickComponent OnClick="async () => await Export(FileExtension.xlsx)">
+                            <CircleIcon Icon="icon-Excel" />
+                        </OnClickComponent>
+
+                        <OnClickComponent OnClick="async () => await Export(FileExtension.pdf)">
+                            <CircleIcon Icon="icon-Print" />
+                        </OnClickComponent>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="kfh-data-table p-0 mb-4">
+                <TelerikGrid Data="@ReportDataItem.Data?.Details" Class="tomato" PageSize=20 Groupable="true" Pageable="true">
+                    <GridColumns>
+                        <GridColumn Field="AcctNo" Groupable=true Title="Account No" HeaderClass="Cell10 detailsCenter" OnCellRender="@((e) => e.Class = "Cell10 detailsCenter fieldHeader")"></GridColumn>
+                        <GridColumn Field="BranchId" Title="BranchId" HeaderClass="Cell5 detailsCenter" OnCellRender="@((e) => e.Class = "Cell5 detailsCenter fieldHeader")"></GridColumn>
+                        <GridColumn Field="OldCardNumber" Title="Replaced Card No" HeaderClass="Cell10 detailsCenter" OnCellRender="@((e) => e.Class = "Cell10 detailsCenter fieldHeader")">
+                            <Template>
+                                @{
+                                    var item = context as ReplacementTrackingReportDetail;
+                                    if (item is not null)
+                                    {
+                                        @DisplayCardNumber(item.OldCardNumber)
+                                    }
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="Mobile" Title="Mobile" HeaderClass="Cell5 detailsCenter" OnCellRender="@((e) => e.Class = "Cell5 detailsCenter fieldHeader")"></GridColumn>
+                        <GridColumn Field="TellerId" Title="Teller ID" HeaderClass="Cell5 detailsCenter" OnCellRender="@((e) => e.Class = "Cell5 detailsCenter fieldHeader")"></GridColumn>
+                        <GridColumn Field="CreationDate" DisplayFormat="{0:dd/MM/yyy hh:mm:ss tt}" Title="Replacement Date" HeaderClass="Cell10 detailsCenter" OnCellRender="@((e) => e.Class = "Cell10 detailsCenter fieldHeader")"></GridColumn>
+                    </GridColumns>
+                </TelerikGrid>
+            </div>
+
+        }
+        else
+        {
+            <NoRecordsFound />
+        }
+    </div>
+</div>
+
+<TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom" />
+
+@code {
+
+    [Parameter, SupplyParameterFromQuery]
+    public string? RequestId { get; set; }
+
+
+
+    [Inject] public IReplacementTrackingReportAppService reportService { get; set; } = default!;
+
+
+    private bool IsAllowedToView => IsAllowTo(Permissions.ReplacementTrackingReport.View());
+    private bool IsAllowedToPrint => IsAllowTo(Permissions.ReplacementTrackingReport.Print());
+
+
+    private ReplacementTrackingReportFilter filterModel { get; set; } = new();
+
+    private DataItem<ReplacementTrackingReportData> ReportDataItem { get; set; } = new();
+
+    private OffCanvas filterCanvas { get; set; } = null!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsAllowedToView)
+            await GetReport();
+    }
+
+    async Task GetReport()
+    {
+
+        if (!long.TryParse(RequestId, out long _requestId))
+        {
+            Notification.Failure("Invalid requestId");
+            return;
+        }
+
+        filterModel.RequestId = _requestId;
+        ReportDataItem.Loading();
+        var response = await reportService.GetReport(filterModel);
+
+        if (response.IsSuccess)
+            ReportDataItem.SetData(response.Data);
+        else
+            ReportDataItem.Error(new(message: response.Message));
+
+    }
+
+
+    async Task Export(FileExtension fileExtension)
+    {
+
+        if (!IsAllowedToPrint)
+        {
+            Notification.Failure(GlobalResources.NotAuthorized);
+            return;
+        }
+
+        Notification.Loading("Downloading report is in process..");
+        filterModel.FileExtension = fileExtension;
+
+        var eFormResponse = await reportService.PrintReport(filterModel);
+
+        if (!eFormResponse.IsSuccess)
+        {
+            Notification.Failure("Unable to generate Form, try again later from card list");
+            return;
+        }
+
+        var formResponse = eFormResponse.Data!;
+        var streamData = new MemoryStream(formResponse!.FileBytes!);
+        using var streamRef = new DotNetStreamReference(stream: streamData);
+        await Js.InvokeVoidAsync("downloadFileFromStream", $"{formResponse?.FileName}", streamRef);
+        Notification.Success("Downloaded!");
+    }
+
+
+    [Parameter]
+    public EventCallback CloseReport { get; set; }
+
+    async Task Close()
+    {
+        await Js.InvokeVoidAsync("history.back");
+        // await CloseReport.InvokeAsync();
+    }
+
+
+
+
+
+
+
+
+
+}

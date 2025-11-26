@@ -1,0 +1,600 @@
+﻿@page "/credit-card-statement"
+
+
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Utility.Crypto
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Components
+@using CreditCardsSystem.Web.Client.Pages.CardRequest
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+
+@using Exception = System.Exception
+
+@inherits CancellableComponent
+@inject IJSRuntime Js
+
+
+<PageTitle>Credit Card Statement</PageTitle>
+@if (!IsAllowTo(Permissions.CreditCardStatement.View()))
+{
+    <div class="container-fluid">
+        <div class="row justify-content-between">
+
+            <div class="breadcrumb-stickyHeader">
+                <TelerikBreadcrumb Data="@BreadcrumbItems"></TelerikBreadcrumb>
+                <AccessDenied />
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row justify-content-between">
+            <div class="col-9">
+                <div class="breadcrumb-stickyHeader">
+                    @if (State?.GenericCustomerProfile?.Status == DataStatus.Loading)
+                    {
+                        <div class="my-4">
+                            <TelerikSkeleton Width="240px" Height="30px" Visible="true"> </TelerikSkeleton>
+                        </div>
+                    }
+
+                    @if (State?.GenericCustomerProfile?.Status == DataStatus.Success || CurrentState.CustomerProfile is not null)
+                    {
+                        <TelerikBreadcrumb Data="@BreadcrumbItems"></TelerikBreadcrumb>
+                    }
+
+
+                    <div class="d-flex align-items-center flex-row justify-content-between">
+                        <div class="d-flex align-items-center flex-row gp-16">
+                            <div>
+                                @if (cardStatementBanner.Status == DataStatus.Loading)
+                                {
+                                    <picture>
+                                        <TelerikSkeleton Width="150px" Height="100px" ShapeType="@SkeletonShapeType.Rectangle"></TelerikSkeleton>
+                                    </picture>
+                                }
+
+                                @if (cardStatementBanner.Status == DataStatus.Success)
+                                {
+                                    <picture>
+                                        <source srcset="" />
+                                        <img style="width: 150px; display: block" src="@cardStatementBanner?.Data?.CardImagePath" onerror="if (this.src != '@cardStatementBanner?.Data?.CardImagePath');" />
+                                        @* <img style="width: 150px; display: block" src="@CardimagePath" onerror="if (this.src != '@CardimagePath') this.src = '@DefaultImage';" /> *@
+                                    </picture>
+                                }
+                            </div>
+                            <div class="d-flex flex-column gp-8">
+                                @if (cardStatementBanner.Status == DataStatus.Loading)
+                                {
+                                    <H2 class="my-0"><TelerikSkeleton Width="280px" Height="30px" ShapeType="@SkeletonShapeType.Text"></TelerikSkeleton> </H2>
+                                    <H4 Class="my-0 text-gray "><TelerikSkeleton Width="250px" Height="20px" ShapeType="@SkeletonShapeType.Text"></TelerikSkeleton></H4>
+
+                                }
+
+                                @if (cardStatementBanner.Status == DataStatus.Success)
+                                {
+                                    <H2 class="my-0">
+                                        @DisplayCardNumber(cardStatementBanner?.Data?.CardNumber) <span>&#183; </span><SubH1>@cardStatus.ToString()</SubH1>
+
+                                        @if (Card?.IsSupplementaryCard ?? false)
+                                        {
+                                            <span> &#183; </span>
+                                            <SubH2 Class="my-0 text-gray">Supplementary Card</SubH2>
+                                        }
+                                    </H2>
+                                    <H4 Class="my-0 text-gray">@cardStatementBanner?.Data?.ProductName</H4>
+                                    @if (creditCardDto is { IsAUB: 1 })
+                                    {
+                                        <H4 Class="my-0 text-gray">AUB Card</H4>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column justify-content-end align-items-end">
+
+                            <EligibleCardActions RefreshData="RefreshData" ShowWraperSkeleton="true" Data="@creditCardDto" IsCircle="true" LoadForm=OnChangeAction CardBalanceStatus="cardDetailsState?.MyCard.Status??DataStatus.Loading" />
+
+                        </div>
+                    </div>
+
+                    <div>
+                    </div>
+                </div>
+
+
+                <div class="row g-3 pt-3 pb-3 mt-2 mb-2 ">
+
+                    <div class="col-md-6 mt-0">
+                        <div class="card-v1">
+                            <div class="d-flex gp-16 align-items-center">
+
+                                <CircleIcon Icon="icon-Arrow-down" CircleSize="48px" IconSize="24px" />
+                                <div class="d-flex flex-column gp-8">
+                                    <H3 Class="my-0 text-gray50">Total in</H3>
+                                    <H2Wait Class="my-0" IsCircle="false" Status="groupedTransactions.Status">
+                                        @TableDataSource.TotalCredit <SubH2>@creditCardDto?.CurrencyISO</SubH2>
+                                    </H2Wait>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-0">
+                        <div class="card-v1">
+                            <div class="d-flex gp-16 align-items-center">
+                                <CircleIcon Icon="icon-Arrow-Up" CircleSize="48px" IconSize="24px" Class="circle-red" />
+                                <div class="d-flex flex-column gp-8">
+                                    <H3 Class="my-0 text-gray50">Total Out</H3>
+                                    <H2Wait Class="my-0" IsCircle="false" Status="groupedTransactions.Status">
+                                        @TableDataSource.TotalDebit <SubH2>@creditCardDto?.CurrencyISO</SubH2>
+                                    </H2Wait>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="row mt-6">
+
+
+                    <TelerikTabStrip @bind-ActiveTabIndex="@ActiveTabIndex">
+                        <TabStripTab>
+                            <HeaderTemplate>
+                                @transactions?.Count  Transaction(s)
+                            </HeaderTemplate>
+                            <Content>
+                                <StickyContainer Top="0px" Zindex="999" ID="sticky-statement">
+                                    <div class="cc-transactions-header pt-4 pb-2">
+
+                                        <div class="d-flex flex-column">
+                                        </div>
+
+                                        <div class="accountStatement-search">
+
+
+                                            <div class="accountStatement-selectedFilters">
+                                                <div style="position: relative;">
+                                                    <TelerikTextBox Placeholder="Search transaction..."
+                                                                    Class="textfield-leftInput"
+                                                                    MaxLength="12" ValueChanged="OnSearchTransaction"></TelerikTextBox>
+                                                    <div class="textfield-LeftAddOn">
+                                                        <span class="icon-Search"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (IsAllowTo(Permissions.CreditCardStatement.Print()))
+                                            {
+                                                <OnClickComponent OnClick="@(async() => await SearchTransactions(GenerateFor.PrintOnly,"xlsx"))" Enabled="!Notification.IsProcessing">
+                                                    <CircleIcon Icon="icon-Excel" Id="statmentDownload" Title="Download report in excel format" />
+                                                    <TelerikTooltip TargetSelector="#statmentDownload" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                                </OnClickComponent>
+
+                                                <OnClickComponent OnClick="async () => await SearchTransactions(GenerateFor.PrintOnly)" Enabled="!Notification.IsProcessing">
+                                                    <CircleIcon Icon="icon-Print" Id="statmentDownload" Title="Print statement" />
+                                                    <TelerikTooltip TargetSelector="#statmentDownload" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                                </OnClickComponent>
+                                            }
+
+                                            <OnClickComponent OnClick="OpenFilter">
+                                                <CircleIcon Icon="icon-Filter" Id="#filterStm" />
+                                                <TelerikTooltip TargetSelector="#filterStm" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                                            </OnClickComponent>
+                                        </div>
+                                    </div>
+                                </StickyContainer>
+
+                                @* Cards Transaction with group list Starts  *@
+                                <div class="accountStatement-transactions ">
+
+                                    <div class="transactions-stickyHeader">
+                                        <div>
+                                            <H3>@StatementTitle</H3>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-end">
+
+                                            <ActionsMenu Title="Other Information" IconOrientation="tooltip" Class="tooltip-action-menu">
+                                                <ChildContent>
+                                                    <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+                                                        <div class="d-flex flex-row gp-16 justify-content-start ">
+                                                            <div class="icon-width">
+                                                                <span class="icon-Total-hold"> </span>
+                                                            </div>
+                                                            <div>CashBack </div>
+                                                        </div>
+                                                        <div>
+                                                            <SubH1> @TableDataSource.Cashback <SubH2>KWD</SubH2> </SubH1>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+                                                        <div class="d-flex flex-row gp-16">
+                                                            <div class="icon-width">
+                                                                <span class="icon-Lock"> </span>
+                                                            </div>
+                                                            <div> Hold Amount </div>
+                                                        </div>
+                                                        <div>
+                                                            <SubH1> @TableDataSource.TotalHold <SubH2>KWD</SubH2> </SubH1>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+
+                                                        <div class="d-flex flex-row gp-16">
+                                                            <div class="icon-width">
+                                                                <span class="icon-Plus"> </span>
+                                                            </div>
+                                                            <div>Credit Amount </div>
+                                                        </div>
+                                                        <div>
+                                                            <SubH1>  @TableDataSource.TotalCredit <SubH2>KWD</SubH2> </SubH1>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+
+                                                        <div class="d-flex flex-row gp-16">
+                                                            <div class="icon-width">
+                                                                <span class="icon-Withdraw"> </span>
+                                                            </div>
+                                                            <div>Debited Amount  </div>
+                                                        </div>
+                                                        <div>
+                                                            <SubH1> @TableDataSource.TotalDebit <SubH2>KWD</SubH2> </SubH1>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between gp-16 mt-2">
+                                                        <div class="d-flex flex-row gp-16">
+                                                            <div class="icon-width">
+                                                                <span class="icon-Close"> </span>
+                                                            </div>
+                                                            <div>Declined Amount  </div>
+                                                        </div>
+                                                        <div>
+                                                            <SubH1> @TableDataSource.TotalDeclined <SubH2>KWD</SubH2> </SubH1>
+                                                        </div>
+                                                    </div>
+                                                </ChildContent>
+                                            </ActionsMenu>
+                                        </div>
+
+                                        @if (groupedTransactions.Status == DataStatus.Loading)
+                                        {
+                                            <Card>
+                                                <TransactionSkeleton />
+                                            </Card>
+                                        }
+
+                                        @if (groupedTransactions.Status == DataStatus.Error)
+                                        {
+                                            <div class="hadmptystates card-s d-flex flex-column align-items-center gp-16 p-5">
+                                                <div class="cars-s accountStatement-pe">
+                                                    <EmptyState IconName="tech-error" Heading="@(groupedTransactions.Exception?.Message??"Technical Error")"></EmptyState>
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        @if (groupedTransactions.Status == DataStatus.Success)
+                                        {
+                                            @if (groupedTransactions?.Data?.Count == 0)
+                                            {
+                                                <div class="hadmptystates card-s d-flex flex-column align-items-center gp-16 p-5">
+                                                    <Icon IconName=" icon-Receipt" IconSize="32px" Class="accountStatment-emptystate" />
+                                                    <div class="d-flex flex-column align-items-center gp-8 w-100">
+                                                        <H4 Class="my-0">There is no transactions found within the selected period</H4>
+                                                        @* , the current balance as of: <b>@EndDate?.ToString("dd-MM-yyyy")</b> is <b>@AccountCurrentBalance?.ToString("n3")</b> <SubH2>@Currency</SubH2></H4> *@
+                                                        @* <H4 Class="my-0">(Available Balance: <b>@AccountAvailableBalance?.ToString("n3")</b> <SubH2>@Currency</SubH2> and Hold Amount: <b>@AccountHoldBalance?.ToString("n3")</b> <SubH2>@Currency</SubH2>)</H4> *@
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (groupedTransactions is { Data: { } })
+                                            {
+                                                @foreach (var groupedTransaction in groupedTransactions.Data)
+                                                {
+                                                    <StickyContainer Top="55px" Zindex="9999" ID="sticky-groupTransaction">
+                                                        <div class="transactions-stickyHeader">
+                                                            <H3>@groupedTransaction.Key?.ToString("M") , @groupedTransaction.Key?.Year</H3>
+                                                        </div>
+                                                    </StickyContainer>
+
+                                                    <div class="transactions-list">
+                                                        @foreach (var transaction in groupedTransaction)
+                                                        {
+
+                                                            @* ----- New Transaction from UI UX Team ----- *@
+
+                                                            <div class="transaction-div">
+                                                                <div class="transaction-details">
+                                                                    <div class="transaction-description gp-8">
+                                                                        <CircleIcon Icon="icon-Coffee" CircleSize="40px" IConSize="18px" />
+                                                                        <div class="d-flex flex-column gp-4">
+                                                                            <H4>
+                                                                                @transaction.dateField?.Formed(ConfigurationBase.StatementDateFormat) @(transaction.postingDateField != null ? " - " + transaction.postingDateField?.Formed(ConfigurationBase.StatementDateFormat) : "")
+                                                                            </H4>
+                                                                            <div class="d-flex">
+                                                                                <H3>@transaction.visaMCIndicatorField</H3>
+
+                                                                                <H3 class="d-flex pe-4">
+                                                                                    @transaction.descriptionField
+                                                                                    <span>&#183;</span>
+                                                                                    @{
+                                                                                        if (transaction!.cardTypeField == "0")
+                                                                                        {
+                                                                                            <H4 class="ps-2">Primary</H4>
+                                                                                        }
+                                                                                        else if (transaction!.cardTypeField == "1")
+                                                                                        {
+                                                                                            <H4 class="ps-2">Supplementary</H4>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <span></span>
+                                                                                        }
+                                                                                    }
+                                                                                </H3>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="d-flex justify-content-between align-items-center gp-16">
+                                                                        <div class="d-flex flex-column gp-2 align-items-end">
+                                                                            <div class="transaction-amount @(transaction.isCreditField ?  "credit-amount":"debit-amount")">
+                                                                                <H3> @((transaction.isCreditField ? transaction.CreditAmount : transaction.DebitAmount)?.ToString("F3"))  <SubH2>@transaction.currencyField</SubH2></H3>
+                                                                            </div>
+
+                                                                            @if (transaction.foreignAmountField != 0 && !transaction.currencyField.Equals("KWD", StringComparison.InvariantCultureIgnoreCase))
+                                                                            {
+                                                                                <div class="transaction-amount">
+                                                                                    <H3>In Foreign Currency @transaction.foreignAmountField.ToString("F3") <SubH2>@transaction.currencyField</SubH2></H3>
+                                                                                </div>
+                                                                            }
+
+                                                                            @* <Divider Class="w-50" /> *@
+                                                                            <div class="transaction-amount transaction-description">
+                                                                                <H4>@transaction.CardCurrentBalance.ToString("F3") <SubH2>@transaction.currencyField</SubH2></H4>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="hadmptystates card-s d-flex flex-column align-items-center gp-16 p-5">
+                                                    <Icon IconName=" icon-Receipt" IconSize="32px" Class="accountStatment-emptystate" />
+                                                    <div class="d-flex flex-column align-items-center gp-8 w-100">
+                                                        <H4 Class="my-0">There is no transactions found within the selected period</H4>
+
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </Content>
+                        </TabStripTab>
+
+
+
+                        @if (IsAllowSupplementary)
+                        {
+                            <TabStripTab Title="Supplimentary Card">
+                                <SupplimentaryCards OnChangeAction="OnChangeAction" IsViewOnly="IsViewOnlySupplementary" PrimaryCardRequestId="(decimal)CurrentState.CurrentRequestId!" Cards="cardDetailsState?.SupplementaryCards" LoadData="GetSupplementaryCardsAsync" />
+                            </TabStripTab>
+                        }
+                    </TelerikTabStrip>
+                </div>
+            </div>
+            <div class="col-3">
+                <StickyContainer Top="90px" Zindex="999" ID="sticky-ownedcards">
+                    <div class="sticky-cards mt-4">
+                        <div class="d-flex flex-column pb-2">
+                            <H2 Class="mt-0">Owned Cards</H2>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div style="position: relative;width:96.5%; border-bottom-left-radius: 0px !important;border-bottom-right-radius: 0px !important;">
+                                <TelerikTextBox Placeholder="Search by card number, product name & status..."
+                                                Class="textfield-leftInput"
+                                                MaxLength="12" ValueChanged="OnChangeOwnCardSearch" ></TelerikTextBox>
+                                <div class="textfield-LeftAddOn">
+                                    <span class="icon-Search"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="owned-sticky-cards" style="border-top: 0px;border-top-left-radius: 0px;border-top-right-radius: 0px;">
+                            <CardsList Class="debitImage gp-8">
+                                @{
+                                    if (OwnedCards.Status == DataStatus.Loading)
+                                    {
+                                        <div class="cards-list">
+                                            <ul>
+
+                                                <li class="card-list">
+                                                    <div class="cardList-image">
+                                                        <TelerikSkeleton Width="120px" Height="120px" ShapeType="@SkeletonShapeType.Text"></TelerikSkeleton>
+                                                    </div>
+
+                                                    <div class="d-flex flex-column align-items-start gp-4 mt-4">
+                                                        <H2 class="my-0"><TelerikSkeleton Width="280px" Height="30px" ShapeType="@SkeletonShapeType.Text"></TelerikSkeleton> </H2>
+                                                        <H4 Class="my-0 text-gray "><TelerikSkeleton Width="250px" Height="20px" ShapeType="@SkeletonShapeType.Text"></TelerikSkeleton></H4>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    }
+                                    if (OwnedCards.Status == DataStatus.Success)
+                                    {
+                                        foreach (var ownedCard in FilteredOwnedCards)
+                                        {
+                                            // <CardList OnClick=@(()=> NavigateTo("/credit-card-statement?RequestId="+ownedCard.RequestId+"&reload=false")) Image="@ownedCard.CardImagePath" Heading="@DisplayCardNumber(ownedCard.CardNumber)" Description="@(ownedCard.ProductName + (ownedCard.IsAUB==1?" (AUB)":""))" Status=@(ownedCard.CardStatusInEnglish??"") Id=@("CardList"+ ownedCard.RequestId) Name="card-selection"></CardList>
+                                            <CardList OnClick=@(()=> OnChangeCardSelection(ownedCard.RequestId))
+                                                      Image="@ownedCard.CardImagePath"
+                                                      Heading="@ownedCard.CardNumberDto"
+                                                      Description="@(ownedCard.ProductName + (ownedCard.IsAUB==1?" (AUB)":""))"
+                                                      Status=@(ownedCard.CardStatusInEnglish??"")
+                                                      Id=@("CardList"+ ownedCard.RequestId)
+                                                      Name="card-selection"></CardList>
+                                        }
+
+
+
+
+
+
+
+
+                                    }
+                                }
+                            </CardsList>
+
+                        </div>
+
+                    </div>
+                </StickyContainer>
+            </div>
+        </div>
+    </div>
+
+    <OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+        <OffcanvasContent>
+
+            <H3>Type </H3>
+            @* TODO: Remove hardcoded text*@
+            <div class="accountStatement-typeFilter">
+                <ChipGroup Selected="@filterSummary[FilterPropertyEnum.Type]" SelectedChanged="(value)=> { filterSummary[FilterPropertyEnum.Type]= value;   }">
+                    <Chip Text="All" Value="all"></Chip>
+                    <Chip Text="Debit" Value="debit"></Chip>
+                    <Chip Text="Credit" Value="credit"></Chip>
+
+                    @if (filterSummary[FilterPropertyEnum.Period] == ReportType.CycleToDate.ToString())
+                    {
+                        <Chip Text="Hold" Value="Hold"></Chip>
+                        <Chip Text="Decline" Value="Decline"></Chip>
+                    }
+                </ChipGroup>
+            </div>
+
+            <div class="divider"></div>
+
+            <H3 class="mt-6">Date</H3>
+            <div class="credit-card-filters">
+                <ChipGroup Selected="@filterSummary[FilterPropertyEnum.Period]" SelectedChanged="(value)=> { filterSummary[FilterPropertyEnum.Period]= value;   }">
+
+                    @foreach (var item in Enum.GetNames(typeof(ReportType)))
+                    {
+                        var _value = (ReportType)Enum.Parse(typeof(ReportType), item);
+                        <Chip Text="@_value.GetDescription()" Value="@item"></Chip>
+                    }
+
+
+                </ChipGroup>
+            </div>
+
+
+            <div class="credit-card-filters mt-2">
+
+                @if (filterSummary[FilterPropertyEnum.Period] == ReportType.CycleToDate.ToString())
+                {
+                    <div class="d-flex flex-column mb-4 gp-8">
+
+                        <div class="d-flex flex-row gp-8">
+                            <ul class="list">
+                                <li>
+                                    <H5>Cycle date</H5>
+                                    <H3> @DateTime.Now </H3>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+                @if (filterSummary[FilterPropertyEnum.Period] == ReportType.MonthYear.ToString())
+                {
+                    <div class="d-flex flex-column mb-8 gp-8">
+                        <div class="d-flex flex-row mt-4 gp-8">
+                            <div class="cc-dropdown-filter ">
+                                <div> <H5>Month</H5></div>
+                                <TelerikDropDownList Id="DDLMonth" Data="MonthsDataBind" TextField="Text" ValueField="Value" @bind-Value="@SelectedMonth"></TelerikDropDownList>
+                            </div>
+                            <div class="cc-dropdown-filter">
+                                <div><H5>Year</H5></div>
+                                <TelerikDropDownList Id="DDLYear" Data="Years" @bind-Value="@SelectedYear"></TelerikDropDownList>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (filterSummary[FilterPropertyEnum.Period] == ReportType.FromToDate.ToString())
+                {
+                    <div class="d-flex flex-column mt-4 gp-8">
+                        <div class="cc-dropdown-filter ">
+
+                            <TelerikDateRangePicker @ref="@DatePicker" Format=@ConfigurationBase.ReportDateFormat @bind-StartValue="@StartValue" @bind-EndValue="@EndValue" Size="small">
+                            </TelerikDateRangePicker>
+                        </div>
+                    </div>
+                }
+            </div>
+        </OffcanvasContent>
+
+        <OffcanvasFooterContent>
+            <div class="drawer-buttons">
+                <Button Enabled="groupedTransactions.Status!=DataStatus.Loading" Loader="groupedTransactions.Status==DataStatus.Loading" Type="btn-primary btn-sm" Label="Apply" OnClick="async () => await SearchTransactions(GenerateFor.ViewOnly)"></Button>
+            </div>
+        </OffcanvasFooterContent>
+
+    </OffCanvas>
+    <RequestMakerPage @ref=cardRequestFormRef ReloadData="ReloadData" ReflectCardStatus="(async (newCardStatus)=>{ await ReflectCardStatus(newCardStatus);})" />
+
+}
+
+@code {
+
+
+    public async Task OnRowClickHandler(GridRowClickEventArgs args)
+    {
+
+        var card = (OwnedCard)args.Item;
+        await OnChangeCardSelection(card.RequestId, false);
+    }
+
+    public IEnumerable<OwnedCard> SelectedOwnedCards { get; set; } = [];
+    private async Task OnChangeOwnCardSearch(object text)
+    {
+        var keyword = (text.ToString() ?? "").Trim().ToLower();
+
+        if (keyword == "")
+        {
+            FilteredOwnedCards = OwnedCards.Data ?? [];
+            return;
+        }
+
+        if (keyword.Length >= 3 && OwnedCards.Data?.Count > 0)
+        {
+            FilteredOwnedCards = OwnedCards.Data.Where(oc =>
+                (oc.CardNumberDto != null && oc.CardNumberDto.Contains(keyword)) ||
+                oc.ProductName.ToLower().Contains(keyword) ||
+                        (oc.CardStatusInEnglish != null && oc.CardStatusInEnglish!.ToLower().Contains(keyword))).ToList();
+        }
+    }
+}

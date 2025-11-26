@@ -1,0 +1,140 @@
+﻿@page "/loyalty"
+
+<div class="AO-flex--container">
+    <div class="AO-left90--container">
+        <div class="table-header mt-6 mx-0">
+            <Title Text="Loyalty Points"></Title>
+        </div>
+
+        <div class="loyalty-sections-list ">
+
+            <div class="loyalty-section">
+
+                <div class="loyalty-section-cotnent">
+
+                    <div class="loyalty-section-card ps-4 pe-4">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="d-flex align-items-center gp-16 mb-6">
+                                <div class="d-flex flex-column ">
+                                    <div class="d-flex flex-row justify-content-start align-items-center">
+                                        <span>🏛️</span>
+                                        <H2 class="ps-4">Local Points</H2>
+                                    </div>
+                                    <div class="mt-2">
+                                        <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                <div>
+                                    <div class="d-flex flex-row align-items-center justify-content-start">
+                                        <div>
+                                            <span><H5>Current Points:</H5></span>
+                                        </div>
+                                        <div class="ps-2">
+                                            <H1>7</H1>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-start ">
+                                        <div> </div>
+                                        <div class="w-60">
+                                            <TelerikNumericTextBox Step="1" @bind-Value="@theValue"></TelerikNumericTextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="loyalty-section-card ps-4 pe-4">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="d-flex align-items-center gp-16 mb-6">
+                                <div class="d-flex flex-column ">
+                                    <div class="d-flex flex-row justify-content-start align-items-center">
+                                        <span>🛬</span>
+                                        <H2 class="ps-4">International Points</H2>
+                                    </div>
+                                    <div class="mt-2">
+                                        <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                <div>
+                                    <div class="d-flex flex-row align-items-center justify-content-start">
+                                        <div>
+                                            <span><H5>Current Points:</H5></span>
+                                        </div>
+                                        <div class="ps-2">
+                                            <H1>7</H1>
+                                        </div>
+                                    </div>
+                                    <div class="w-60">
+                                        <TelerikNumericTextBox Step="1" @bind-Value="@theValue"></TelerikNumericTextBox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="loyalty-section-card ps-4 pe-4">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="d-flex align-items-center gp-16 mb-6">
+                                <div class="d-flex flex-column ">
+                                    <div class="d-flex flex-row justify-content-start align-items-center">
+                                        <span>💵</span>
+                                        <H2 class="ps-4">Cost Per Point</H2>
+                                    </div>
+                                    <div class="mt-2">
+                                        <H4>Loyalty point, Update to <b>New</b> points</H4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row gp-16 justify-content-start align-items-start w-40">
+                                <div>
+                                    <div class="d-flex flex-row align-items-center justify-content-start">
+                                        <div>
+                                            <span><H5>Current Points:</H5></span>
+                                        </div>
+                                        <div class="ps-2">
+                                            <H1>7</H1>
+                                        </div>
+                                    </div>
+                                    <div class="w-60">
+                                        <TelerikNumericTextBox Step="1" @bind-Value="@theValue"></TelerikNumericTextBox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <Divider />
+
+                    <div class="d-flex flex-row justify-content-between">
+
+                        <div>
+                            <Button Type="btn-secondary--critical btn-md" Label="Reject"></Button>
+                        </div>
+
+                        <div>
+                            <Button Type="btn-secondary btn-md" Label="Send Request"></Button>
+                        </div>
+
+                        <div>
+                            <Button Type="btn-primary btn-md" Label="Accept"></Button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@code {
+    private decimal theValue { get; set; } = 7;
+}

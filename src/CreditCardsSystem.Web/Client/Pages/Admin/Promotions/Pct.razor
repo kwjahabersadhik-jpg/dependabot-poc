@@ -1,0 +1,411 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Models.BCDPromotions.PCTs
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Services
+@using CreditCardsSystem.Domain.Shared.Enums
+@using Telerik.FontIcons
+
+
+@page "/pct"
+@inject IPctAppService PctAppService
+@inject IServicesAppService ServiceAppService
+@inject ILogger<Pct> Logger
+
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+
+@if (!IsAllowTo(Permissions.PCT.View()))
+{
+    <AccessDenied />
+}
+else
+{
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="PCT"></Title>
+            </div>
+            <div class="KFHnopadding kfh-data-table nosvgIcon">
+                @if (PctResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@Pcts"
+                                 EditMode="@GridEditMode.Inline"
+                                 Pageable="true"
+                                 PageSize="10"
+                                 Width="100%"
+                                 OnDelete="@OpenConfirmationDialog"
+                                 OnCreate="@AddRequest"
+                                 OnUpdate="@AddRequest">
+
+                        <GridToolBarTemplate>
+                            @if (IsAllowTo(Permissions.PCT.Create()))
+                            {
+                                <GridCommandButton Command="Add" Class="btn-secondary">Add PCT</GridCommandButton>
+                            }
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(PctDto.PctId)" Title="PCT ID" Editable="false">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.PctId</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.Description)" Title="Description">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.Description</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.PctFlag)" Title="PCT Flag">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.PctFlag</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.NoOfWavedMonths)" Title="Waved Months">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.NoOfWavedMonths</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.CreateDate)" Title="Creation Date">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.CreateDate.ToString("dd/MM/yyyy")</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.Fees)" Title="Fees">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.Fees</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.IsStaff)" Title="Is Staff">
+                                <Template>
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.IsStaff</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as PctDto;
+                                        <TelerikCheckBox @bind-Value="@item!.IsStaff"></TelerikCheckBox>
+                                    }
+                                </EditorTemplate>
+
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.ServiceNo)" Title="Service No">
+                                <Template>
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.ServiceNo</H4>
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as PctDto;
+
+                                        <TelerikDropDownList Data="@ServicesNumbers"
+                                                             TextField="@nameof(ServiceDto.ServiceNo)"
+                                                             ValueField="@nameof(ServiceDto.ServiceNo)"
+                                                             @bind-Value="@item!.ServiceNo"
+                                                             Filterable="true">
+                                        </TelerikDropDownList>
+                                    }
+                                </EditorTemplate>
+
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.EarlyClosurePercentage)" Title="Early Closure Percentage">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.EarlyClosurePercentage</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.EarlyClosureFees)" Title="Early Closure Fees">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.EarlyClosureFees</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.EarlyClosureMonths)" Title="Early Closure Months">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        <H4>@item!.EarlyClosureMonths</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(PctDto.Islocked)" Title="Record Status" Editable="false">
+                                <Template>
+
+                                    @{
+                                        var item = context as PctDto;
+                                        
+                                        @if (item!.Islocked == true)
+                                        {
+                                             <div class="d-flex flex-column align-items-center justify-content-center">
+                                                 <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                            </div>
+                                            @* <Status StatusClass="redStatus" StatusTitle="Record is locked"> </Status> *@
+                                        }
+                                        else
+                                        {
+                                            @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridCommandColumn>
+
+                                @{
+                                    var item = context as PctDto;
+                                    if (!item!.Islocked.HasValue || !item.Islocked.Value)
+                                    {
+                                        @if (IsAllowTo(Permissions.PCT.Edit()))
+                                        {
+                                            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                        }
+
+                                        @if (IsAllowTo(Permissions.PCT.Delete()))
+                                        {
+                                            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                        }
+
+                                        <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                                    }
+                                    else
+                                    {
+                                        @* <H4>record is locked</H4> *@
+
+                                    }
+                                }
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (PctResponse.Status == DataStatus.Loading)
+                {
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (PctResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+
+
+    public List<string> Errors { get; set; } = new();
+    public List<int> ServicesNumbers { get; set; } = new();
+    public List<PctDto> Pcts { get; set; } = new();
+    public DataItem<List<PctDto>> PctResponse { get; set; } = new();
+    public PctDto SelectedPct { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        PctResponse.Loading();
+        await GetServiceNumbers();
+        await GetPcts();
+    }
+
+
+    async Task GetServiceNumbers()
+    {
+        ServicesNumbers = (await ServiceAppService.GetServices()).Data!.Select(s => s.ServiceNo).ToList();
+    }
+
+    async Task GetPcts()
+    {
+        var response = (await PctAppService.GetPcts());
+        if (response.IsSuccess)
+        {
+            PctResponse.SetData(response.Data!);
+
+            Pcts = new();
+            Pcts = PctResponse.Data!;
+        }
+        else
+            PctResponse.Error(new Exception(response.Message));
+    }
+
+    bool ValidatePct(PctDto pctDto)
+    {
+        Errors = new List<string>();
+
+        if (string.IsNullOrEmpty(pctDto.PctFlag))
+            Errors.Add("flag is required");
+
+        if (pctDto.PctFlag.Length > 9)
+            Errors.Add("flag must be less than 10 characters");
+
+        if (pctDto.CreateDate == DateTime.MinValue)
+            Errors.Add("creation date is required");
+
+        if (string.IsNullOrEmpty(pctDto.Description))
+            Errors.Add("description is required");
+
+        if (pctDto.NoOfWavedMonths < 0)
+            Errors.Add("invalid waved of months value");
+
+        if (pctDto.Fees < 0)
+            Errors.Add("invalid fees value");
+
+        if (pctDto.EarlyClosurePercentage < 0)
+            Errors.Add("invalid early closure percentage value");
+
+        if (pctDto.EarlyClosureMonths < 0)
+            Errors.Add("invalid early closure months value");
+
+        if (pctDto.EarlyClosureFees < 0)
+            Errors.Add("invalid early closure fees value");
+
+        return !Errors.Any();
+    }
+
+    async Task AddRequest(GridCommandEventArgs args)
+    {
+        try
+        {
+            var pct = (PctDto)args.Item;
+
+            var isValid = ValidatePct(pct);
+
+            if (!isValid) return;
+
+            var request = new RequestDto<PctDto>
+                {
+                    ActivityForm = (int)ActivityForm.PCT,
+                    NewData = (PctDto)args.Item,
+                    OldData = pct.PctId > 0 ? Pcts.FirstOrDefault(p => p.PctId == pct.PctId)! : null!,
+                    ActivityType = pct.PctId > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await PctAppService.AddRequest(request);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (pct.PctId > 0)
+                    await GetPcts();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var pct = (PctDto)args.Item;
+        SelectedPct = pct;
+        ShowConfirmationDig = true;
+    }
+
+    public bool ShowConfirmationDig { get; set; }
+
+    async Task DeleteHandler()
+    {
+        var request = new RequestDto<PctDto>
+            {
+                ActivityForm = (int)ActivityForm.PCT,
+                NewData = SelectedPct,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await PctAppService.AddRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedPct.PctId > 0)
+                await GetPcts();
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+}

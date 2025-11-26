@@ -1,0 +1,25 @@
+﻿<TelerikDialog @bind-Visible="@ShowConfirmation" Class="KFH-dialog ApprovalModal" Width="30%" CloseOnOverlayClick="true">
+    <DialogContent>
+        <EmptyState Heading="Delete Record" Description="Are you sure you want to delete this record"></EmptyState>
+    </DialogContent>
+    <DialogButtons>
+        <TelerikButton Class="btn kfh-btn-secondary-normal btn-sm dialog-btn dialog-btn-sm" OnClick="() => {ShowConfirmation = false;}">Cancel</TelerikButton>
+        <TelerikButton Class="btn btn-primary btn-sm dialog-btn dialog-btn-sm" OnClick="Delete">Delete</TelerikButton>
+    </DialogButtons>
+</TelerikDialog>
+
+
+@code {
+
+    [Parameter]
+    public EventCallback DeleteRecord { get; set; }
+
+    [Parameter]
+    public bool ShowConfirmation { get; set; }
+
+    private async Task Delete()
+    {
+        await DeleteRecord.InvokeAsync();
+    }
+
+}

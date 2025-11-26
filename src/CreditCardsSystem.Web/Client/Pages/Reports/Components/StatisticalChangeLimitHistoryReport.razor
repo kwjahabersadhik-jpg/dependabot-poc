@@ -1,0 +1,82 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Reports
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+@if (ReportDataItem.Status is DataStatus.Loading)
+{
+    <DataTableSkeleton />
+}
+else if (ReportDataItem.Status is DataStatus.Error)
+{
+    <TechError Message="@ReportDataItem.Exception?.Message" />
+}
+else if (ReportDataItem.Status is DataStatus.Success)
+{
+    var statusSummary = ReportDataItem?.Data?.GroupBy(x => x.Status).Select(x => new { Status = x.Key.ToString(), Count = x.Count() });
+
+
+    <div class="KFHnopadding kfh-data-table shadow">
+        <TelerikGrid Data="@ReportDataItem.Data" PageSize="10" Pageable=true>
+            <GridColumns>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.CardNo)" Title="CardNo" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"  />
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.CivilId)" Title="Civil ID" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.OldLimit)" Title="Old Limit" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.NewLimit)" Title="New Limit" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")" />
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.InitiatorId)" Title="Initiator ID" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")" />
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.CardNo)" Title="Card Number" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")" />
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.ApproverId)" Title="Approved Id" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.ApproveDate)" Title="Approve Date" DisplayFormat="{0:yyyy/MM/dd hh:mm:ss}" HeaderClass="col-xl-2 text-start " OnCellRender="@((e) => e.Class = "col-xl-2 text-start ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.RejectDate)" Title="Reject Date" DisplayFormat="{0:yyyy/MM/dd hh:mm:ss}" HeaderClass="col-xl-2 text-start " OnCellRender="@((e) => e.Class = "col-xl-2 text-start ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.RefuseReason)" Title="Refuse Reason" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.Status)" Title="Status" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.ChangeType)" Title="Change Type" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+                <GridColumn Field="@nameof(StatisticalChangeLimitHistoryData.PurgeDays)" Title="Temporary Days" HeaderClass="col-xl-2 text-center " OnCellRender="@((e) => e.Class = "col-xl-2 text-center ")"/>
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+
+
+
+
+
+}
+else
+{
+    @* <NoRecordsFound /> *@
+}
+
+@code {
+    [Inject]
+    public IStatisticalReportAppService ReportAppService { get; set; } = default!;
+
+    [Parameter]
+    public DataItem<IEnumerable<StatisticalChangeLimitHistoryData>> ReportDataItem { get; set; } = new();
+
+
+ 
+
+  public  async Task PrintReport()
+    {
+
+        Notification.Loading("Downloading report...");
+
+        var eFormResponse = await ReportAppService.PrintStatisticalChangeLimitHistoryReport(new() { Data = ReportDataItem.Data });
+
+        if (!eFormResponse.IsSuccess)
+        {
+            Notification.Failure("Unable to generate Report, try again later from card list");
+            return;
+        }
+
+        var formResponse = eFormResponse.Data!;
+        var streamData = new MemoryStream(formResponse!.FileBytes!);
+        using var streamRef = new DotNetStreamReference(stream: streamData);
+        await Js.InvokeVoidAsync("downloadFileFromStream", $"{formResponse?.FileName}", streamRef);
+        Notification.Success("Downloaded!");
+    }
+
+}

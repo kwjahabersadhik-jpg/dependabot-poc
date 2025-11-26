@@ -1,0 +1,127 @@
+﻿@using CreditCardsSystem.Data.Models
+@using CreditCardsSystem.Domain.Models.Access;
+@using Kfh.Aurora.Blazor.Utilities
+@using CreditCardsSystem.Domain.Models.Customer
+@using CreditCardsSystem.Domain.Enums
+
+@inherits ApplicationComponent
+
+
+<ul class="offcanvas-list">
+
+   
+        <li>
+            <H5>English Name</H5>
+            <H3>@(CorporateProfile?.CorporateNameEn == "" ? "N/A" : CorporateProfile?.CorporateNameEn)</H3>
+        </li>
+        <li>
+            <H5>Arabic Name</H5>
+            <H3>@(CorporateProfile?.CorporateNameAr == "" ? "N/A" : CorporateProfile?.CorporateNameAr)</H3>
+        </li>
+        <li>
+            <H5>Civil Id</H5>
+            <H3>@(CorporateProfile?.CorporateCivilId ?? "N/A")</H3>
+        </li>
+        <li>
+            <H5>Card HolderName</H5>
+            <H3>@(CorporateProfile?.EmbossingName ?? "N/A")</H3>
+        </li>
+
+        <li>
+            <H5>Global Limit</H5>
+            <H3>@(CorporateProfile?.GlobalLimit ?? 0)</H3>
+        </li>
+
+
+        <li>
+            <H5>Customer Class</H5>
+            <H3>@(CorporateProfile?.CustomerClass ?? "N/A")</H3>
+        </li>
+
+        <li>
+            <H5>Remaining Limit</H5>
+            <H3>@(CorporateProfile?.RemainingLimit ?? 0)</H3>
+        </li>
+
+
+        <li>
+            <H5>Used Limit</H5>
+            <H3>@(CorporateProfile?.UsedLimit ?? 0)</H3>
+        </li>
+
+        <li>
+            <H5>Relationship No</H5>
+            <H3>@(CorporateProfile?.RelationshipNo ?? "N/A")</H3>
+        </li>
+
+        <li>
+            <H5>Corporate Customer No</H5>
+            <H3>@(CorporateProfile?.CustomerNo ?? "N/A")</H3>
+        </li>
+        <li>
+            <H5>KFH Account No</H5>
+            <H3>@(CorporateProfile?.KfhAccountNo ?? "N/A")</H3>
+        </li>
+        <li>
+            <H5>Billing Account No</H5>
+            <H3>@(CorporateProfile?.BillingAccountNo ?? "N/A")</H3>
+        </li>
+
+    
+</ul>
+
+@code {
+
+    [Parameter]
+    public CorporateProfileDto? CorporateProfile { get; set; }
+
+    private bool PermissionToViewStaffSalary { get; set; } = false;
+    private bool HasRelationShipManager { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthManager.IsAuthenticated())
+        {
+            PermissionToViewStaffSalary = AuthManager.HasPermission("viewStaffSalary");
+            StateHasChanged();
+        }
+        await Task.CompletedTask;
+
+        // var customerClasses = (await CustomerClassAppService.GetCustomerClasses()).Where(c => c.HasRelationshipManager).ToList();
+        // HasRelationShipManager = customerClasses.FirstOrDefault(c => c.ClassCode == _genericProfile?.ClassCode!.Value) != null;
+    }
+
+    private string GetNationality(GenericCustomerProfileDto dto)
+    {
+        if (dto == null)
+        {
+            return "N/A";
+        }
+
+        if (!string.IsNullOrEmpty(dto.NationalityEnglish))
+        {
+            return dto.NationalityEnglish;
+        }
+        else if (!string.IsNullOrEmpty(dto.NationalityArabic))
+        {
+            return dto.NationalityArabic;
+        }
+        else
+        {
+            return "N/A";
+        }
+    }
+
+    public async Task EditProfile()
+    {
+        var queryParams = new Dictionary<string, string>
+            {
+                ["civilId"] = CorporateProfile?.CorporateCivilId.Encode() ?? ""
+            };
+
+        NavigateTo("edit-corporate-profile", queryParams);
+
+        await Task.CompletedTask;
+    }
+
+}

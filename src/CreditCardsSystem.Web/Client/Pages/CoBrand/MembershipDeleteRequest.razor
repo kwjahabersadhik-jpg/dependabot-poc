@@ -1,0 +1,153 @@
+﻿@page "/membership-delete-request"
+
+
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Customer
+@using CreditCardsSystem.Domain.Shared.Models.Membership
+@using CreditCardsSystem.Web.Client.Pages.CoBrand
+@using CreditCardsSystem.Utility.Extensions;
+@using Exception = System.Exception
+
+@inherits ApplicationComponent
+@inject IJSRuntime Js
+
+
+<div class="main-container">
+    <div class="AO-flex--container">
+        <div class="AO-left90--container">
+            <div class="d-flex justify-content-between pt-3">
+                <div class="d-flex justify-content-between align-items-center pt-3">
+                    <div>
+                        <H2>Co-Brand Delete Request</H2>
+                    </div>
+                </div>
+
+                  <div class="d-flex justify-content-between align-items-center">
+                            <div class="p-3">
+                               <OnClickComponent OnClick="async () => await FiltersDrawerRef.ToggleAsync()">
+                                        <CircleIcon Icon="icon-Filter" Title="Filter" Id="BottomTooltip" />
+                                        <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom">
+                                        </TelerikTooltip>
+                                </OnClickComponent>
+                                <TelerikTooltip TargetSelector="#BottomTooltip" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                            </div> 
+                            <div class="p-3">
+                                <TelerikButton Class="@ActivateButtonStyle" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)" OnClick="@Submit" Enabled="SelectedRequests.Count()>0">
+                                    Save
+                                    <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@updateInProgress"></TelerikLoader>
+                                </TelerikButton>
+                            </div>
+                    </div>
+            </div>
+
+            <div class="KFHnopadding kfh-data-table d-flex ps-5">
+                <TelerikGrid Data=@MemberShipDeleteRequest.Data
+                             Pageable="true" PageSize="10" Width="100%" Resizable="false" Reorderable="false"
+                             SelectionMode="GridSelectionMode.Multiple" SortMode="@SortMode.Multiple" @bind-SelectedItems="@SelectedRequests" Class="special-table no-top-padding-table">
+                    <GridColumns>
+                       
+                         <GridCheckboxColumn CheckBoxOnlySelection=true OnCellRender="@((e) => e.Class = "Cell10")"/>
+                        <GridColumn HeaderClass="Cell10" OnCellRender="@((e) => e.Class = "Cell10")" Field="Civil Id">
+                            <Template>
+                                @{
+                                    var item = context as MembershipDeleteRequestDto;
+                                    <H3> @item.CivilId</H3>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn HeaderClass="Cell23 AO-detailed--cell" OnCellRender="@((e) => e.Class = "Cell23 AO-detailed--cell")" Field="Membership Details">
+                            <Template>
+                                @{
+
+                                    var item = context as MembershipDeleteRequestDto;
+                                    <H3>@item?.CompanyName (@item?.ClubMembershipId)</H3>
+
+                                    <H3>RequestedBy By @item?.RequestedBy On @item?.RequestDate?.Formed()</H3>
+                                    <H3><span class="text-black">Reason :</span> @item?.RequestorReason</H3>
+                                }
+                            </Template>
+
+                        </GridColumn>
+                        <GridColumn HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")" Field="Approver Reason">
+                            <Template>
+                                @{
+                                    var item = context as MembershipDeleteRequestDto;
+                                    <TelerikTextArea @bind-Value=item.ApproverReason />
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn HeaderClass="Cell15" OnCellRender="@((e) => e.Class = "Cell15")" Field="Status">
+                            <Template>
+                                @{
+                                    var item = context as MembershipDeleteRequestDto;
+                                    <TelerikDropDownList Data="@statusList" TextField="Text" ValueField="Value" @bind-Value="@item.Status">
+                                        <DropDownListSettings>
+                                            <DropDownListPopupSettings MaxHeight="200px" />
+                                        </DropDownListSettings>
+                                    </TelerikDropDownList>
+                                }
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                    <NoDataTemplate>
+                        <NoRecordsFound />
+                    </NoDataTemplate>
+                </TelerikGrid>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<OffCanvas @ref="FiltersDrawerRef" Title="Filters">
+    <OffcanvasContent>
+        <TelerikForm EditContext="editContext">
+            <FormValidation>
+                <ObjectGraphDataAnnotationsValidator />
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+
+                        <div class="d-flex flex-column gp-16">
+                            <Form Label="Civil Id">
+                                <TelerikTextBox Id="membershipId" @bind-Value="@SearchFilter.CivilId"></TelerikTextBox>
+                            </Form>
+
+                            <Form Label="Membership Id">
+                                <TelerikTextBox Id="membershipId" @bind-Value="@SearchFilter.ClubMembershipId"></TelerikTextBox>
+                            </Form>
+
+                            <Form Label="Company">
+                                <TelerikDropDownList Id="company" DefaultText="All" Data="@Companies" TextField="CompanyName" ValueField="CompanyId" @bind-Value="@SearchFilter.CompanyId"></TelerikDropDownList>
+                            </Form>
+                        </div>
+
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormButtons>
+
+            </FormButtons>
+        </TelerikForm>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons">
+            <Button Type="btn-primary btn-sm" Label="Apply" OnClick="Search"></Button>
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+
+@code {
+
+    private record statuslistDto(string Text, DeleteRequestStatus Value);
+    List<statuslistDto> statusList = Enum.GetNames(typeof(DeleteRequestStatus)).Select(x => new statuslistDto(x.ToString(), Enum.Parse<DeleteRequestStatus>(x))).ToList();
+    private string ActivateButtonStyle
+    {
+        get
+        {
+            return EnableSaveButton ? "btn-primary btn-sm" : "btn-primary btn-sm btn-disabled";
+        }
+    }
+    public bool EnableSaveButton { get { return SelectedRequests.Count() != 0; } }
+}

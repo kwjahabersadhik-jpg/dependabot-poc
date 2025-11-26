@@ -1,0 +1,58 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+@inherits WorkflowComponent
+
+
+<div class="@(IsViewOnly?"wrapper-1columns":"wrapper-1columns") ps-2">
+
+    @if (!IsAuthorized)
+    {
+        <AccessDenied />
+    }
+    else
+    {
+        @if (TaskDetail is not null)
+        {
+            <WorkflowTaskDetail TaskDetail="TaskDetail" />
+        }
+        else
+        {   
+            <div class="col">
+                 <FormList>
+                    <ul class="list">
+                            @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+
+                            <Form Label="Current Linked Account">
+                                <li>
+                                    <H4>@Model.OldLinkedAccountNumber</H4>
+                                </li>
+                            </Form>
+
+                            
+                            @if (!Model.IsSupplementaryCard)
+                            {
+                                
+                                        <Form Label=" ">
+                                                <AccountDropDownList ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Link Debit Account"
+                                                    OnCardAccountChanged="async (acno)=> { Model.NewLinkedAccountNumber =acno;await OnChangeDebitAccountNumber();}" SelectedCardAccount="SelectedDebitAccount" />
+                                                @* <SubH2>Link Account</SubH2> *@
+                                        </Form>
+                            
+
+                                @* <AccountDropDownList ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Debit Account"
+                                                    OnCardAccountChanged="async (acno)=> { Model.NewLinkedAccountNumber =acno;await OnChangeDebitAccountNumber();}" SelectedCardAccount="SelectedDebitAccount" />
+                                <SubH2>Link Account</SubH2> *@
+                            }
+                            else
+                            {
+                            <span class="text-info">Sorry, you cannot change link account for supplementary card! </span>
+        
+                            }
+                       </ul>
+                </FormList>
+            </div>
+
+        }
+    }
+</div>

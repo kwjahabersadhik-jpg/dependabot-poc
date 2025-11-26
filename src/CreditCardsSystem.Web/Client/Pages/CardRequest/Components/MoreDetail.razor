@@ -1,0 +1,347 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Utility.Crypto
+@using CreditCardsSystem.Utility.Extensions
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+
+
+@inherits WorkflowComponent
+
+@* <Title Text="Credit Card Details"></Title> *@
+ 
+@if (SelectedCard is null)
+{
+    <Alert Type="alert-warning" Message="@GlobalResources.UnableToLoadData" ActionLabel="" />
+}
+@if (SelectedCard is not null)
+{
+
+    bool showCardInternalDetails = !SelectedCard.IsCardNotFound && !string.IsNullOrEmpty(SelectedCard.CardNumberDto);
+    bool showCardNotFoundAlert = SelectedCard.IsCardNotFound && !string.IsNullOrEmpty(SelectedCard.CardNumberDto);
+
+
+    @if (showCardNotFoundAlert)
+    {
+        <Alert Type="alert-warning" Message="@GlobalResources.CardNotFoundInRemoteHost" ActionLabel="" />
+    }
+
+    <ul class="offcanvas-list">
+
+        @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+
+
+        @if (!string.IsNullOrEmpty(SelectedCard?.AUBCardNumberDto))
+        {
+            <li>
+                <H4>AUB Card Number</H4>
+                <H3>@DisplayCardNumber(SelectedCard?.AUBCardNumberDto)</H3>
+            </li>
+        }
+
+
+
+        @if (Enum.TryParse<Collateral>(SelectedCard?.Collateral, out Collateral _collateral))
+        {
+            if ((int)_collateral < 8 || _collateral == Collateral.AGAINST_BLOCK)
+            {
+                <li>
+                    <H4>Collateral </H4>
+                    <H3>@_collateral.GetDescription()</H3>
+                </li>
+            }
+
+            @if (_collateral == Collateral.AGAINST_BLOCK)
+            {
+                <li>
+                    <H4>Block Account Number</H4>
+                    <H3>@SelectedCard?.Parameters?.AubBlockAccountNumber</H3>
+                </li>
+            }
+        }
+
+
+
+        <li>
+            <H4>@(!string.IsNullOrEmpty(SelectedCard?.AUBCardNumber) ? "KFH " : "") Card Number</H4>
+            @if (showCardInternalDetails)
+            {
+                <H3>@DisplayCardNumber(SelectedCard?.CardNumberDto)</H3>
+            }
+            else if (showCardNotFoundAlert)
+            {
+                <TelerikTooltip Id="invalidCardT" TargetSelector="#invalidCard" ShowOn="@TooltipShowEvent.Hover" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                <H2 Id="invalidCard" Title="@GlobalResources.CardNotFoundInRemoteHost" Class="text-red text-start my-1">@DisplayCardNumber(SelectedCard?.CardNumberDto)</H2>
+            }
+        </li>
+
+
+        <li>
+            <H4>Request Date</H4>
+            <H3>@SelectedCard?.ReqDate.Formed()</H3>
+        </li>
+
+        @if (!string.IsNullOrEmpty(SelectedCard.SecondaryCardNoDto))
+        {
+
+            <li>
+                <H4>Master Card Number (Secondary)</H4>
+                <span Class="Heading3 text-wrap" style="overflow-wrap: break-word;">@DisplayCardNumber(SelectedCard.SecondaryCardNoDto)</span>
+            </li>
+
+            <li>
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <div>
+                        <H4>Master Card status (Secondary)</H4>
+                        <TelerikLoader Class="loader-indicator" ThemeColor="light" Visible="@IsLoadingCardStatus"></TelerikLoader>
+
+                        <H3>@SelectedCard.MasterCardStatus</H3>
+                        @if (!IsLoadingCardStatus)
+                        {
+                            @if (string.IsNullOrEmpty(SelectedCard.MasterCardStatus))
+                            {
+                                <TextButton Label="Check Status" OnClick="@LoadMasterCardStatus"></TextButton>
+                            }
+
+                            @if (SelectedCard.MasterCardStatus == "Pending Activation")
+                            {
+                                <TextButton Label="Activate" OnClick="@SecondaryMasterCardActivation"></TextButton>
+                            }
+                        }
+
+                    </div>
+
+                </div>
+
+
+
+            </li>
+        }
+
+        @if (SelectedCard.IsSupplementaryCard)
+        {
+            <li>
+                <H5>Primary Card Holder Name</H5>
+
+                <a @onclick="@(()=> NavigateToParentCardDetailPage(SelectedCard.PrimaryCardCivilId,SelectedCard.PrimaryCardRequestId))" class="text-green">
+                    <p class="Heading3" style="color: mediumblue;text-decoration: underline;">
+                        @SelectedCard.PrimaryCardHolderName
+                    </p>
+                </a>
+            </li>
+        }
+
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Credit Limit</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.ApproveLimit</H3Wait>
+            </li>
+            <li>
+                <H4>Available Credit</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.AvailableLimit</H3Wait>
+            </li>
+
+            <li>
+                <H4>Current Balance</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.ApproveLimit - SelectedCard.AvailableLimit)</H3Wait>
+            </li>
+        }
+
+        @if (!string.IsNullOrEmpty(SelectedCard?.Parameters?.ClubMembershipId))
+        {
+            <li>
+                <H4>MemberShip Id</H4>
+                <H3>@(SelectedCard!.Parameters?.ClubMembershipId)</H3>
+            </li>
+        }
+        <li>
+            <H4>Account Activation Flag</H4>
+            <H3>@SelectedCard!.AccountActiviationFlag</H3>
+        </li>
+
+        <li>
+            <H4>Account Number </H4>
+            <H3>@SelectedCard!.BankAccountNumber</H3>
+        </li>
+
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Card Holder Name</H4>
+                <H3Wait IsLoaded="SelectedCard!.IsExternalStatusLoaded">@SelectedCard.HolderEmbossName</H3Wait>
+            </li>
+        }
+
+        <li>
+            <H4>Fd AccountName</H4>
+            <H3>@SelectedCard.FdrAccountNumber</H3>
+        </li>
+
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Next Payment Date Limit</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.DateNextPaymentSpecified ? SelectedCard.DateNextPayment.Formed() : "N/A")</H3Wait>
+            </li>
+            <li>
+                <H5>External Status</H5>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.ExternalStatus ?? "N/A")</H3Wait>
+            </li>
+        }
+
+        <li>
+            <H4>Last Payment Amount</H4>
+            <H3>@(SelectedCard.LastPayDateSpecified ? SelectedCard.LastPayAmount : "N/A") </H3>
+        </li>
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Last Payment Date</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.LastPayDateSpecified ? SelectedCard.LastPayDate.Formed() : "N/A") </H3Wait>
+            </li>
+
+            <li>
+                <H4>Internal Status</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.InternalStatus ?? "N/A")</H3Wait>
+            </li>
+
+            <li>
+                <H4>Last Statement Balance</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded" class="form-control">@SelectedCard.LastStatementBalance</H3Wait>
+            </li>
+
+            <li>
+                <H4>Last Statement Date</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.DateLastStatementSpecified ? SelectedCard.DateLastStatement.Formed() : "N/A")</H3Wait>
+            </li>
+
+
+
+            <li>
+                <H4>Status Change Date</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.DateLastStatusChanged.Formed()</H3Wait>
+            </li>
+
+            <li>
+                <H4>Minimum Payment Due</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.CurrentMinPaymentDue</H3Wait>
+            </li>
+
+
+
+            <li>
+                <H4>Days Delinquent</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.DaysDelinquent</H3Wait>
+            </li>
+            <li>
+                <H4>Total Delinquent Amount</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.DelinquentAmount</H3Wait>
+            </li>
+        }
+        <li>
+            <H4>Disputes</H4>
+            <H3>@SelectedCard.DisputeAmount</H3>
+        </li>
+
+        <li>
+            <H4>BCD Promotion Flag</H4>
+            <H3>@SelectedCard.PcdFlag</H3>
+        </li>
+
+        <li>
+            <H4>Promotion Name</H4>
+            <H3>@SelectedCard.PromotionName</H3>
+        </li>
+
+        <li>
+            <H4>Delivery Status</H4>
+            <span Class="Heading3 text-wrap" style="overflow-wrap: break-word;">@SelectedCard.DeliveryStatus</span>
+        </li>
+
+
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Plastic status</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@SelectedCard.PlasticActionEnum?.GetDescription()</H3Wait>
+            </li>
+            <li>
+                <H4>VISA status</H4>
+                @*TODO Localization *@
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">@(SelectedCard.AccountActiviationFlag == "Y" ? "Pending Activation" : "Activated")</H3Wait>
+            </li>
+        }
+        <li>
+            <H4>Corporate Data</H4>
+            <H3>@(SelectedCard.IsCorporateCard ? "Yes" : "No")</H3>
+        </li>
+
+        @if (SelectedCard.IsCorporateCard)
+        {
+
+            <li>
+                <H4>Corporate CivilId</H4>
+                <H3>@SelectedCard.CorporateCivilId</H3>
+            </li>
+        }
+        @if (showCardInternalDetails)
+        {
+            <li>
+                <H4>Expiration Date of Plastic</H4>
+                <H3Wait IsLoaded="SelectedCard.IsExternalStatusLoaded">
+                    @{
+                        var expiry = SelectedCard?.Expiry!.Trim().Length > 6 ? SelectedCard?.Expiry!.Trim().DeSaltThis() : SelectedCard?.Expiry;
+                    }
+                    @DateTime.ParseExact(expiry!, (expiry.Length == 6 ? "mmyyyy" : "mmyy"), CultureInfo.InvariantCulture).AddMonths(1).AddDays(-1).ToString(ConfigurationBase.DateFormat)
+                </H3Wait>
+            </li>
+        }
+        @if (SelectedCard is not null)
+        {
+
+            <Divider />
+            <H3>Billing Address</H3>
+
+            <li>
+                <H4>Address Line1</H4>
+                <H3>@SelectedCard.HolderAddressLine1</H3>
+            </li>
+            <li>
+                <H4>Address Line2</H4>
+                <H3>@SelectedCard.HolderAddressLine2</H3>
+            </li>
+            <li>
+                <H4>City</H4>
+                <H3>@SelectedCard.HolderAddressCity</H3>
+            </li>
+            <li>
+                <H4>Country Code</H4>
+                <H3>@SelectedCard.HolderCountryCode</H3>
+            </li>
+            <li>
+                <H4>Postal Code</H4>
+                <H3>@SelectedCard.HolderPostalCode</H3>
+            </li>
+            <li>
+                <H4>Work Phone</H4>
+                <H3>@SelectedCard.HolderBusinessPhone</H3>
+            </li>
+            <li>
+                <H4>Home Phone</H4>
+                <H3>@SelectedCard.HolderHomePhone</H3>
+            </li>
+            <li>
+                <H4>Mobile Phone</H4>
+                <H3>@SelectedCard.HolderMobilePhone</H3>
+            </li>
+        }
+
+    </ul>
+
+    <Divider />
+    <DocumentList RequestId="SelectedCard.RequestId" />
+}
+
+
+

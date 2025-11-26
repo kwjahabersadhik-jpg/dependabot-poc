@@ -1,0 +1,58 @@
+﻿@if (!string.IsNullOrEmpty(Value) || !string.IsNullOrEmpty(OldValue))
+{
+    <div class="d-flex justify-content-between align-items-center w-100">
+        @{
+            bool isModified = OldValue is not null && OldValue != Value;
+            string color = isModified ? "my-0 text-critical" : "my-0 text-gray";
+        }
+        <div class="d-flex justify-content-between align-items-center w-30">
+            <H3 Class="my-0">@Label</H3>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between align-items-center w-70">
+            @if (ChildContent is not null)
+            {
+                @ChildContent
+            }
+            else
+            {
+                @if (isModified)
+                {
+                    if (!string.IsNullOrEmpty(OldValue))
+                    {
+                        <Status StatusClass="grayStatus k-text-line-through mb-2 me-2 pe-2 ps-2" StatusTitle="@OldValue" />
+                        @* <H4 Class="my-0 text-gray">@OldValue</H4> *@
+                    }
+                    if (!string.IsNullOrEmpty(Value))
+                    {
+                        <Status StatusClass="greenStatus me-2 ps-2 pe-2 mb-2" StatusTitle="@Value" />
+                    }
+                    @*    <H4 Class="@color">@Value</H4> *@
+
+                }
+
+                else
+                {
+                    <H4 Class="@color">@Value</H4>
+                }
+            }
+
+
+        </div>
+    </div>
+    <Divider />
+}
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? OldValue { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

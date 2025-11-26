@@ -1,0 +1,104 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Reports
+@using CreditCardsSystem.Web.Client.Components.Elements
+
+@if (groupedActivities.Status is DataStatus.Loading)
+{   <div class="KFHnopadding kfh-data-table">
+        <div class="col-12 p-5">
+            <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+        </div>
+    </div>
+    @* <DataTableSkeleton /> *@
+}
+else if (groupedActivities.Status is DataStatus.Error)
+{
+    <TechError Message="@groupedActivities.Exception?.Message" />
+}
+
+
+else if (groupedActivities.Status is DataStatus.Success)
+{
+    <div class="kfh-data-table p-0">
+
+        <TelerikGrid @ref="@GridData" Pageable="true" PageSize="15" Data="groupedActivities.Data?.Items" Class="potato">
+            <GridColumns>
+
+                <GridColumn OnCellRender="@((e) => e.Class = "AO-detailed--cell")" HeaderClass="AO-detailed--cell">
+                    <Template>
+                        @{
+                            var item = context as Domain.Models.Reports.EODBranchReportItemDto;
+                            <div class="ps-3">
+                                <div class="d-flex gp-8  align-items-center">
+                                    <H2>@item?.ActivityDescription</H2>
+                                    </div>
+                                    @if (item?.Summaries.Count() <= 0)
+                                {
+                                    <SubH2 class="text-red">No activites found</SubH2>
+                                }
+                            </div>
+
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+
+            <DetailTemplate>
+                @{
+                    var activity = context as Domain.Models.Reports.EODBranchReportItemDto;
+                    <TelerikGrid Data="activity.Summaries" SelectionMode="GridSelectionMode.Multiple" Class="tomato">
+                        <GridColumns>
+                            <GridColumn Field="TellerId" Title="Staff Id" HeaderClass="col-xl-1 text-start" OnCellRender="@((e) => e.Class = "col-xl-1 text-start")"></GridColumn>
+                            <GridColumn Field="TellerName" Title="Staff Name" HeaderClass="col-xl-2 text-center" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")"></GridColumn>
+                            <GridColumn Title="No of Activities" HeaderClass="col-xl-2 text-center" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")">
+                                <Template Context="summary">
+                                    @(String.Format("{0}", (summary as EODReportSummary).NoOfActivities))
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderClass="col-xl-1 text-center" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")">
+                                <Template Context="summary">
+                                    <TextButton Label="View Details" Enabled="true" LeftIcon="icon-Arrow-right" OnClick="@(async() =>await ViewDetails(summary as EODReportSummary))"></TextButton>
+                                </Template>
+                            </GridColumn>
+                        </GridColumns>
+                    </TelerikGrid>
+                }
+            </DetailTemplate>
+        </TelerikGrid>
+    </div>
+}
+else
+{
+    @* <NoRecordsFound /> *@
+}
+
+@code {
+
+    [Parameter]
+    public EventCallback<EODReportSummary> ViewDetailsRef { get; set; }
+
+    TelerikGrid<EODBranchReportItemDto>? GridData { get; set; }
+
+
+
+
+    public async Task RefreshGrid()
+    {
+        if (GridData is not null && groupedActivities.Status is DataStatus.Success)
+        {
+            var gridState = GridData.GetState();
+            gridState.ExpandedItems = groupedActivities.Data?.Items.ToList();
+            await GridData.SetStateAsync(gridState);
+            GridData.Rebind();
+        }
+    }
+
+    [Parameter]
+    public DataItem<EODBranchReportDto> groupedActivities { get; set; } = new();
+
+    async Task ViewDetails(EODReportSummary activity)
+    {
+        await ViewDetailsRef.InvokeAsync(activity);
+    }
+}

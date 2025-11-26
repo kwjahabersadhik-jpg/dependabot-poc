@@ -1,0 +1,134 @@
+﻿@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Models.StandingOrder;
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+
+@inherits ApplicationComponent
+
+<div class="mt-2">
+    @if (Card != null)
+    {
+        if (Card is OwnedCreditCardsResponse)
+        {
+            var _card = Card as OwnedCreditCardsResponse;
+            var image = GetCreditCardImage(_card!.CardType);
+            @* <div class="card">
+    <picture style="p-2">
+    <img src="@image" onerror="if (this.src != '@image') this.src = '@DefaultImage';" />
+    </picture>
+    </div> *@
+            <div class="d-flex flex-row gp-2 justify-content-between">
+                <div class="d-flex flex-column">
+
+                    <div>
+                        <H5>Card Number</H5>
+                        <H3>@DisplayCardNumber(_card.CardNumberDto)</H3>
+                        </div>
+
+                        <div>
+                            <H5>Card Name</H5>
+                            <H3>@_card.ProductName</H3>
+                        </div>
+                        @* <div>
+            <div ><H5>Approved Limit</H5></div>
+            <div ><H3 class="@(_card.ApprovedLimit>0?"text-green":"text-red")">@_card.ApprovedLimit.FormedMoney(_card.CurrencyISOCode)</H3></div>
+            </div> *@
+
+                    </div>
+
+                    <div class="d-flex flex-column align-items-start">
+
+                        @* <div>
+            <div ><H5>Local Status</H5></div>
+            <div ><Status StatusClass="@Helpers.GetStatusClass(_card.CardStatus)" StatusTitle="@_card.CardStatus.ToString()"></Status></div>
+            </div> *@
+
+                        <div class="d-flex flex-row gp-2 justify-content-between align-items-center">
+                            <div>
+                                <H5>Extarnal Status <IconButton Icon="icon-Total-Overdue" IsEnabled="true" OnClick="async ()=>{await LoadData(); }"></IconButton> </H5>
+
+                                <H3Wait IsLoaded="@isExternalDataLoaded">@_card.ExternalStatus</H3Wait>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="d-flex flex-row align-itmes-center align-items-center">
+                                <div>
+                                    <H5>Due Amount  <IconButton Icon="icon-Total-Overdue" IsEnabled="true" OnClick="async ()=>{await LoadData(); }"></IconButton> </H5>
+                                    <H3Wait IsLoaded="@isExternalDataLoaded">@_card.DueAmount</H3Wait>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        }
+
+        if (Card is SupplementaryCardDetail)
+        {
+            var _card = Card as SupplementaryCardDetail;
+            <div class="d-flex flex-row gp-2 justify-content-between">
+
+                <div class="d-flex flex-column">
+                    <div>
+                        <H5>Card Number</H5>
+                        <H3>@DisplayCardNumber(_card.CardNumberDto)</H3>
+                        </div>
+
+                        <div>
+                            <H3>Card Description</H3>
+                            <H2>@_card.Description</H2>
+                        </div>
+
+                        @* <div>
+            <H5>Card Name</H5>
+            <H3>@_card.FullName</H3>
+            </div> *@
+                    </div>
+
+
+                    <div class="d-flex flex-column">
+
+                        @* <div>
+            <H3>Local Status  </H3>
+            <Status StatusClass="@Helpers.GetStatusClass(_card.CardStatus)" StatusTitle="@_card.CardStatus.ToString()"></Status>
+            </div> *@
+                        <div>
+                            <H5>Extarnal Status <IconButton Icon="icon-Total-Overdue" IsEnabled="true" OnClick="()=>{LoadData(); }"></IconButton> </H5>
+                            <H3Wait IsLoaded="@isExternalDataLoaded">@_card.ExternalStatus</H3Wait>
+                        </div>
+
+                    </div>
+
+                </div>
+
+        }
+
+    }
+    else
+    {
+        @* <SubH2> Select card to display </SubH2> *@
+    }
+</div>
+
+@code {
+    [Parameter]
+    public object? Card { get; set; }
+
+    [Parameter]
+    public EventCallback LoadExternalData { get; set; }
+
+    private bool isExternalDataLoaded { get; set; } = true;
+
+    private async Task LoadData()
+    {
+        isExternalDataLoaded = false;
+        StateHasChanged();
+        await LoadExternalData.InvokeAsync(LoadExternalData);
+        isExternalDataLoaded = true;
+        StateHasChanged();
+    }
+
+  
+}

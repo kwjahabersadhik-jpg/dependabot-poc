@@ -1,0 +1,112 @@
+﻿@page "/doc-list"
+
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Reports
+@using System.Collections.ObjectModel
+@inherits ApplicationComponent
+@inject IJSRuntime Js;
+
+<H2>Documents</H2>
+@if (Documents.Status == DataStatus.Success && Documents?.Data?.Length == 0)
+{
+    <NoRecordsFound Message="No documents found"></NoRecordsFound>
+}
+@if (Documents.Status == DataStatus.Success && Documents?.Data?.Length > 0)
+{
+    <div class="kfh-data-table d-flex">
+        <TelerikGrid Data="@Documents.Data" Class="table-noHeader">
+            <GridColumns>
+                <GridColumn OnCellRender="@((e) => e.Class = "Cell17 AO-detailed--cell")">
+                    <Template>
+                        @if (Documents?.Data?.Any() ?? false)
+                        {
+                            var data = context as DocuwareDocumentDto;
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex w-70 gp-16">
+                                    <div class=" d-flex ps-4 justify-content-center align-items-center ">
+                                        @* <CircleIcon Icon=@GetFileIcon(Path.GetExtension(data.FileName)) Title="Download file" Id="BottomTooltip" Class="circle-btn iconSize-50 circle-background" /> *@
+                                    </div>
+                                    <div>
+                                        <H3 Class="my-0">@($"RequestID:- {RequestId}_DocumentID:-{data?.DOCID}")</H3>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <TextButton Label="Re-print" Enabled="true" LeftIcon="icon-Arrow-down" OnClick="@(() =>DownloadFile(data?.DOCID))"></TextButton>
+                                </div>
+                            </div>
+                        }
+
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+            <NoDataTemplate>
+                <NoRecordsFound />
+            </NoDataTemplate>
+        </TelerikGrid>
+    </div>
+}
+@if (Documents.Status == DataStatus.Loading)
+{
+    <SkeletonBuilder Type="Table" Rows="2" Columns="2" ColWidth="100" ColHeight="15" Margin="my-3"></SkeletonBuilder>
+}
+@if (Documents.Status == DataStatus.Error)
+{
+    <EmptyState IconName="tech-error" Heading="Technical Error" Description=@($"Unable to load documents!.{Documents?.Exception?.Message}")></EmptyState>
+}
+@code {
+    [Inject] IReportAppService ReportAppService { get; set; } = null!;
+    [Inject] IDocumentAppService DocumentAppService { get; set; } = null!;
+    private DataItem<DocuwareDocumentDto[]> Documents { get; set; } = new();
+
+    [Parameter, SupplyParameterFromQuery]
+    public decimal? RequestId { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Documents.Status != DataStatus.Success)
+            await GetDocumentFilesIfAny();
+    }
+
+    async Task GetDocumentFilesIfAny()
+    {
+        Documents.Loading();
+        var documents = await DocumentAppService.GetDocumentFiles(new()
+            {
+                FileServer = FileServer.Docuware,
+                MetaData = new() { { "REQ_ID", RequestId?.ToString("0") ?? "" } }
+            });
+
+        if (documents.IsSuccess)
+        {
+            Documents.SetData(documents.Data);
+        }
+        else
+        {
+            Documents.Error(new(documents.Message));
+        }
+        Notification.Hide();
+    }
+
+
+    async Task DownloadFile(string docId)
+    {
+        Notification.Loading($"Downloading File({docId})...");
+
+        var fileResponse = await DocumentAppService.DownloadFile(new() { DocId = docId, FileServer = FileServer.Docuware });
+        // ResetProcessStatus();
+
+        if (!fileResponse.IsSuccess)
+        {
+            Notification.Failure("Unable to download, try again later");
+            return;
+        }
+
+        Notification.Success($"Downloaded File({docId})!");
+
+        var streamData = new MemoryStream(fileResponse.Data!.FileBytes!);
+        using var streamRef = new DotNetStreamReference(stream: streamData);
+        await Js.InvokeVoidAsync("downloadFileFromStream", $"RequestID_{RequestId}_DocumentID_{docId}", streamRef);
+    }
+}

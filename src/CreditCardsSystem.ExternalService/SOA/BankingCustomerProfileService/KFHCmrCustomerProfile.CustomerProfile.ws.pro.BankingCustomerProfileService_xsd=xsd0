@@ -1,0 +1,1358 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.openuri.org/" xmlns:ns1="http://www.kfh.com/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.openuri.org/">
+<xsd:import namespace="http://www.kfh.com/" schemaLocation="KFHCmrCustomerProfile.CustomerProfile.ws.pro.BankingCustomerProfileService_xsd=xsd1"/>
+<xsd:complexType name="CustomerBankingExtensionProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="xsiType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="attribute" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="attributeValue" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="checkVVIPCustomerStatus">
+<xsd:sequence>
+<xsd:element form="qualified" name="rimNo" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="checkVVIPCustomerStatusResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="checkVVIPCustomerStatusResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="createBankingCustomerProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="bankingCustomerProfileDTO" type="ns0:bankingCustomerProfileDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="createBankingCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="createBankingCustomerProfileResult" type="ns0:createBankingCustomerProfileResultDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="createRimProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="arabicName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="englishName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="expiryDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="birthDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" name="occupation" type="xsd:int"/>
+<xsd:element form="qualified" name="employer" type="xsd:int"/>
+<xsd:element form="qualified" name="nationality" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="gender" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="homePhone" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mobilePhone" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="email" type="xsd:string"/>
+<xsd:element form="qualified" name="branchNumber" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="employeeID" type="xsd:string"/>
+<xsd:element form="qualified" name="classCode" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="residency" type="xsd:string"/>
+<xsd:element form="qualified" name="educationID" type="xsd:int"/>
+<xsd:element form="qualified" name="position" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="addressLine1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="addressLine2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="maritalStatus" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="occAddress" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="custActivity" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="residence" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="province" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="area" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="block" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="street" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="home" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="incomeSource" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="createRimProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="createRimProfileResult" type="ns0:bankingResultDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="deleteCustomerProfileExtension">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="deleteCustomerProfileExtensionAttribute">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="attribute" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="deleteCustomerProfileExtensionAttributeResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="deleteCustomerProfileExtensionAttributeResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="deleteCustomerProfileExtensionResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="deleteCustomerProfileExtensionResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getAccountType">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getAccountTypeResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getAccountTypeResult" type="ns0:arrayOfAccountTypeDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getBankingStaticData">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="dataTypeName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="dataTypeID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="filter" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimType" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getBankingStaticDataResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getBankingStaticDataResult" type="ns0:bankingStaticData"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCorporateRelationManager">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="employeeNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCorporateRelationManagerResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getCorporateRelationManagerResult" type="ns0:corporateRelationManagerProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerAddressFromPACI">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="paciId" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerAddressFromPACIResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getCustomerAddressFromPACIResult" type="ns0:customerPACIAddressInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerCRSDetails">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="civilId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rim" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerCRSDetailsResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getCustomerCRSDetailsResult" type="ns0:customerCRSDetailsListDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerClass">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerClassResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getCustomerClassResult" type="ns0:ArrayOfCustomerClassDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getCustomerProfileLookupData"/>
+<xsd:complexType name="getCustomerProfileLookupDataResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getCustomerProfileLookupDataResult" type="ns0:customerProfileLookupData"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getEducation"/>
+<xsd:complexType name="getEducationResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getEducationResult" type="ns0:ArrayOfCustomerEducationDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="getJobTitle"/>
+<xsd:complexType name="getJobTitleResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="getJobTitleResult" type="ns0:ArrayOfCustomerJobTitleDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="insertCustomerProfileExtension">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="attribute" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="attributeValue" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="insertCustomerProfileExtensionArr">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="cbep" type="ns0:ArrayOfCustomerBankingExtensionProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="insertCustomerProfileExtensionArrResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="insertCustomerProfileExtensionArrResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="insertCustomerProfileExtensionResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="insertCustomerProfileExtensionResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="isCustomerBlackListed">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rimNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="isCustomerBlackListedResponse">
+<xsd:sequence>
+<xsd:element form="qualified" name="isCustomerBlackListedResult" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByFirstAndLastName">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="firstName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="lastName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByFirstAndLastNameResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="searchByFirstAndLastNameResult" type="ns0:ArrayOfNameSearchResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByMatchingNameBeginning">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="nameBeginning" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByMatchingNameBeginningResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="searchByMatchingNameBeginningResult" type="ns0:ArrayOfNameSearchResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByOtherLanguageName">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="otherLanguageName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByOtherLanguageNameResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="searchByOtherLanguageNameResult" type="ns0:ArrayOfNameSearchResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByPhoneNumber">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="phoneNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchByPhoneNumberResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="searchByPhoneNumberResult" type="ns0:ArrayOfNameSearchResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchCustomerProfileUserDefinedData">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="userDataFieldName" type="xsd:string"/>
+<xsd:element form="qualified" name="rimNo" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="searchCustomerProfileUserDefinedDataResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="searchCustomerProfileUserDefinedDataResult" type="ns0:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerAddress">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customerAddress" type="ns0:customerBankingAddress"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerAddressResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="updateCustomerAddressResult" type="ns0:profileUpdateResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerCivilIdInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="civilIdInfo" type="ns0:civilIdInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerCivilIdInfoResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="updateCustomerCivilIdInfoResult" type="ns0:operationResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerKYCInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="kycProfile" type="ns0:customerKYCProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerKYCInfoResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="updateCustomerKYCInfoResult" type="ns0:profileUpdateResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="customerProfile" type="ns0:genericCustomerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="updateCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="updateCustomerProfileResult" type="ns0:bankingResultDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewBankingCustomerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="commercialReg" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewBankingCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewBankingCustomerProfileResult" type="ns0:customerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewBlackListed">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewBlackListedResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewBlackListedResult" type="ns0:blackListedResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCBKCustomerProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="rimNo" type="xsd:int"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCBKCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewCBKCustomerProfileResult" type="ns0:cbkCustomerProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerDetails">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rimNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilId" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerDetailsResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewCustomerDetails" type="ns0:customerDetailsDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerProfileExtension">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerProfileExtensionResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewCustomerProfileExtensionResult" type="ns0:ArrayOfCustomerBankingExtensionProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewCustomerProfileResult" type="ns0:customerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewDetailedGenericCustomerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element form="qualified" name="filterNonActive" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewDetailedGenericCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewDetailedGenericCustomerProfileResult" type="ns0:detailedGenericCustomerProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewEzwayCustomerProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="rimNo" type="xsd:long"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewEzwayCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewEzwayCustomerProfileResult" type="ns0:ezwayCustomerProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewRimToRimRelation">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rimNo" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="RimToRimRelationResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rimNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="custNameAr" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="custNameEn" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="legalNat" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltRimNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltCustName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltOwnershipRatio" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mainRelId" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mainRecRel" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mainRelshipName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltRelId" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltRecRel" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltRelshipName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltCivilid" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reltRimType" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewRimToRimRelationResponse">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="viewRimToRimRelationResult" nillable="true" type="ns0:RimToRimRelationResponse"/>
+<xsd:element ref="ns1:result"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewGenericCustomerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewGenericCustomerProfileNotFiltered">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rim" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="accountNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewGenericCustomerProfileNotFilteredResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewGenericCustomerProfileNotFilteredResult" type="ns0:genericCustomerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewGenericCustomerProfileResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewGenericCustomerProfileResult" type="ns0:genericCustomerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewJointAccountProfiles">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="acctNo" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="viewJointAccountProfilesResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="viewJointAccountProfilesResult" type="ns0:ArrayOfCustomerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ViewProfileAttributes"/>
+<xsd:complexType name="ViewProfileAttributesResponse">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="ViewProfileAttributesResult" type="ns0:listResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bankingCustomerProfileDTO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="personalInfoDTO" type="ns0:bcpPersonalInfoDTO"/>
+<xsd:element minOccurs="0" name="employmentAndBankingInfoDTO" type="ns0:bcpEmploymentAndBankingInfoDTO"/>
+<xsd:element minOccurs="0" name="addressInfoDTO" type="ns0:bcpAddressInfoDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bcpPersonalInfoDTO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="birthCity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthCountry" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="branchNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelationID6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilIDExpDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="classCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="educationID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="firstNameAr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="firstNameEn" type="xsd:string"/>
+<xsd:element minOccurs="0" name="gender" type="xsd:string"/>
+<xsd:element minOccurs="0" name="lastNameAr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="lastNameEn" type="xsd:string"/>
+<xsd:element minOccurs="0" name="maritalStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natID1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natID2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natID3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natIDExpDate1" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDExpDate2" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDExpDate3" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDIssueDate1" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDIssueDate2" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDIssueDate3" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="natIDValue1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natIDValue2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natIDValue3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="noOfDependents" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepMainCategoryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepRelationID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepRelativeCategoryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepRelativeName" type="xsd:string"/>
+<xsd:element name="politicalOrDiplomaticPerson" type="xsd:boolean"/>
+<xsd:element name="politicalOrDiplomaticRelation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="profileCreateReasonID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="religion" type="xsd:string"/>
+<xsd:element minOccurs="0" name="residency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="spouseName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="spouseRelationID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="titleID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bcpEmploymentAndBankingInfoDTO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="averageIncome" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccount2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="dealingReason" type="xsd:string"/>
+<xsd:element minOccurs="0" name="employerAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="employerName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="expectedMonthlyTranAmt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="expectedMonthlyTranCount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="expectedTranType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="incomeSource" type="xsd:string"/>
+<xsd:element minOccurs="0" name="monthlyIncome" type="xsd:string"/>
+<xsd:element minOccurs="0" name="occupationID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="positionID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="sicCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthSourceAmt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthSourceCurrencyId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthSourceID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bcpAddressInfoDTO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="areaID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="avenue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="blockID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cityID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="countryCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="email" type="xsd:string"/>
+<xsd:element minOccurs="0" name="faxNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="flat" type="xsd:string"/>
+<xsd:element minOccurs="0" name="floorNO" type="xsd:string"/>
+<xsd:element minOccurs="0" name="governorateID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="home" type="xsd:string"/>
+<xsd:element minOccurs="0" name="homeTel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="mobile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="poBox" type="xsd:string"/>
+<xsd:element minOccurs="0" name="street" type="xsd:string"/>
+<xsd:element minOccurs="0" name="workTel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="zipCode" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="createBankingCustomerProfileResultDTO">
+<xsd:complexContent>
+<xsd:extension base="ns0:transactionResult">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="rimNo" type="xsd:string"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="transactionResult">
+<xsd:sequence>
+<xsd:element name="isSuccessful" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="statusCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="statusDescription" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bankingResultDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="isSuccessful" type="xsd:boolean"/>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="description" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="arrayOfAccountTypeDTO">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="acctApplTypeDTO" nillable="true" type="ns0:acctApplTypeBean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="acctApplTypeBean">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="acctType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="applType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bankingStaticData">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="dataTypeDetailList" type="ns0:dataTypeDetailList"/>
+<xsd:element minOccurs="0" name="dataTypeName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="dataTypeDetailList">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="dataTypeDetail" nillable="true" type="ns0:dataTypeDetail"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="dataTypeDetail">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="dataNameAr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="dataNameEn" type="xsd:string"/>
+<xsd:element minOccurs="0" name="dataTypeID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="extraData" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="corporateRelationManagerProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="userName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="employeeId" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="employeeNumber" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arabicName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="englishName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mobilePhone" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="officePhone" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="officeLocation" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="email" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerPACIAddressInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="areaArabic" type="xsd:string"/>
+<xsd:element minOccurs="0" name="areaEnglish" type="xsd:string"/>
+<xsd:element minOccurs="0" name="avenue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="block" type="xsd:string"/>
+<xsd:element minOccurs="0" name="floor" type="xsd:string"/>
+<xsd:element minOccurs="0" name="governorateArabic" type="xsd:string"/>
+<xsd:element minOccurs="0" name="governorateEnglish" type="xsd:string"/>
+<xsd:element minOccurs="0" name="home" type="xsd:string"/>
+<xsd:element minOccurs="0" name="street" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerCRSDetailsListDTO">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="customerCRSDetailsList" nillable="true" type="ns0:customerCRSDetails"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerCRSDetails">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="civilId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilIdJustification" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilIdReason" type="xsd:string"/>
+<xsd:element minOccurs="0" name="country" type="xsd:string"/>
+<xsd:element minOccurs="0" name="receiptDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="requestedDate" type="xsd:dateTime"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfCustomerClassDTO">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerClassDTO" nillable="true" type="ns0:customerClassDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerClassDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="customerClassCode" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="customerClassDescription" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerProfileLookupData">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="jobTitleLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="educationLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="idTypeLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="rimClassLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="nationalityLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="religionLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="legalNatureLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="economicActivityLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="customerTypeLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="occupationLookupData" type="ns0:kfhMap"/>
+<xsd:element form="qualified" minOccurs="0" name="customerActivityLookupData" type="ns0:kfhMap"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="kfhMap">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="ns0:kfhItem"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="kfhItem">
+<xsd:sequence>
+<xsd:element form="qualified" name="key" nillable="true" type="xsd:anyType"/>
+<xsd:element form="qualified" name="value" nillable="true" type="xsd:anyType"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfCustomerEducationDTO">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerEducationDTO" nillable="true" type="ns0:customerEducationDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerEducationDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="educationCode" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="educationDescription" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfCustomerJobTitleDTO">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerJobTitleDTO" nillable="true" type="ns0:customerJobTitleDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerJobTitleDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="jobTitleCode" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="jobTitleDescription" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfCustomerBankingExtensionProfile">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerBankingExtensionProfile" nillable="true" type="ns0:CustomerBankingExtensionProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfNameSearchResult">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="NameSearchResult" nillable="true" type="ns0:nameSearchResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="nameSearchResult">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="rimNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="wholeName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="acctNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="additionalName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfString">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="String" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerBankingAddress">
+<xsd:sequence>
+<xsd:element form="qualified" name="addressID" type="xsd:int"/>
+<xsd:element form="qualified" name="addressTypeID" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="state" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="countryCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="zip" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="addressLine1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="addressLine2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="addressLine3" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone1Ext" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone2Ext" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone3" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone3Ext" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="faxPhone" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="faxPhoneExt" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="emailAddress1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="emailAddress2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="district" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="region" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="cityId" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="cityName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="street" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="postBoxNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="home" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="governorateID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="floorNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="flat" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="blockID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="avenue" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="regionID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="paciNo" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="profileUpdateResult">
+<xsd:complexContent>
+<xsd:extension base="ns0:transactionResult">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="errorList" type="ns0:dataAttributeList"/>
+<xsd:element minOccurs="0" name="tpiTranID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="dataAttributeList">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="dataAttribute" nillable="true" type="ns0:keyValuePair"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="keyValuePair">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="key" type="xsd:string"/>
+<xsd:element minOccurs="0" name="value" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="civilIdInfo">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="civilIdData" nillable="true" type="ns0:keyValuePair"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="operationResult">
+<xsd:sequence>
+<xsd:element form="qualified" name="isSuccessful" type="xsd:boolean"/>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="description" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerKYCProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="rimNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="personalInfo" type="ns0:profilePersonalInfo"/>
+<xsd:element minOccurs="0" name="politicalAndDiplomaticInfo" type="ns0:politicalAndDiplomaticInfo"/>
+<xsd:element minOccurs="0" name="professionAndFinancialInfo" type="ns0:professionAndFinancialInfo"/>
+<xsd:element minOccurs="0" name="customerBankingAddress" type="ns0:customerBankingAddress"/>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="customerWealthSourceList" nillable="true" type="ns0:customerWealthSource"/>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="crsInfoList" nillable="true" type="ns0:crsInfo"/>
+<xsd:element minOccurs="0" name="isForceUpdate" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="profilePersonalInfo">
+<xsd:complexContent>
+<xsd:extension base="ns0:personalInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="firstNameAr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="lastNameAr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="firstNameEn" type="xsd:string"/>
+<xsd:element minOccurs="0" name="lastNameEn" type="xsd:string"/>
+<xsd:element minOccurs="0" name="titleID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilIDExpDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="gender" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="maritalStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="educationID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="personalInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accOpeningReasonID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthCity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthCountry" type="xsd:string"/>
+<xsd:element minOccurs="0" name="branchNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childName6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="childRelID6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="nationalityID1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="nationalityID2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="nationalityID3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="noOfChildren" type="xsd:string"/>
+<xsd:element minOccurs="0" name="passportNo1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="passportNo2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="passportNo3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ppExpDate1" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppExpDate2" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppExpDate3" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppIssueDate1" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppIssueDate2" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppIssueDate3" type="xsd:date"/>
+<xsd:element minOccurs="0" name="ppIssuePlace2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ppIssuePlace3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="religion" type="xsd:string"/>
+<xsd:element minOccurs="0" name="residency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="spouseName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="spouseRelID" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="politicalAndDiplomaticInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="PEPRelationId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepMainCategoryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="pepRelativeCategoryId" type="xsd:string"/>
+<xsd:element name="politicalOrDiplomaticPerson" type="xsd:boolean"/>
+<xsd:element name="politicalOrDiplomaticRelation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="relativeName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="professionAndFinancialInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="activityId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="averageIncome" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccount2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cbRiskDescription" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cbRiskExpiryDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cbRiskRate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="dealingReason" type="xsd:string"/>
+<xsd:element minOccurs="0" name="employerName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="incomeSource" type="xsd:string"/>
+<xsd:element minOccurs="0" name="monthlyIncome" type="xsd:string"/>
+<xsd:element minOccurs="0" name="monthlyTransNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="monthlyTransVal" type="xsd:string"/>
+<xsd:element minOccurs="0" name="occupationId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="officeAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="positionId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="transType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthAmount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthSourceCurrencyId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wealthSourceId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="yearlyIncome" type="xsd:string"/>
+<xsd:element minOccurs="0" name="yearlyTransNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="yearlyTransNoVal" type="xsd:string"/>
+<xsd:element minOccurs="0" name="otherIncome" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="crsInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="countryCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="countryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="identification" type="xsd:string"/>
+<xsd:element minOccurs="0" name="tinType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="tinNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="missingTinReasonId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="missingTinReason" type="xsd:string"/>
+<xsd:element minOccurs="0" name="otherReason" type="xsd:string"/>
+<xsd:element minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerWealthSource">
+<xsd:sequence>
+<xsd:element form="qualified" name="wealthAmount" type="xsd:double"/>
+<xsd:element form="qualified" name="wealthSourceCurrencyId" type="xsd:int"/>
+<xsd:element form="qualified" name="wealthSourceId" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="genericCustomerBankingProfile">
+<xsd:sequence>
+<xsd:element form="qualified" name="rimNo" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="firstName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="lastName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="tin" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="birthDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="sicCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="civilIDExpiry" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="nationalityID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="religion" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="religionCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="sex" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="sexCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customerType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customerTypeCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="otherLangFirstName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="otherLangLastName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="idValue" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="idType" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="employer" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="educationID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="jobTitleID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arabicNationality" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="englishNationality" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arabicRimClass" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="englishRimClass" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arabicRimType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="englishRimType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arabicReligion" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimStatus" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="legalNatureID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="legalNatureArabicDesc" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="economicActivityID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="economicActivityArabicDesc" type="xsd:string"/>
+<xsd:element form="qualified" name="titleId" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="titleDesc" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customerAddressList">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerBankingAddress" type="ns0:customerBankingAddress"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element form="qualified" minOccurs="0" name="customerWealthSourceList">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerWealthSource" type="ns0:customerWealthSource"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element form="qualified" minOccurs="0" name="maritalStatus" type="xsd:string"/>
+<xsd:element form="qualified" name="customerLanguage" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerBankingProfile">
+<xsd:sequence>
+<xsd:element form="qualified" name="rim_no" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="first_name" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="last_name" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="address_line_1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="address_line_2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="tin" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone_1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone_2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone_2_ext" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="phone_3" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="email_addr_1" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="email_addr_2" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="birth_dt" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="sic_code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="nationality" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="religion" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="religion_code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="sex" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="sex_code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customer_type" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customer_type_code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimCode" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="district" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="state" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="zip" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="region" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="country_code" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="fax_phone" type="xsd:string"/>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="ProfileExtension" type="ns0:CustomerBankingExtensionProfile"/>
+<xsd:element form="qualified" minOccurs="0" name="id_value" type="xsd:string"/>
+<xsd:element form="qualified" name="id_type" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="employer" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="education_id" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="job_title_id" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="ProfileExtensionArr">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerBankingExtensionProfile" type="ns0:CustomerBankingExtensionProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="blackListedResult">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="blackListedDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="blackListedEndDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="department" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="reason" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="remarks" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="cbkCustomerProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="actualDesignation" type="xsd:string"/>
+<xsd:element minOccurs="0" name="address" type="xsd:string"/>
+<xsd:element minOccurs="0" name="arabicName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="capital" type="xsd:decimal"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="commercialID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="customerBusinessTypeID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="customerNo" type="xsd:int"/>
+<xsd:element minOccurs="0" name="customerOtherIncome" type="xsd:decimal"/>
+<xsd:element minOccurs="0" name="customerRimType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="customerSalary" type="xsd:decimal"/>
+<xsd:element minOccurs="0" name="customerStatusID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="customerTypeID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="englishName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="establishmentDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="isSNActive" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="legalAction" type="xsd:int"/>
+<xsd:element minOccurs="0" name="nationalityCode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="nationalityISO" type="xsd:string"/>
+<xsd:element minOccurs="0" name="officialDesignation" type="xsd:string"/>
+<xsd:element minOccurs="0" name="resident" type="xsd:int"/>
+<xsd:element name="respCode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="respMessage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="secretNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="segment" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="customerDetailsDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="rimNo" type="xsd:int"/>
+<xsd:element form="qualified" minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="mobileNo" type="xsd:string"/>
+<xsd:element form="qualified" name="totalDeposits" type="xsd:double"/>
+<xsd:element form="qualified" minOccurs="0" name="rimStatus" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="customerType" type="xsd:string"/>
+<xsd:element form="qualified" name="totalLiability" type="xsd:double"/>
+<xsd:element form="qualified" name="totalOverDue" type="xsd:double"/>
+<xsd:element form="qualified" name="monthlyIncome" type="xsd:double"/>
+<xsd:element form="qualified" minOccurs="0" name="civilIDExpiryDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="enName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="arName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="rimClass" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="corpRelationManagerName" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="corpRelationManagerID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="licenseExpiryDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="invoiceListDTO" type="ns0:invoiceDetailsListDTO"/>
+<xsd:element form="qualified" minOccurs="0" name="limitUtilizationListDTO" type="ns0:limitUtilizationListDTO"/>
+<xsd:element form="qualified" minOccurs="0" name="phxDealListDTO" type="ns0:limitUtilizationListDTO"/>
+<xsd:element form="qualified" minOccurs="0" name="twDealListDTO" type="ns0:limitUtilizationListDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="invoiceDetailsListDTO">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="invoiceDTO" type="ns0:invoiceDetailsDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="invoiceDetailsDTO">
+<xsd:sequence>
+<xsd:element form="qualified" name="invoiceNo" type="xsd:int"/>
+<xsd:element form="qualified" name="currentBalance" type="xsd:double"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="limitUtilizationListDTO">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="limitUtilizationDealDTO" type="ns0:limitUtilizationDetailsDTO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="limitUtilizationDetailsDTO">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="limitID" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="dealAcctNo" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="limitAmt" type="xsd:double"/>
+<xsd:element form="qualified" minOccurs="0" name="utilizationAmt" type="xsd:double"/>
+<xsd:element form="qualified" minOccurs="0" name="dealAmt" type="xsd:double"/>
+<xsd:element form="qualified" minOccurs="0" name="expirydate" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="description" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="limitType" type="xsd:string"/>
+<xsd:element form="qualified" minOccurs="0" name="status" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="detailedGenericCustomerProfile">
+<xsd:complexContent>
+<xsd:extension base="ns0:genericCustomerBankingProfile">
+<xsd:sequence>
+<xsd:element form="qualified" minOccurs="0" name="kycDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="lastProfileUpdDate" type="xsd:dateTime"/>
+<xsd:element form="qualified" minOccurs="0" name="personalInfo" type="ns0:personalInfo"/>
+<xsd:element form="qualified" minOccurs="0" name="professionAndFinancialInfo" type="ns0:professionAndFinancialInfo"/>
+<xsd:element form="qualified" minOccurs="0" name="politicalAndDiplomaticInfo" type="ns0:politicalAndDiplomaticInfo"/>
+<xsd:element form="qualified" minOccurs="0" name="customerRelativeList">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="customerRelative" type="ns0:customerRealative"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element form="qualified" minOccurs="0" name="crsInfo" type="ns0:crsInfo"/>
+<xsd:element form="qualified" minOccurs="0" name="crsInfoList">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CRSInfo" type="ns0:crsInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="citizenship" type="xsd:string"/>
+<xsd:element minOccurs="0" name="acrsStatus" type="xsd:int"/>
+<xsd:element minOccurs="0" name="receiptDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="requestDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="specialNeed" type="xsd:string"/>
+<xsd:element minOccurs="0" name="crsSelfCert" type="xsd:string"/>
+<xsd:element minOccurs="0" name="crsStatus" type="xsd:int"/>
+<xsd:element minOccurs="0" name="crsClassification" type="xsd:int"/>
+<xsd:element minOccurs="0" name="bulkUpdate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="crsGIIN" type="xsd:string"/>
+<xsd:element minOccurs="0" name="fatcaStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="formW8" type="xsd:string"/>
+<xsd:element minOccurs="0" name="formW9" type="xsd:string"/>
+<xsd:element minOccurs="0" name="formReqDate" nillable="true" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="fromRcvDate" nillable="true" type="xsd:dateTime"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="customerRealative">
+<xsd:sequence>
+<xsd:element name="closeToPEP" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="pepCategoryID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="relationID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="relativeName" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ezwayCustomerProfile">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="arabicName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="birthDate" type="xsd:dateTime"/>
+<xsd:element name="branchNo" type="xsd:int"/>
+<xsd:element name="capitalAmount" type="xsd:double"/>
+<xsd:element minOccurs="0" name="civilID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="civilIdExpirationDate" type="xsd:dateTime"/>
+<xsd:element name="commercialActivityId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="commercialLicense" type="xsd:string"/>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="contactList" nillable="true" type="ns0:contactInfo"/>
+<xsd:element name="corpLegalNature" type="xsd:int"/>
+<xsd:element minOccurs="0" name="corpRegistrationDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="corpRegistrationNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="customerTypeId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="department" type="xsd:string"/>
+<xsd:element name="empPositionID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="employerName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="englishName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="gender" type="xsd:string"/>
+<xsd:element minOccurs="0" name="licenseExpiration" type="xsd:string"/>
+<xsd:element minOccurs="0" name="maritalStatus" type="xsd:string"/>
+<xsd:element name="monthlyIncome" type="xsd:double"/>
+<xsd:element minOccurs="0" name="nationalityId" type="xsd:string"/>
+<xsd:element name="organizationId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="position" type="xsd:string"/>
+<xsd:element minOccurs="0" name="profileCreationDate" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="residency" type="xsd:string"/>
+<xsd:element name="respCode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="respMessage" type="xsd:string"/>
+<xsd:element name="sicCode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="sicCodeDescription" type="xsd:string"/>
+<xsd:element minOccurs="0" name="startDate" type="xsd:dateTime"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="contactInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="businessBlock" type="xsd:string"/>
+<xsd:element minOccurs="0" name="businessEmail" type="xsd:string"/>
+<xsd:element minOccurs="0" name="businessHouse" type="xsd:string"/>
+<xsd:element minOccurs="0" name="businessPhone" type="xsd:string"/>
+<xsd:element name="businessProvince" type="xsd:int"/>
+<xsd:element name="businessRegion" type="xsd:int"/>
+<xsd:element minOccurs="0" name="businessStreet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="emailAddress1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="emailAddress2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="homeNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="mobileNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="primaryAvenue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="primaryBlock" type="xsd:string"/>
+<xsd:element minOccurs="0" name="primaryHouse" type="xsd:string"/>
+<xsd:element name="primaryProvince" type="xsd:int"/>
+<xsd:element minOccurs="0" name="primaryStreet" type="xsd:string"/>
+<xsd:element name="regionId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="telephoneNo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="workTelephoneExt" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfCustomerBankingProfile">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="CustomerBankingProfile" nillable="true" type="ns0:customerBankingProfile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="listResult">
+<xsd:sequence>
+<xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="xsd:anyType"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="customerBankingExtensionProfile" type="ns0:CustomerBankingExtensionProfile"/>
+<xsd:element name="checkVVIPCustomerStatus" type="ns0:checkVVIPCustomerStatus"/>
+<xsd:element name="checkVVIPCustomerStatusResponse" type="ns0:checkVVIPCustomerStatusResponse"/>
+<xsd:element name="createBankingCustomerProfile" type="ns0:createBankingCustomerProfile"/>
+<xsd:element name="createBankingCustomerProfileResponse" type="ns0:createBankingCustomerProfileResponse"/>
+<xsd:element name="createRimProfile" type="ns0:createRimProfile"/>
+<xsd:element name="createRimProfileResponse" type="ns0:createRimProfileResponse"/>
+<xsd:element name="deleteCustomerProfileExtension" type="ns0:deleteCustomerProfileExtension"/>
+<xsd:element name="deleteCustomerProfileExtensionAttribute" type="ns0:deleteCustomerProfileExtensionAttribute"/>
+<xsd:element name="deleteCustomerProfileExtensionAttributeResponse" type="ns0:deleteCustomerProfileExtensionAttributeResponse"/>
+<xsd:element name="deleteCustomerProfileExtensionResponse" type="ns0:deleteCustomerProfileExtensionResponse"/>
+<xsd:element name="getAccountType" type="ns0:getAccountType"/>
+<xsd:element name="getAccountTypeResponse" type="ns0:getAccountTypeResponse"/>
+<xsd:element name="getBankingStaticData" type="ns0:getBankingStaticData"/>
+<xsd:element name="getBankingStaticDataResponse" type="ns0:getBankingStaticDataResponse"/>
+<xsd:element name="getCorporateRelationManager" type="ns0:getCorporateRelationManager"/>
+<xsd:element name="getCorporateRelationManagerResponse" type="ns0:getCorporateRelationManagerResponse"/>
+<xsd:element name="getCustomerAddressFromPACI" type="ns0:getCustomerAddressFromPACI"/>
+<xsd:element name="getCustomerAddressFromPACIResponse" type="ns0:getCustomerAddressFromPACIResponse"/>
+<xsd:element name="getCustomerCRSDetails" type="ns0:getCustomerCRSDetails"/>
+<xsd:element name="getCustomerCRSDetailsResponse" type="ns0:getCustomerCRSDetailsResponse"/>
+<xsd:element name="getCustomerClass" type="ns0:getCustomerClass"/>
+<xsd:element name="getCustomerClassResponse" type="ns0:getCustomerClassResponse"/>
+<xsd:element name="getCustomerProfileLookupData" type="ns0:getCustomerProfileLookupData"/>
+<xsd:element name="getCustomerProfileLookupDataResponse" type="ns0:getCustomerProfileLookupDataResponse"/>
+<xsd:element name="getEducation" type="ns0:getEducation"/>
+<xsd:element name="getEducationResponse" type="ns0:getEducationResponse"/>
+<xsd:element name="getJobTitle" type="ns0:getJobTitle"/>
+<xsd:element name="getJobTitleResponse" type="ns0:getJobTitleResponse"/>
+<xsd:element name="insertCustomerProfileExtension" type="ns0:insertCustomerProfileExtension"/>
+<xsd:element name="insertCustomerProfileExtensionArr" type="ns0:insertCustomerProfileExtensionArr"/>
+<xsd:element name="insertCustomerProfileExtensionArrResponse" type="ns0:insertCustomerProfileExtensionArrResponse"/>
+<xsd:element name="insertCustomerProfileExtensionResponse" type="ns0:insertCustomerProfileExtensionResponse"/>
+<xsd:element name="isCustomerBlackListed" type="ns0:isCustomerBlackListed"/>
+<xsd:element name="isCustomerBlackListedResponse" type="ns0:isCustomerBlackListedResponse"/>
+<xsd:element name="searchByFirstAndLastName" type="ns0:searchByFirstAndLastName"/>
+<xsd:element name="searchByFirstAndLastNameResponse" type="ns0:searchByFirstAndLastNameResponse"/>
+<xsd:element name="searchByMatchingNameBeginning" type="ns0:searchByMatchingNameBeginning"/>
+<xsd:element name="searchByMatchingNameBeginningResponse" type="ns0:searchByMatchingNameBeginningResponse"/>
+<xsd:element name="searchByOtherLanguageName" type="ns0:searchByOtherLanguageName"/>
+<xsd:element name="searchByOtherLanguageNameResponse" type="ns0:searchByOtherLanguageNameResponse"/>
+<xsd:element name="searchByPhoneNumber" type="ns0:searchByPhoneNumber"/>
+<xsd:element name="searchByPhoneNumberResponse" type="ns0:searchByPhoneNumberResponse"/>
+<xsd:element name="searchCustomerProfileUserDefinedData" type="ns0:searchCustomerProfileUserDefinedData"/>
+<xsd:element name="searchCustomerProfileUserDefinedDataResponse" type="ns0:searchCustomerProfileUserDefinedDataResponse"/>
+<xsd:element name="updateCustomerAddress" type="ns0:updateCustomerAddress"/>
+<xsd:element name="updateCustomerAddressResponse" type="ns0:updateCustomerAddressResponse"/>
+<xsd:element name="updateCustomerCivilIdInfo" type="ns0:updateCustomerCivilIdInfo"/>
+<xsd:element name="updateCustomerCivilIdInfoResponse" type="ns0:updateCustomerCivilIdInfoResponse"/>
+<xsd:element name="updateCustomerKYCInfo" type="ns0:updateCustomerKYCInfo"/>
+<xsd:element name="updateCustomerKYCInfoResponse" type="ns0:updateCustomerKYCInfoResponse"/>
+<xsd:element name="updateCustomerProfile" type="ns0:updateCustomerProfile"/>
+<xsd:element name="updateCustomerProfileResponse" type="ns0:updateCustomerProfileResponse"/>
+<xsd:element name="viewBankingCustomerProfile" type="ns0:viewBankingCustomerProfile"/>
+<xsd:element name="viewBankingCustomerProfileResponse" type="ns0:viewBankingCustomerProfileResponse"/>
+<xsd:element name="viewBlackListed" type="ns0:viewBlackListed"/>
+<xsd:element name="viewBlackListedResponse" type="ns0:viewBlackListedResponse"/>
+<xsd:element name="viewCBKCustomerProfile" type="ns0:viewCBKCustomerProfile"/>
+<xsd:element name="viewCBKCustomerProfileResponse" type="ns0:viewCBKCustomerProfileResponse"/>
+<xsd:element name="viewCustomerDetails" type="ns0:viewCustomerDetails"/>
+<xsd:element name="viewCustomerDetailsResponse" type="ns0:viewCustomerDetailsResponse"/>
+<xsd:element name="viewCustomerProfile" type="ns0:viewCustomerProfile"/>
+<xsd:element name="viewCustomerProfileExtension" type="ns0:viewCustomerProfileExtension"/>
+<xsd:element name="viewCustomerProfileExtensionResponse" type="ns0:viewCustomerProfileExtensionResponse"/>
+<xsd:element name="viewCustomerProfileResponse" type="ns0:viewCustomerProfileResponse"/>
+<xsd:element name="viewDetailedGenericCustomerProfile" type="ns0:viewDetailedGenericCustomerProfile"/>
+<xsd:element name="viewDetailedGenericCustomerProfileResponse" type="ns0:viewDetailedGenericCustomerProfileResponse"/>
+<xsd:element name="viewEzwayCustomerProfile" type="ns0:viewEzwayCustomerProfile"/>
+<xsd:element name="viewEzwayCustomerProfileResponse" type="ns0:viewEzwayCustomerProfileResponse"/>
+<xsd:element name="viewRimToRimRelation" type="ns0:viewRimToRimRelation"/>
+<xsd:element name="viewRimToRimRelationResponse" type="ns0:viewRimToRimRelationResponse"/>
+<xsd:element name="viewGenericCustomerProfile" type="ns0:viewGenericCustomerProfile"/>
+<xsd:element name="viewGenericCustomerProfileNotFiltered" type="ns0:viewGenericCustomerProfileNotFiltered"/>
+<xsd:element name="viewGenericCustomerProfileNotFilteredResponse" type="ns0:viewGenericCustomerProfileNotFilteredResponse"/>
+<xsd:element name="viewGenericCustomerProfileResponse" type="ns0:viewGenericCustomerProfileResponse"/>
+<xsd:element name="viewJointAccountProfiles" type="ns0:viewJointAccountProfiles"/>
+<xsd:element name="viewJointAccountProfilesResponse" type="ns0:viewJointAccountProfilesResponse"/>
+<xsd:element name="ViewProfileAttributes" type="ns0:ViewProfileAttributes"/>
+<xsd:element name="ViewProfileAttributesResponse" type="ns0:ViewProfileAttributesResponse"/>
+<xsd:element name="bankingResultDTO" type="ns0:bankingResultDTO"/>
+<xsd:element name="corporateRelationManagerProfile" type="ns0:corporateRelationManagerProfile"/>
+<xsd:element name="customerClassDTO" type="ns0:customerClassDTO"/>
+<xsd:element name="customerEducationDTO" type="ns0:customerEducationDTO"/>
+<xsd:element name="customerJobTitleDTO" type="ns0:customerJobTitleDTO"/>
+<xsd:element name="nameSearchResult" type="ns0:nameSearchResult"/>
+<xsd:element name="customerBankingAddress" type="ns0:customerBankingAddress"/>
+<xsd:element name="keyValuePair" type="ns0:keyValuePair"/>
+<xsd:element name="customerWealthSource" type="ns0:customerWealthSource"/>
+<xsd:element name="genericCustomerBankingProfile" type="ns0:genericCustomerBankingProfile"/>
+<xsd:element name="customerBankingProfile" type="ns0:customerBankingProfile"/>
+<xsd:element name="blackListedResult" type="ns0:blackListedResult"/>
+<xsd:element name="cbkCustomerProfile" type="ns0:cbkCustomerProfile"/>
+<xsd:element name="detailedGenericCustomerProfile" type="ns0:detailedGenericCustomerProfile"/>
+<xsd:element name="ezwayCustomerProfile" type="ns0:ezwayCustomerProfile"/>
+<xsd:element name="Exception" nillable="true" type="ns1:Exception"/>
+</xsd:schema>

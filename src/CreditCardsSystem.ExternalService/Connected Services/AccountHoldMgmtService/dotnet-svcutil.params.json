@@ -1,0 +1,16 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "../../SOA/AccountHoldMgmtService/AccountHoldMgmt.wsdl"
+    ],
+    "messageContract": true,
+    "namespaceMappings": [
+      "*, AccountHoldMgmtServiceReference"
+    ],
+    "outputFile": "AccountHoldMgmtReference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

@@ -1,0 +1,692 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Groups
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Requests
+@using CreditCardsSystem.Domain.Models.CardIssuance
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.CardDefinition
+@using Telerik.FontIcons
+@using Telerik.SvgIcons
+@using H2 = Kfh.Aurora.Blazor.Components.UI.H2
+@using H4 = Kfh.Aurora.Blazor.Components.UI.H4
+
+
+@page "/cards/matrix"
+@inject ILogger<CardEligibilityMatrix> Logger
+@inject ICardDefsAppService CardDefsAppService
+@inject IGroupsAppService GroupsAppService
+
+@inherits ApplicationComponent
+
+
+@if (!IsAllowTo(Permissions.CardEligibilityMatrix.View()))
+{
+    <AccessDenied />
+}
+else
+{
+   <div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                 <Title Text="Cards Eligibility Matrix"></Title>
+            </div>
+                <div class="KFHnopadding kfh-data-table">
+                    @if (CardsDefResponse.Status == DataStatus.Success)
+                    {
+                        <TelerikGrid Data="@CardsDefResponse.Data"
+                                     EditMode="@GridEditMode.Popup"
+                                     Pageable="true"
+                                     PageSize="10"
+                                     Width="100%"
+                                     OnDelete="@OpenConfirmationDialog"
+                                     Resizable="true"
+                                     @ref="GridRef">
+                          <GridToolBarTemplate>
+                                @if (IsAllowTo(Permissions.CardEligibilityMatrix.Create()))
+                                {
+                                    <GridCommandButton Command="Add" Class="btn-secondary" OnClick="@EmptyLists">Add New</GridCommandButton>
+                                }
+
+                                <span class="k-toolbar-spacer"></span>
+                                <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                         </GridToolBarTemplate>
+
+
+                              @* <GridSettings>
+                                  <GridPopupEditFormSettings Context="FormContext" Orientation="@FormOrientation.Vertical"
+                                   ButtonsLayout="FormButtonsLayout.Center"
+                                   Columns="2">
+
+                                     <FormTemplate> *@
+                                 
+                               <GridSettings>
+                                    <GridPopupEditSettings Class="custom-popup" Width="70%"></GridPopupEditSettings>
+                                    <GridPopupEditFormSettings Context="FormContext" ColumnSpacing="20px" Orientation="@FormOrientation.Horizontal">
+                                        @* <ButtonsTemplate>
+                                             <GridCommandButton  Command="Edit" Icon="@FontIcon.Cancel" OnClick="@(CloseAddEditPopup)">Cancel</GridCommandButton>
+                                                <GridCommandButton Command="Save" Icon="@FontIcon.Save" >Save</GridCommandButton>
+                                        </ButtonsTemplate> *@
+                                        
+                                       <FormTemplate>
+                                          @{
+                                              CardToAddEdit = FormContext.Item as CardMatrixDto;
+
+                                              <TelerikForm Model="@CardToAddEdit"
+                                                           OnValidSubmit="@AddRequest"
+                                                           ColumnSpacing="20px"
+                                                           Columns="2"
+                                                           ButtonsLayout="@FormButtonsLayout.End"
+                                                           Orientation="@FormOrientation.Horizontal"
+                                                            >
+                                                  <FormItems>
+                                                  
+                                                    <FormItem>
+                                                        <Template>
+                                                            <Label>Allowed Branches</Label>
+                                                            <TelerikMultiSelect Data="@Branches"
+                                                                                @bind-Value="@BranchesValues"
+                                                                                TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                                                                ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                                                                Filterable="true"
+                                                                                AutoClose="false"/>
+                                                        <p class="text-red">@AllowedBranchesError</p>
+
+                                                        
+
+                                                        </Template>
+                                                    </FormItem>
+
+                                                    <FormItem>
+                                                          <Template>
+                                                              <Label>Card Type</Label>
+                                                              <TelerikDropDownList Data="@CardsTypes"
+                                                                                   TextField="@nameof(CardDefinitionDto.Name)"
+                                                                                   ValueField="@nameof(CardDefinitionDto.CardType)"
+                                                                                   @bind-Value="@CardToAddEdit!.CardType"
+                                                                                   Filterable="true">
+                                                              </TelerikDropDownList>
+                                                            <p class="text-red">@CardTypeError</p>
+                                                            <p class="text-red">@CobrandError</p>
+                                                          </Template>
+                                                    </FormItem>
+
+                                                    <FormItem>
+                                                        <Template>
+                                                            <Label>Allowed Class Codes</Label>
+                                                            <TelerikMultiSelect Data="@CustomerClasses"
+                                                                                @bind-Value="@CustomerClassesValues"
+                                                                                TextField="@nameof(GroupAttributeLookupDto.Attribute)"
+                                                                                ValueField="@nameof(GroupAttributeLookupDto.Value)"
+                                                                                Filterable="true"
+                                                                                AutoClose="false"/>
+                                                            <p class="text-red">@AllowedClassCodesError</p>
+
+                                                        </Template>
+                                                    </FormItem>
+                                                
+                                                    <FormItem>
+                                                        <Template>
+                                                            <Label><H1></H1> </Label>
+                                                        </Template>
+                                                    </FormItem>
+
+
+                                                      <FormItem>
+                                                          <Template>
+                                                              <Label>Is Disabled</Label>
+                                                              <TelerikCheckBox @bind-Value="@CardToAddEdit!.IsDisabled"></TelerikCheckBox>
+                                                          </Template>
+                                                      </FormItem>
+
+                                                    <FormItem>
+                                                        <Template>
+                                                            <Label>Is Cobrand Prepaid</Label>
+                                                            <TelerikCheckBox @bind-Value="@CardToAddEdit!.IsCobrandPrepaid"></TelerikCheckBox>
+                                                        </Template>
+                                                    </FormItem>
+                                                    
+                                                      <FormItem>
+                                                          <Template>
+                                                              <Label>Allowed Non Kfh</Label>
+                                                              <TelerikCheckBox @bind-Value="@CardToAddEdit!.AllowedNonKFH"></TelerikCheckBox>
+                                                            <p class="text-red">@AllowedNonKfhError</p>
+
+                                                          </Template>
+                                                      </FormItem>
+
+                                                      <FormItem>
+                                                          <Template>
+                                                              <Label>Is Corporate</Label>
+                                                              <TelerikCheckBox @bind-Value="@CardToAddEdit!.IsCorporate"></TelerikCheckBox>
+                                                          </Template>
+                                                      </FormItem>
+
+                                                    <FormItem>
+                                                        <Template>
+                                                            <Label>Is Cobrand Credit</Label>
+                                                            <TelerikCheckBox @bind-Value="@CardToAddEdit!.ISCobrandCredit"></TelerikCheckBox>
+                                                        </Template>
+                                                    </FormItem>
+
+                                                      
+                                                  </FormItems>
+                                                  <FormButtons>
+                                                    <div class="form-buttons-popup">
+                                                        <div>
+                                                            <TelerikButton Class="btn btn-territory btn-sm" Icon="@nameof(SvgIcon.Cancel)" ButtonType="@ButtonType.Button" OnClick="@(CloseAddEditPopup)">Cancel</TelerikButton>
+                                                        </div>
+                                                        <div>
+                                                            
+                                                            <TelerikButton Class="btn btn-primary btn-sm" Icon="@nameof(SvgIcon.Save)">Save</TelerikButton>
+                                                        </div>
+                                                    </div>
+                                                  </FormButtons>
+                                              </TelerikForm>
+                                          }
+                                      </FormTemplate>   
+                                  </GridPopupEditFormSettings>
+                               </GridSettings>
+
+
+                            <GridColumns>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.CardTypeName)" Title="Card Type" OnCellRender="@((e) => e.Class = "col-xl-2 text-start")" HeaderClass="col-xl-2 text-start ps-4">
+                                    <Template>
+
+                                        @{
+                                            var item = context as CardMatrixDto;
+                                            <H4 class="ps-4 text-start">@item!.CardTypeName</H4>
+                                        }
+                                    </Template>
+                                    
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.AllowedBranches)" Title="Allowed Branches" OnCellRender="@((e) => e.Class = "col-xl-2 text-start")" HeaderClass="col-xl-2 text-start ps-4">
+                                    <Template>
+
+                                        @* @{
+                                            var item = context as CardMatrixDto;
+                                            <H4>@item!.AllowedBranchesDesc</H4>
+                                        } *@
+
+                                        
+
+                                         @{  
+                                         var item = context as CardMatrixDto;
+                                        List<string> allowedBranchesDesc = item!.AllowedBranchesDesc.Split(separator:",").ToList();
+
+                                        <ul>
+                                            @foreach (string AllowedBranchesDesc in allowedBranchesDesc)
+                                            {
+                                                @if (AllowedBranchesDesc == "All")
+                                                {
+                                                    <li class="mb-2">
+                                                        <SubH1>@AllowedBranchesDesc</SubH1>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li class="mb-2">
+                                                        <SubH1>&#8226; @AllowedBranchesDesc</SubH1>
+                                                    </li>
+                                                }
+                                               
+                                            }
+                                        </ul>
+                                    }   
+
+
+                                    </Template>
+                                    
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.AllowedClassCode)" Title="Allowed Class Codes" OnCellRender="@((e) => e.Class = "col-xl-2 text-start")" HeaderClass="col-xl-2 text-start ps-4">
+                                    <Template>
+
+                                        @* @{
+                                            var item = context as CardMatrixDto;
+                                            <H4>@item!.AllowedClassCodeDesc</H4>
+                                        } *@
+
+
+                                         @{  
+                                         var item = context as CardMatrixDto;
+                                        List<string> allowedClassCodeDesc = item!.AllowedClassCodeDesc.Split(separator:",").ToList();
+
+                                        <ul>
+                                            @foreach (string AllowedClassCodeDesc in allowedClassCodeDesc)
+                                            {
+                                                @if (AllowedClassCodeDesc == "All")
+                                                {
+                                                    <li class="mb-2">
+                                                        <SubH1>@AllowedClassCodeDesc</SubH1>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li class="mb-2">
+                                                        <SubH1>&#8226; @AllowedClassCodeDesc</SubH1>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    }   
+
+
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.IsDisabled)" Title="Is Disabled" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+                                        @{
+                                            var item = context as CardMatrixDto;
+
+                                            @if(item!.IsDisabled == true)
+                                            {
+                                                 <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                        <CircleIcon Icon="icon-Check" Title="Yes" Id="BottomTooltip" Class="text-green" CircleSize="35px" IconSize="25px" IconColor="text-green" CircleColor="bg-transparent"/>
+                                                 </div>
+                                            }
+                                            else 
+                                            {
+                                                
+                                            }
+                                            @* <H4>@item!.IsDisabled</H4> *@
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.IsCobrandPrepaid)" Title="Is Cobrand Prepaid" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+                                        @{
+                                            var item = context as CardMatrixDto;
+
+                                            @if(item!.IsCobrandPrepaid == true)
+                                            {
+                                                <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                    <CircleIcon Icon="icon-Check" Title="Yes" Id="BottomTooltip" Class="text-green" CircleSize="35px" IconSize="25px" IconColor="text-green" CircleColor="bg-transparent"/>
+                                                </div>
+                                            }
+                                            @* <H4>@item!.IsCobrandPrepaid</H4> *@
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.AllowedNonKFH)" Title="Allowed Non KFH" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+                                        @{
+                                            var item = context as CardMatrixDto;
+
+                                            @if(item!.AllowedNonKFH == true)
+                                            {
+                                                <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                    <CircleIcon Icon="icon-Check" Title="Yes" Id="BottomTooltip" Class="text-green" CircleSize="35px" IconSize="25px" IconColor="text-green" CircleColor="bg-transparent"/>
+                                                </div>
+                                            }
+                                            @* <H4>@item!.AllowedNonKFH</H4> *@
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.IsCorporate)" Title="Is Corporate" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+                                        @{
+                                            var item = context as CardMatrixDto;
+                                             @if(item!.IsCorporate == true)
+                                            {
+                                                <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                    <CircleIcon Icon="icon-Check" Title="Yes" Id="BottomTooltip" Class="text-green" CircleSize="35px" IconSize="25px" IconColor="text-green" CircleColor="bg-transparent"/>
+                                                </div>
+                                            }
+                                            @* <H4>@item!.IsCorporate</H4> *@
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.ISCobrandCredit)" Title="Is Cobrand Credit Card" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+                                        @{
+                                            var item = context as CardMatrixDto;
+                                             @if(item!.ISCobrandCredit == true)
+                                            {
+                                                <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                    <CircleIcon Icon="icon-Check" Title="Yes" Id="BottomTooltip" Class="text-green" CircleSize="35px" IconSize="25px" IconColor="text-green" CircleColor="bg-transparent"/>
+                                                </div>
+                                            }
+                                            @* <H4>@item!.ISCobrandCredit</H4> *@
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridColumn Field="@nameof(CardMatrixDto.Islocked)" Title="Record Status" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                    <Template>
+
+                                        @{
+                                            var item = context as CardMatrixDto;
+                                            @if (item!.Islocked.HasValue && item.Islocked.Value)
+                                            {   
+                                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                                    <CircleIcon Icon="icon-Lock" Title="Locked" Id="BottomTooltip" Class="text-red " CircleSize="40px" IConSize="15px" IconColor="text-red" CircleColor="bg-red"/>
+                                                </div>
+                                                @* <Status StatusClass="redStatus" StatusTitle="Locked"> </Status> *@
+                                            }
+                                            else
+                                            {
+                                                @* <Status StatusClass="greenStatus" StatusTitle="Unlocked"> </Status> *@
+                                            }
+                                        }
+                                    </Template>
+                                </GridColumn>
+
+                                <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+                                    @{
+                                        var item = context as CardMatrixDto;
+                                        if (!item!.Islocked.HasValue || !item.Islocked.Value)
+                                        {
+
+                                            @if (IsAllowTo(Permissions.Promotions.Edit()))
+                                            {
+                                                <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                                <GridCommandButton OnClick="@(() => BindEditData(item))" Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                            }
+                                            @if (IsAllowTo(Permissions.Promotions.Delete()))
+                                            {
+                                                <GridCommandButton Command="Delete" Icon="@FontIcon.Trash"></GridCommandButton>
+                                            }
+                                            <GridCommandButton OnClick="@EmptyLists" Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+
+                                        }
+                                       
+                                    }
+                                </GridCommandColumn>
+
+                            </GridColumns>
+
+                            <NoDataTemplate>
+                                <NoRecordsFound />
+                            </NoDataTemplate>
+
+                        </TelerikGrid>
+
+                    }
+                    else if (CardsDefResponse.Status == DataStatus.Loading)
+                    {   
+                        <div class="col-12 p-5">
+                            <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                        </div>
+                        @* <DataTableSkeleton /> *@
+                    }
+                    else if (CardsDefResponse.Status == DataStatus.Error)
+                    {   
+                        <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+                    }
+                </div>
+        </div>
+    </div>
+  
+
+}
+
+<DeleteConfirmation DeleteRecord="DeleteHandler" ShowConfirmation="ShowConfirmationDig"></DeleteConfirmation>
+
+@code {
+
+    public FormOrientation FormOrientation = FormOrientation.Horizontal;
+
+    public List<CardDefinitionDto> CardsTypes { get; set; } = new();
+    public List<GroupAttributeLookupDto> Branches { get; set; } = new();
+    public List<string> BranchesValues { get; set; } = new();
+    public List<GroupAttributeLookupDto> CustomerClasses { get; set; } = new();
+    public List<string> CustomerClassesValues { get; set; } = new();
+    public DataItem<List<CardMatrixDto>> CardsDefResponse { get; set; } = new();
+    public List<CardMatrixDto> CardsDefBackup { get; set; } = new();
+    public CardMatrixDto SelectedCardToDelete { get; set; } = new();
+    public CardMatrixDto CardToAddEdit { get; set; } = new();
+    public string CardTypeError { get; set; } = string.Empty;
+    public string AllowedNonKfhError { get; set; } = string.Empty;
+    public string CobrandError { get; set; } = string.Empty;
+    public string AllowedClassCodesError { get; set; } = string.Empty;
+    public string AllowedBranchesError { get; set; } = string.Empty;
+    private TelerikGrid<CardMatrixDto> GridRef { get; set; } = new();
+    public bool ShowConfirmationDig { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        CardsDefResponse.Loading();
+        await GetCardsTypes();
+        await GetBranches();
+        await GetCustomerClasses();
+        await GetCardsMatrix();
+
+    }
+
+    void EmptyLists()
+    {
+        CustomerClassesValues = new List<string>();
+        BranchesValues = new List<string>();
+        EmptyErrors();
+    }
+
+    void EmptyErrors()
+    {
+        AllowedBranchesError = string.Empty;
+        AllowedClassCodesError = string.Empty;
+        AllowedNonKfhError = string.Empty;
+        CardTypeError = string.Empty;
+        CobrandError = string.Empty;
+    }
+
+    async Task GetCardsMatrix()
+    {
+        var response = await CardDefsAppService.GetCardsMatrix();
+        if (response.IsSuccess)
+        {
+            CardsDefBackup = new();
+            CardsDefBackup.AddRange(response.Data!);
+
+            CardsDefResponse.SetData(response.Data!);
+        }
+        else
+            CardsDefResponse.Error(new Exception(response.Message));
+    }
+
+    async Task GetCardsTypes()
+    {
+        CardsTypes = (await CardDefsAppService.GetCardsTypes()).Data!;
+    }
+
+    async Task GetBranches()
+    {
+        Branches = await GroupsAppService.GetLocations();
+    }
+
+    async Task GetCustomerClasses()
+    {
+        CustomerClasses = await GroupsAppService.GetCustomerClass();
+    }
+
+    async Task<bool> ValidateCard(CardMatrixDto card)
+    {
+        AllowedBranchesError = string.Empty;
+        AllowedClassCodesError = string.Empty;
+        AllowedNonKfhError = string.Empty;
+        CardTypeError = string.Empty;
+        CobrandError = string.Empty;
+
+        if (string.IsNullOrEmpty(card.AllowedClassCode))
+            AllowedClassCodesError = "allowed customer class codes are required";
+
+        if (string.IsNullOrEmpty(card.AllowedBranches))
+            AllowedBranchesError = "allowed branches are required";
+
+        if (card.CardType == 0)
+            CardTypeError = "card type is required";
+
+        // if (card.AllowedBranches.Split(',').ToList().Any(c => c == "0"))
+        //     AllowedBranchesError = "Invalid Allowed Branches Selection";
+
+        // if (card.AllowedClassCode.Split(',').ToList().Any(c => c == "0"))
+        //     AllowedClassCodesError = "Invalid Allowed Class Code Selection";
+
+        if (card is { ISCobrandCredit: true, IsCobrandPrepaid: true })
+            CobrandError = "Card cannot by Cobrand Prepaid and Cobrand Credit Card together";
+
+        if (card.AllowedNonKFH)
+        {
+            if (!IsPrepaid(card.CardType))
+                AllowedNonKfhError = "Allowed Non KFH is only for Prepaid Cards";
+        }
+
+        var isCardExist = await CardDefsAppService.IsCardExist(card);
+        if (isCardExist)
+            CardTypeError = "Card type already exists";
+
+        return string.IsNullOrEmpty(CardTypeError) &&
+               string.IsNullOrEmpty(AllowedNonKfhError) &&
+               string.IsNullOrEmpty(CobrandError) &&
+               string.IsNullOrEmpty(AllowedClassCodesError) &&
+               string.IsNullOrEmpty(AllowedBranchesError);
+    }
+
+    bool IsPrepaid(int cardType)
+    {
+        var card = CardsTypes.FirstOrDefault(c => c.CardType == cardType);
+        return card!.MaxLimit == 0 && card.MinLimit == 0;
+    }
+
+    void SetCardProperties(CardMatrixDto card)
+    {
+        card.CardTypeName = CardsTypes.FirstOrDefault(c => c.CardType == card.CardType)!.Name;
+
+        var selectedBranches = Branches.Where(b => BranchesValues.Contains(b.Value))
+            .Select(b => b.Attribute).ToList();
+        card.AllowedBranchesDesc = string.Join(',', selectedBranches);
+
+        var selectedCustomerClasses = CustomerClasses.Where(c => CustomerClassesValues.Contains(c.Value))
+            .Select(b => b.Attribute).ToList();
+        card.AllowedClassCodeDesc = string.Join(',', selectedCustomerClasses);
+
+    }
+
+    private async Task CloseAddEditPopup()
+    {
+        EmptyLists();
+
+        var state = GridRef?.GetState();
+        state!.OriginalEditItem = null!;
+        state.EditItem = null!;
+        state.InsertedItem = null!;
+        await GridRef?.SetStateAsync(state)!;
+    }
+
+    async Task AddRequest()
+    {
+        try
+        {
+            CardToAddEdit.AllowedBranches = string.Join(",", BranchesValues);
+            CardToAddEdit!.AllowedClassCode = string.Join(',', CustomerClassesValues);
+
+            var isValid = await ValidateCard(CardToAddEdit);
+
+            if (!isValid) return;
+
+            SetCardProperties(CardToAddEdit);
+
+            var request = new RequestDto<CardMatrixDto>
+                {
+                    ActivityForm = (int)ActivityForm.CardEligibilityMatrix,
+                    NewData = CardToAddEdit,
+                    OldData = CardToAddEdit.ID > 0 ? CardsDefBackup.FirstOrDefault(c => c.ID == CardToAddEdit.ID)! : null!,
+                    ActivityType = CardToAddEdit.ID > 0 ? (int)ActivityType.Edit : (int)ActivityType.Add
+                };
+
+            var response = await CardDefsAppService.AddCardMatrixRequest(request);
+
+            if (response.IsSuccess)
+            {
+                await CloseAddEditPopup();
+                Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+                if (CardToAddEdit.ID > 0)
+                    await GetCardsMatrix();
+
+                CustomerClassesValues = new List<string>();
+                BranchesValues = new List<string>();
+
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(AddRequest));
+        }
+    }
+
+    void OpenConfirmationDialog(GridCommandEventArgs args)
+    {
+        var card = (CardMatrixDto)args.Item;
+        SelectedCardToDelete = card;
+        ShowConfirmationDig = true;
+    }
+
+
+    async Task DeleteHandler()
+    {
+        var request = new RequestDto<CardMatrixDto>
+            {
+                ActivityForm = (int)ActivityForm.CardEligibilityMatrix,
+                NewData = SelectedCardToDelete,
+                ActivityType = (int)ActivityType.Delete
+            };
+
+        var response = await CardDefsAppService.AddCardMatrixRequest(request);
+
+        if (response.IsSuccess)
+        {
+            ShowConfirmationDig = false;
+            Notification.Show(AlertType.Success, "Add/Update request sent for approval, record is locked until it is approved");
+            if (SelectedCardToDelete.ID > 0)
+                await GetCardsMatrix();
+
+            CustomerClassesValues = new List<string>();
+            BranchesValues = new List<string>();
+
+        }
+        else
+            Notification.Show(AlertType.Error, response.Message);
+
+    }
+
+
+    private void BindEditData(CardMatrixDto item)
+    {
+        EmptyErrors();
+
+        BranchesValues = item.AllowedBranches.Split(",").ToList();
+        CustomerClassesValues = item.AllowedClassCode.Split(",").ToList();
+
+    }
+
+}
+
+@* <style>
+
+    .k-window .k-form {
+        column-count: 2;
+    }
+
+    .k-window-content, .k-prompt-container {
+    overflow: scroll;
+    }
+    
+    .k-window-content {
+        min-height: 70vh;
+        min-Width: 90vw;
+    } 
+</style> *@

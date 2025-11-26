@@ -1,0 +1,38 @@
+﻿@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.CardIssuance;
+
+
+<H2>@Title</H2>
+<SubH2>AddressType : @SelectedAddressType.ToString()</SubH2>
+<CheckerField Label="PO Box" OldValue="@OldAddress?.PostOfficeBoxNumber?.ToString()" Value="@Address?.PostOfficeBoxNumber?.ToString()"></CheckerField>
+<CheckerField Label="Area" OldValue="@OldAddress?.AreaId?.ToString()" Value="@Address?.AreaId?.ToString()"></CheckerField>
+
+<CheckerField Label="Block" OldValue="@OldAddress?.Block?.ToString()" Value="@Address?.Block?.ToString()"></CheckerField>
+<CheckerField Label="Street No" OldValue="@OldAddress?.StreetNo_NM?.ToString()" Value="@Address?.StreetNo_NM?.ToString()"></CheckerField>
+<CheckerField Label="Jada" OldValue="@OldAddress?.Jada?.ToString()" Value="@Address?.Jada?.ToString()"></CheckerField>
+<CheckerField Label="House" OldValue="@OldAddress?.House?.ToString()" Value="@Address?.House?.ToString()"></CheckerField>
+
+<CheckerField Label="Zip" OldValue="@OldAddress?.PostalCode?.ToString()" Value="@Address?.PostalCode?.ToString()"></CheckerField>
+<CheckerField Label="City" OldValue="@OldAddress?.City?.ToString()" Value="@Address?.City?.ToString()"></CheckerField>
+<CheckerField Label="Address" OldValue="@OldAddress?.AddressLine1?.ToString()" Value="@Address?.AddressLine1?.ToString()"></CheckerField>
+@* <CheckerField Label="Address Line 2" OldValue="@OldAddress?.AddressLine2?.ToString()" Value="@Address?.AddressLine2?.ToString()"></CheckerField>  *@
+<CheckerField Label="Home phone" OldValue="@OldAddress?.HomePhone?.ToString()" Value="@Address?.HomePhone?.ToString()"></CheckerField>
+<CheckerField Label="Mobile phone" OldValue="@OldAddress?.Mobile?.ToString()" Value="@Address?.Mobile?.ToString()"></CheckerField>
+<CheckerField Label="Work phone" OldValue="@OldAddress?.WorkPhone?.ToString()" Value="@Address?.WorkPhone?.ToString()"></CheckerField>
+
+@code {
+    [Parameter]
+    public BillingAddressModel Address { get; set; } = new();
+
+    [Parameter]
+    public BillingAddressModel? OldAddress { get; set; }
+
+    [Parameter]
+    public required string Title { get; set; }
+
+    [Parameter]
+    public bool IsViewOnly { get; set; }
+
+    [Parameter]
+    public AddressType SelectedAddressType { get; set; }
+}

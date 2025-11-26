@@ -1,0 +1,126 @@
+﻿@page "/replacement-tracking"
+
+
+@using CreditCardsSystem.Domain.Common
+@using Kfh.Aurora.Blazor.Components.ViewModels.Tabs;
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-8">
+    <TelerikButton Class="btn btn-primary btn-sm" OnClick="async () => await OffCanvasRef.ToggleAsync()">Replacement Tracking Report</TelerikButton>
+</div>
+<OffCanvas @ref="OffCanvasRef" Title="Replacement Tracking Report">
+    <OffcanvasContent>
+
+        <div class="cardDetails-drawerHeader">
+            <div class="AO-card--header">
+                <picture>
+                    <source srcset="" />
+                    <img style="width: 220px !important;  height: 144px !important; display: block" src="/dist/KFHCreditCards/credit/42.png"/>
+                </picture>
+                <div class="card-basicInfo">
+                    <H3 class="my-0">Yousef Al Amin </H3>
+                    <H2>4325 08<span class="CardX">XX XXXX</span>1693</H2>
+                    <H3>Visa Platinum</H3>
+                </div>
+            </div>
+        </div>
+
+         <ul class="offcanvas-list">
+                <FormList>
+                        <Form Label="Civil ID">
+                            <H2>293122200482</H2>
+                        </Form>
+
+                         <Form Label="FD Account Number">
+                            <H2>0007864030000000221</H2>
+                        </Form>
+
+                         <Form Label="Account No">
+                            <H2>791420000129</H2>
+                        </Form>
+
+                         <Form Label="Branch ID">
+                            <H2>1</H2>
+                        </Form>
+
+                         <Form Label="Replaced Card No.">
+                            <H2>4006016936938242</H2>
+                        </Form>
+
+                         <Form Label="Mobile">
+                            <H2>66666666</H2>
+                        </Form>
+
+                        <Form Label="Teller ID">
+                            <H2>92128</H2>
+                        </Form>
+
+                        <Form Label="Replacement Date">
+                            <H2>26/05/2024 09:11:55 AM</H2>
+                        </Form>
+
+
+                </FormList>
+         </ul>
+
+    </OffcanvasContent>
+
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-end align-items-center">
+            @* <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Cancel"></Button> *@
+            <Button Type="btn-primary btn-sm" Label="Print Application" Icon="icon-Print"></Button>
+        </div>
+    </OffcanvasFooterContent>
+
+</OffCanvas>
+
+
+
+@code {
+
+    public OffCanvas OffCanvasRef { get; set; }
+
+    public string StatusValue { get; set; } = "Activate";
+    public List<string> Status { get; set; } = new List<string> { "Activate", "Block", "Lock", "Delete" };
+    public string TextAreaValue { get; set; } = string.Empty;
+
+    public List<string> DebitAccount { get; set; } = new List<string> { "Account 1", "Account 2", "Account 3", "Account 4" };
+
+    public string AccountValue { get; set; } = "";
+
+    public List<TabItem> Items { get; set; } = new List<TabItem> {
+                new TabItem()
+                {
+                    Id = "0",
+                    Icon = "icon-Cards",
+                    Title = "Owned",
+                    Value = "OwnedCard",
+                    Checked = true
+                },
+                new TabItem()
+                {
+                    Id = "1",
+                    Icon = "icon-POS",
+                    Title = "Supplementary",
+                    Value = "Supplementary"
+
+                }
+        };
+    public TelerikDateRangePicker<DateTime> DatePicker { get; set; } = null!;
+    public DateTime StartValue { get; set; } = DateTime.Now;
+
+    public DateTime EndValue { get; set; } = DateTime.Now;
+
+    private void OnRadioDeliveryTypeSelection(RadioButton.RadioButtonSelection selectedItem)
+    {
+        SelectedDeliveryType = selectedItem.Item;
+    }
+    private List<string> DeliveryType = new List<string>()
+    {
+        "Owned Card",
+        "Supplementary Card"
+    };
+
+    private string SelectedDeliveryType { get; set; } = "Owned Card";
+
+
+}

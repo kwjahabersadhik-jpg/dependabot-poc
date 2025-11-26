@@ -1,0 +1,44 @@
+﻿@page "/"
+
+@using Kfh.Aurora.Common.Components.UI.Search.RecentSearch
+@using Kfh.Aurora.Common.Components.UI.Print
+@using Kfh.Aurora.Common.Components.UI.Tasks
+@using Kfh.Aurora.Common.Components.UI.Layouts
+@using Kfh.Aurora.Common.Components.UI.WhatsNew
+@using Kfh.Aurora.Common.Shared.Models.Search
+
+@inherits ApplicationComponent
+@inject NavigationManager navigationManager;
+
+<PageTitle>Credit Cards System</PageTitle>
+
+<CascadingValue Value="State" IsFixed=true>
+   <AuroraIndexLayout OnTasksViewMoreClicked="@NavigateToTasksPage" OnRecentSearchClick="@OnRecentSearchClick"/>
+</CascadingValue>
+
+@code {
+
+
+    private async Task OnRecentSearchClick(UserRecentSearch arg)
+    {
+        var queryParams = new Dictionary<string, string>
+        {
+            ["civilId"] = arg.CustomerCivilId.Encode()
+        };
+
+
+        NavigateTo("customer-view", queryParams);
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+    }
+
+    private void NavigateToTasksPage()
+    {
+        NavigateTo("cc-tasks");
+    }
+
+}

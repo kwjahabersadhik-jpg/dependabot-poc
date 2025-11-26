@@ -1,0 +1,29 @@
+﻿<div class="@CssClass">
+    <H3>@Label</H3>
+    <H2>
+        @if (Child is null)
+        {
+            @Value
+        }
+        else
+        {
+            @Child
+        }
+    </H2>
+
+</div>
+
+@code {
+    [Parameter]
+    public string CssClass { get; set; } = "col";
+
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? Child { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
+}

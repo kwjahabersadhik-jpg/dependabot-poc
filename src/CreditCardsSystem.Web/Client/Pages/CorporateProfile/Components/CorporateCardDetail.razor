@@ -1,0 +1,68 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.Card
+@using CreditCardsSystem.Domain.Models.Corporate
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@inject ICardDetailsAppService cardDetailsService;
+@inherits CancellableComponent
+
+<OffCanvas @ref=canvasRef Title="Card Detail">
+    <OffcanvasContent>
+     
+        @if (CardBalance.Status == DataStatus.Loading)
+        {
+
+            <FormSkeleton />
+        }
+        else
+        {
+
+            <MoreDetail SelectedCard="@CardBalance.Data" />
+        }
+
+
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons justify-content-between align-items-end">
+            <Button Type="btn-sm" ButtonType="@ButtonType.Button" Label="Close" OnClick=CloseForm></Button>
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+@code {
+
+
+    private async Task CloseForm()
+    {
+        await CancellationTokenSource!.CancelAsync();
+        CancellationTokenSource = null;
+        await canvasRef.ToggleAsync();
+    }
+
+
+
+
+    private OffCanvas canvasRef { get; set; } = default!;
+    public DataItem<CardDetailsResponse> CardBalance { get; set; } = new();
+
+    public async Task LoadCardBalance(decimal requestId)
+    {
+        await canvasRef.ToggleAsync();
+        CardBalance.Loading();
+        StateHasChanged();
+        try
+        {
+            var cardBalance = await cardDetailsService.GetCardInfo(requestId, includeCardBalance: true, cancellationToken: CancellationToken);
+            if (cardBalance.IsSuccessWithData)
+                CardBalance.SetData(cardBalance.Data!);
+            else
+                CardBalance.Error(new(cardBalance.Message));
+        }
+        catch (Exception)
+        {
+            CardBalance.Error(new("Error"));
+        }
+
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,417 @@
+﻿@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardDetails.Skeletons
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance
+@using CreditCardsSystem.Web.Client.Pages.CustomerProfile;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@using CreditCardsSystem.Utility.Extensions
+@inherits ApplicationComponent
+
+
+<div>
+    <div class="table-header mx-0">
+        <Title Text="Digital Wallet Details"></Title>
+        <div class="d-flex align-items-center gp-16">
+            <SingleDropdown Type="Status" DropDownData="@TypesList" SelectedValue="@StatusType" SelectedValueChanged="@StatusTypeFilterChanged"></SingleDropdown>
+        </div>
+    </div>
+
+    <div class="kfh-data-table p-0">
+        <TelerikGrid Data="@GridData" Pageable="true"
+                     PageSize="12"
+                     Sortable="true">
+            <GridColumns>
+                <GridColumn Field="Requestor Name" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell ps-5")" HeaderClass="Cell15 AO-detailed--cell ps-5">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex w-70 gp-16 ">
+                                    <div class=" d-flex justify-content-center align-items-center ">
+                                        <CircleIcon Icon="icon-Apple-logo" Class=" circleSize" />
+                                    </div>
+                                    <div class=" d-flex justify-content-center align-items-center ">
+                                        <H4 Class="my-0">@item.RequestorName</H4>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Requestor Token  ID" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <div class=" d-flex justify-content-center align-items-center ">
+                                <H4 Class="my-0">@item.TokenID</H4>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Token Number" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <H4>@DisplayCardNumber(item.CardNumberDto)</H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Token Expiry" OnCellRender="@((e) => e.Class = "Cell10")" HeaderClass="Cell10">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <H4>02/2028</H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Status" OnCellRender="@((e) => e.Class = "Cell10")" HeaderClass="Cell10">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <Status StatusClass="@item.StatusColor" StatusTitle="@item.Status" />
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <ActionsMenu Class="d-flex justify-content-center align-items-center">
+                                <ActionMenuItem ItemText="Change Status" OnClickAction="@ChangeStatusOffCanvas"></ActionMenuItem>
+                                <Divider />
+                                <ActionMenuItem ItemText="Stop Card" Class="item-cancel"></ActionMenuItem>
+                            </ActionsMenu>
+                        }
+
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+    <div class="table-header mx-0 ">
+        <Title Text="3D Secure Detail"></Title>
+        <div class="d-flex align-items-center gp-16">
+            <SingleDropdown Type="Status" DropDownData="@TypesList" SelectedValue="@StatusType" SelectedValueChanged="@StatusTypeFilterChanged"></SingleDropdown>
+        </div>
+    </div>
+
+    <div class="kfh-data-table p-0">
+
+        <TelerikGrid Data="@GridData" Pageable="true"
+                     PageSize="12"
+                     Sortable="true">
+            <GridColumns>
+
+
+                <GridColumn Field="Merchant Info" OnCellRender="@((e) => e.Class = "Cell15 AO-detailed--cell ps-5")" HeaderClass="Cell15 AO-detailed--cell ps-5">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <div>
+                                <H2>@item.MerchantName</H2>
+                                <H3>@item.AuthenticationType</H3>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Local Amount" OnCellRender="@((e) => e.Class = "Cell15 ")" HeaderClass="Cell15">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <H4><b>90.000 <SubH2>KWD</SubH2></b></H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="USD Amount" OnCellRender="@((e) => e.Class = "Cell15 ")" HeaderClass="Cell15">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <H4><b>293.000 <SubH2>USD</SubH2></b></H4>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Date" OnCellRender="@((e) => e.Class = "Cell15")" HeaderClass="Cell15">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <H4>@item.Date</H4>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="Status" OnCellRender="@((e) => e.Class = "Cell10")" HeaderClass="Cell10">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <Status StatusClass="@item.StatusColor" StatusTitle="@item.Status" />
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                    <Template>
+                        @{
+                            var item = context as GridModel;
+                            <ActionsMenu Class="d-flex justify-content-center align-items-center">
+                                <ActionMenuItem ItemText="Change Status" OnClickAction="@ChangeStatusOffCanvas"></ActionMenuItem>
+                                <Divider />
+                                <ActionMenuItem ItemText="Stop Card" Class="item-cancel"></ActionMenuItem>
+                            </ActionsMenu>
+                        }
+
+                    </Template>
+                </GridColumn>
+
+            </GridColumns>
+        </TelerikGrid>
+    </div>
+</div>
+
+
+<OffCanvas @ref="StatusOffCanvasRef" Title="Change Status">
+    <OffcanvasContent>
+        <div class="d-flex flex-column gp-16">
+            <ul class="offcanvas-list">
+                <li>
+                    <H5>Card Number</H5>
+                    <H3>4507 XXXX XXXX 3647</H3>
+                </li>
+                <li>
+                    <H5>Current Status</H5>
+                    <H3>Deleted</H3>
+                </li>
+            </ul>
+            <Divider />
+            <div class="p-3">
+                <FormList>
+                    <Form Label="Select Status" Required="true">
+                        <TelerikDropDownList Data="@Status" @bind-Value="@StatusValue" OnChange="@OnRadioSelection" />
+                    </Form>
+                    <Form Label="Select Reasons" Required="true">
+                        <TelerikDropDownList Data="@FilteredReasons" Filterable="true" @bind-Value="@ReasonId" />
+                    </Form>
+                    <Form Label="Remarks">
+                        <TelerikTextArea />
+                    </Form>
+                </FormList>
+            </div>
+
+
+            @* <StatusChangeForm/> *@
+
+        </div>
+    </OffcanvasContent>
+    <OffcanvasFooterContent>
+        <div class="drawer-buttons">
+            <Button Type="btn-primary btn-sm" Label="Change Status" OnClick="@ChangeStatusNotification" />
+
+        </div>
+    </OffcanvasFooterContent>
+</OffCanvas>
+<NotificationNew @ref="NotificationComponentRef"></NotificationNew>
+
+@code {
+    public List<BreadcrumbItem> Items { get; set; } = default!;
+    public bool DeactivateDialogVisible { get; set; }
+    private List<GridModel> GridData { get; set; } = new();
+    public NotificationNew? NotificationComponentRef { get; set; }
+    public OffCanvas StatusOffCanvasRef { get; set; }
+    public string StatusValue { get; set; } = "Activate";
+    public string ReasonId { get; set; } = "Reason 1";
+    public List<string> Status { get; set; } = new List<string> { "Activate", "Block", "Resume" };
+    public List<string> FilteredReasons { get; set; } = new List<string> { "Reason 1", "Reason 2", "Reason 3" };
+    private IEnumerable<GridModel> SelectedItems { get; set; } = Enumerable.Empty<GridModel>();
+    private bool SelectAllEnabled { get; set; }
+    private string? StatusType { get; set; } = "Active";
+    private List<string> TypesList = new() { "All", "Active", "Deleted", "Suspended" };
+    public class BreadcrumbItem
+    {
+        public string Text { get; set; } = default!;
+        public string Url { get; set; } = default!;
+        public bool ItemDisabled { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        Items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Text = "Mohamed Elsayed", Url = "/" },
+            new BreadcrumbItem { Text = "Current Debit Card Details", Url = "/"}
+        };
+
+        GridData = new List<GridModel>();
+        GridData.Add(new GridModel
+            {
+                CardNumber = "4507 XXXX XXXX 3647",
+                RequestorName = "APPLE INC",
+                TokenID = "40010030273",
+                Date = "November 22, 2023 12:00:00 AM",
+                AuthenticationType = $"OTP - SMS",
+                RIM = $"44013",
+                MerchantName = $"Talabat Co.",
+                Status = $"Deleted",
+                IconName = "icon-Apple-logo",
+                StatusColor = $"redStatus"
+            });
+        GridData.Add(new GridModel
+            {
+                CardNumber = "4507 XXXX XXXX 3647",
+                RequestorName = "GOOGLE INC",
+                TokenID = "40010030273",
+                Date = "November 22, 2023 12:00:00 AM",
+                AuthenticationType = $"OTP - SMS",
+                RIM = $"44013",
+                MerchantName = $"Trolley",
+                Status = $"Suspended",
+                IconName = "icon-Android-logo",
+                StatusColor = $"yellowStatus"
+            });
+        GridData.Add(new GridModel
+            {
+                CardNumber = "4507 XXXX XXXX 3647",
+                TokenID = "40010030273",
+                Date = "November 22, 2023 12:00:00 AM",
+                RequestorName = "APPLE INC",
+                AuthenticationType = $"OTP - SMS",
+                RIM = $"44013",
+                MerchantName = $"Coffee Bean",
+                Status = $"Active",
+                IconName = "icon-Apple-logo",
+                StatusColor = $"greenStatus"
+            });
+    }
+
+    private void StatusTypeFilterChanged(string filter)
+    {
+        StatusType = filter;
+    }
+
+    public async Task ChangeStatusOffCanvas()
+    {
+        await StatusOffCanvasRef.ToggleAsync();
+        StateHasChanged();
+    }
+
+    private void DeactivateeMessage()
+    {
+        NotificationComponentRef?.ShowNotifications(OperationStatus.Success, "Card deactivated successfully!");
+        DeactivateDialogVisible = false;
+        StateHasChanged();
+    }
+
+    private void OnRadioSelection(object selectedStatus)
+    {
+        StatusValue = (string)selectedStatus;
+
+    }
+
+    public int StatusActions(string status) => status switch
+    {
+        "Activate" => 1,
+        "Block" => 3,
+        "Delete" => 5,
+        _ => 0
+    };
+
+    private async void ChangeStatusNotification()
+    {
+        NotificationComponentRef?.ShowNotifications(OperationStatus.Success, "OTP Sent Successfully");
+        StateHasChanged();
+    }
+
+
+
+    private void ToggleSelectAll()
+    {
+        if (SelectAllCheckBoxValue.HasValue && SelectAllCheckBoxValue.Value)
+        {
+            SelectAllCheckBoxValue = false;
+        }
+        else
+        {
+            SelectAllCheckBoxValue = true;
+        }
+    }
+
+    private bool? SelectAllCheckBoxValue
+    {
+        get
+        {
+            if (IsAllDataSelected())
+            {
+                return true;
+            }
+            else if (IsAnyDataSelected())
+            {
+                return null;
+            }
+
+            return false;
+        }
+
+        set
+        {
+            if (value.HasValue && value.Value == true)
+            {
+                SelectedItems = GridData;
+            }
+            else
+            {
+                SelectedItems = new List<GridModel>();
+            }
+        }
+    }
+
+    private bool IsAnyDataSelected()
+    {
+        return SelectedItems.Count() > 0 && SelectedItems.Count() < GridData.Count();
+    }
+
+    private bool IsAllDataSelected()
+    {
+        return SelectedItems.Count() == GridData.Count();
+    }
+
+    private bool GridHasData()
+    {
+        return GridData.Count() > 0;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var gridHasData = GridHasData();
+
+            if (SelectAllEnabled != gridHasData)
+            {
+                SelectAllEnabled = gridHasData;
+                StateHasChanged();
+            }
+        }
+    }
+
+    public class GridModel
+    {
+        public string Date { get; set; }
+        public string RIM { get; set; }
+        public string AuthenticationType { get; set; }
+        public string Status { get; set; }
+        public string IconName { get; set; }
+        public string StatusColor { get; set; }
+        public string MerchantName { get; set; }
+        public string RequestorName { get; set; }
+        public string TokenID { get; set; }
+        public string CardNumber { get; set; }
+        public string CardNumberDto { get; set; }
+        
+    }
+
+} 

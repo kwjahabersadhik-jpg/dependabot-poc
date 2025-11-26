@@ -1,0 +1,231 @@
+﻿@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.CreditReverse
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardIssuance.Components
+@using Telerik.FontIcons
+@using CreditCardsSystem.Utility.Extensions;
+
+@inherits WorkflowComponent
+
+@if (!IsAuthorized)
+{
+    <AccessDenied />
+}
+else
+{
+    if (TaskDetail is not null)
+    {
+
+        <WorkflowTaskDetail TaskDetail="TaskDetail" />
+
+    }
+    else
+    {
+
+        <TelerikForm EditContext="formEditContext">
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        @* <CardDetailHeader SelectedCard="SelectedCard"></CardDetailHeader> *@
+                        <div class="form-flex">
+                            <ul class="list">
+                                @if (PendingRequests is not null && PendingRequests.Any())
+                                {
+                                    <li>
+                                        <div class="mt-6">
+                                            <H5>Pending Requests</H5>
+                                            <div class="KFHnopadding kfh-data-table">
+                                                <TelerikGrid Data="PendingRequests">
+                                                    <GridColumns>
+                                                        <GridColumn Field=@nameof(CreditReverseDto.CardType) Title="Card Type" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                                            <Template>
+                                                                @{
+                                                                    var item = context as CreditReverseDto;
+                                                                    <SubH1>@item!.CardType </SubH1>
+                                                                }
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridColumn Field=@nameof(CreditReverseDto.Amount) Title="Amount" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                                            <Template>
+                                                                @{
+                                                                    var item = context as CreditReverseDto;
+                                                                    <SubH1>@item!.Amount.ToMoney(" ")<SubH2> @item.CardCurrency</SubH2></SubH1>
+                                                                }
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridColumn Field=@nameof(CreditReverseDto.RequestDate) Title="Request Date" OnCellRender="@((e) => e.Class = "col-3 fieldHeader")" HeaderClass="col-3 align-items-start">
+                                                            <Template>
+                                                                @{
+                                                                    var item = context as CreditReverseDto;
+                                                                    <SubH1>@item!.RequestDate </SubH1>
+                                                                }
+                                                            </Template>
+                                                        </GridColumn>
+
+                                                        <GridCommandColumn Context="dataItem">
+                                                            @{
+                                                                var history = dataItem as CreditReverseDto;
+                                                                List<ListItem<CreditReverseDto>> Actions = new();
+                                                                Actions.Add(new("More Detail", history));
+                                                                Actions.Add(new("Delete", history));
+                                                                <ActionMenuNew Data="@Actions" Status="DataStatus.Success" Callback="@(async (ListItem<CreditReverseDto> selectedItem)=> { await OnChangeAction(selectedItem); } )" />
+                                                            }
+                                                        </GridCommandColumn>
+                                                    </GridColumns>
+                                                    <NoDataTemplate>
+                                                        <NoRecordsFound />
+                                                    </NoDataTemplate>
+                                                </TelerikGrid>
+
+
+                                            </div>
+                                            <OffCanvas @ref=CreditReverseDetails Title="Credit Reverse Details">
+                                                <OffcanvasContent>
+
+                                                    @* Data need to be bind for below values *@
+                                                    <ul class="offcanvas-list m-0">
+                                                        <li>
+                                                            <H5>Card Type</H5>
+                                                            <H3>@SelectedPendingRequest?.CardType</H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Amount</H5>
+                                                            <H3>@SelectedPendingRequest?.Amount.ToMoney(" ") <SubH2>@SelectedPendingRequest?.CardCurrency</SubH2></H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Amount KD Maker</H5>
+                                                            <H3>@SelectedPendingRequest?.AmountKDMaker.ToMoney(" ") <SubH2>@ConfigurationBase.KuwaitCurrency</SubH2></H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Rate Maker</H5>
+                                                            <H3>@SelectedPendingRequest?.RateMaker</H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Account Number</H5>
+                                                            <H3>@SelectedPendingRequest?.AccountNo</H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Requested by</H5>
+                                                            <H3>@SelectedPendingRequest?.RequestedBy</H3>
+                                                        </li>
+                                                        <li>
+                                                            <H5>Request Date</H5>
+                                                            <H3>@SelectedPendingRequest?.RequestDate</H3>
+                                                        </li>
+                                                    </ul>
+                                                </OffcanvasContent>
+                                                <OffcanvasFooterContent>
+                                                    <div class="drawer-buttons justify-content-between align-items-end">
+                                                        <Button Type="btn-text btn-sm" OnClick=@(async()=>await CreditReverseDetails!.ToggleAsync()) Label="Back" />
+                                                    </div>
+                                                </OffcanvasFooterContent>
+                                            </OffCanvas>
+
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="mt-6">
+                                            <H5>Pending Reverse Amount</H5>
+                                            <H3>@PendingRequests?.Sum(x => x.Amount).ToMoney(" ") <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2></H3>
+                                        </div>
+                                    </li>
+                                }
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Card External Status  </H5>
+                                        <H3>@Model.ExternalStatus</H3>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Remaining Refund Amount </H5>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <H3>@RemainingRefundAmount.ToMoney(" ") <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2></H3>
+
+                                            <Button Type="label-btn" Label="Apply Full Refund" OnClick="()=> CopyRefundAmount()"></Button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="mt-6 mb-2">
+                                        @if (DebitAccounts == null)
+                                        {
+                                            <TelerikSkeleton Width="400px" Height="31px" ShapeType="@SkeletonShapeType.Rectangle" class="AO-skeleton-rectangle"></TelerikSkeleton>
+                                        }
+                                        else
+                                        {
+                                            <AccountDropDownList For="@(() => Model.DebitAccountNumber)" ShowCurrentBalance="true" DataItem="@DebitAccounts" Title="Debit Account"
+                                                                 OnCardAccountChanged="async (acno)=> { Model.DebitAccountNumber =acno; await OnChangeDebitAccountNumber(); }" SelectedCardAccount="@SelectedDebitAccount" />
+                                        }
+
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="mt-6">
+                                        <H5>Amount</H5>
+                                        <div style="position: relative;">
+                                            <TelerikNumericTextBox Class="shadow-sm textfield-input" Arrows="false" T="decimal" @bind-Value="@Model.Amount" OnBlur="@(()=> OnChangeAmountHandler())"></TelerikNumericTextBox>
+                                            <div class='@($"textfield-RightAddOn")'>
+                                                <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2>
+                                            </div>
+                                        </div>
+                                        @if (IsForeignCurrencyCard)
+                                        {
+                                            <SubH2><span class="text-red">Including Charges</span></SubH2>
+                                        }
+                                        <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.Amount)"></ValidationMessage></SubH2>
+                                    </div>
+                                </li>
+
+                                @if (IsForeignCurrencyCard)
+                                {
+                                  @*   <li>
+                                        <div class="mt-6">
+                                            <H5>Transfer Amount</H5>
+                                            <div style="position: relative;">
+                                                <TelerikNumericTextBox Class="shadow-sm textfield-input" Arrows="false" T="decimal" @bind-Value="@Model.TransferAmount" OnBlur="@(()=> OnChangeAmountHandler(isTransferAmount:true))"></TelerikNumericTextBox>
+                                                <div class='@($"textfield-RightAddOn")'>
+                                                    <SubH2>@CardCurrency?.CurrencyIsoCode</SubH2>
+                                                </div>
+                                            </div>
+                                            <SubH2><ValidationMessage class="kfhtexterror text-red" For="@(() => Model.TransferAmount)"></ValidationMessage></SubH2>
+                                        </div>
+                                    </li> *@
+                                    <li>
+                                        <div class="mt-6">
+                                            <H5>Exchange Rate</H5>
+                                            <H3>@CurrencyTransferData?.TransferRate</H3>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="mt-6">
+                                            <H5>Amount In @ConfigurationBase.KuwaitCurrency</H5>
+                                            <H3>@Model.AmountInKWD.ToMoney(ConfigurationBase.KuwaitCurrency)</H3>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </Template>
+                </FormItem>
+            </FormItems>
+            <FormButtons>
+            </FormButtons>
+        </TelerikForm>
+
+    }
+}
+
+@code {
+    private OffCanvas? CreditReverseDetails { get; set; }
+
+
+}

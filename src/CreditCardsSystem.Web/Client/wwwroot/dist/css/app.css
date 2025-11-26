@@ -1,0 +1,1705 @@
+﻿.Refund {
+    color: t
+}
+
+
+notAuthorizedCursor {
+    cursor:not-allowed;
+}
+
+span.permission-icon {
+    font-size: var(--sz-20);
+    display: flex;
+    justify-content: flex-start !important;
+    margin-inline-start: -2rem;
+    color: var(--Critical900);
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+/* CrditCard Selection */
+.creditCard-sticky-details {
+    padding: var(--sz-12);
+    /* border-left: var(--border-1); */
+    border-color: var(--border-gray-300);
+    top: 0px !important;
+    margin-block-start: 70px;
+    /* align-self: flex-start; */
+    padding-inline-start: 40px;
+    height: 69vh;
+    justify-content: center;
+}
+
+.cardImg-offcanvas {
+    width: 220px;
+    height: 144px;
+    background-color: var(--Text-5);
+    border-radius: var(--KFH-inner-border);
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+
+.creditCard-details img {
+    width: 220px;
+    border-radius: 10px;
+}
+
+.creditCard-details .k-button.btn-sm {
+    width: 220px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.newCard-issue .Heading2 {
+    color: var(--Primary900);
+    font-size: calc((24/ var(--font-base) * 1rem));
+    margin-top: 4.5rem;
+}
+
+.newCard-issue img {
+    width: 220px;
+    border-radius: 10px;
+    float: left;
+    margin-top: 1rem;
+}
+
+.supplementary-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.supplementaryCard-btn {
+    align-self: flex-end;
+    margin-block-start: var(--sz-18);
+}
+
+.card-wizard:has(.wizard-full.k-wizard) .row {
+    flex-wrap: wrap !important;
+}
+
+.transactions-stickyHeader {
+    top: unset !important;
+}
+
+.AO-left100--container {
+    padding: unset;
+}
+/* CrditCard Selection - END */
+
+
+/* Credit Card Wizard New by UI team starts here  */
+
+.creditcard-search-bar .k-input-solid {
+    border-color: var(--border-gray-300);
+    background-color: transparent;
+    height: var(--sz-30);
+    border-radius: var(--sz-6) !important;
+}
+
+.card-wizard .cardDetails-drawerHeader {
+    /* position: absolute !important; */
+}
+
+.card-wizard .cardDetails-ThankyouImg {
+    /* position: absolute !important; */
+    /* margin-block-start: var(--sz-38) !important; */
+}
+
+    .card-wizard .cardDetails-ThankyouImg img {
+        width: 250px !important;
+        height: 150px !important;
+    }
+
+
+
+.card-wizard:has(.wizard-full.k-wizard) .k-wizard-step {
+    position: unset;
+}
+
+.wizard-full .k-wizard .k-wizard-content .cc-wizard-heading {
+    text-align: left;
+    font-size: var(--sz-24);
+}
+
+.cc-wizard-heading {
+    font-size: var(--sz-30) !important;
+}
+
+
+
+.card-wizard:has(.wizard-full.k-wizard) .k-wizard-buttons {
+    display: inline-block !important;
+    justify-content: center;
+    border-top: unset;
+    bottom: 0;
+    margin-inline-start: 20px;
+}
+
+.wizard-label-header {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    height: 35px !important;
+    top: 0px;
+    /* background-color: white; */
+    /* border-bottom: var(--border-1); */
+    z-index: 0 !important;
+    margin-block-end: 40px;
+}
+
+.creditcard-wizard-buttons {
+    display: flex !important;
+    position: sticky !important;
+    justify-content: space-between;
+    bottom: 0;
+    background-color: white !important;
+}
+
+/* .creditcard-wizard-buttons-act {
+    display: flex !important;
+    position: relative !important;
+    justify-content: end;
+    bottom: 0;
+    background-color: white !important;
+    width: 100%;
+    margin: auto;
+    gap: 10px;
+} */
+
+.wizard-full.k-wizard .k-wizard-buttons .k-wizard-pager {
+    display: unset !important;
+}
+
+.wizard-full.k-wizard .fullWizard-btns {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    align-items: center;
+    justify-content: space-between;
+    margin-block-start: var(--sz-24);
+}
+
+.creditcard-search-bar .k-input-md .k-input-inner, .k-picker-md .k-input-inner {
+    padding: var(--sz-6) var(--sz-4);
+}
+
+.cc-gradient-container .cc-gradient-overlay {
+    position: absolute;
+    bottom: 104px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 90px 0;
+    pointer-events: none;
+    /* "transparent" only works here because == rgba(0,0,0,0) */
+    background-image: linear-gradient(to bottom, transparent, var(--light));
+}
+
+
+.wizard-full.k-wizard .k-wizard-step {
+    position: absolute;
+    top: var(--sz-0);
+    padding: var(--sz-24);
+    height: var(--sz-full);
+    /* height: 81vh !important; */
+}
+
+
+.creditcard-search-bar {
+    width: var(--sz-full);
+    flex: 2;
+    display: unset;
+    /* height: 10vh; */
+    gap: var(--sz-6);
+    background-color: transparent;
+    border-color: var(--border-gray-300);
+}
+
+.card-wizard .search-tags .types .radioTab {
+    padding: var(--sz-6) var(--sz-6);
+    display: none;
+    /* gap: var(--sz-4); */
+}
+
+
+.card-wizard .k-stepper .k-step-indicator {
+    border-width: 0 !important;
+    border-color: white;
+}
+
+.card-wizard .card-preview {
+    position: fixed !important;
+    width: 24rem !important;
+    justify-content: center !important;
+    display: flex !important;
+    padding-inline-start: unset !important;
+    top: 2rem !important;
+}
+
+.card-wizard .alert-info {
+    margin: unset;
+}
+
+
+.card-wizard .k-stepper .k-step-done .k-step-indicator {
+    /* border-color: white; */
+    color: white;
+    background-color: white;
+}
+
+.credit-card-payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 5% 1fr;
+    gap: var(--sz-38);
+    align-items: center;
+    justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+    .credit-card-payment-grid .AO-card-item {
+        border: unset;
+        background-color: transparent;
+        padding: var(--sz-4) var(--sz-0);
+    }
+
+        .credit-card-payment-grid .AO-card-item:hover {
+            background-color: transparent;
+        }
+
+    .credit-card-payment-grid .card-container {
+        box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.018), 0 5.5px 10px rgba(0, 0, 0, 0.06), 0 5.3px 10.9px rgba(0, 0, 0, 0.012), 0 41.8px 33.4px rgba(0, 0, 0, 0.016), 0 10px 10px rgba(0, 0, 0, 0.02);
+        background: white;
+        border-radius: 6px;
+    }
+
+    .credit-card-payment-grid .radioTab {
+        gap: 10px;
+    }
+
+    .credit-card-payment-grid .glider {
+        width: 145px;
+    }
+
+    .credit-card-payment-grid .card-container {
+        padding: var(--sz-38);
+        height: 39vh;
+        margin: unset;
+    }
+
+.cc-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: var(--sz-12);
+    width: 50%;
+}
+
+.cc-right-col {
+    display: flex;
+    flex-direction: column;
+    padding: var(--sz-8);
+    gap: 8px;
+    width: 50%;
+}
+
+.card-wizard .k-stepper .k-step-done .k-step-indicator::before {
+    content: "\2713";
+    color: var(--Primary900);
+    font-size: var(--sz-24);
+    padding-left: 2px;
+}
+
+.card-wizard .telerik-blazor .k-step-indicator-icon .k-svg-icon .k-svg-i-check-circle::after {
+    color: white;
+}
+
+    .card-wizard .telerik-blazor .k-step-indicator-icon .k-svg-icon .k-svg-i-check-circle::after:hover {
+        background-color: white;
+    }
+
+.card-wizard .k-svg-icon > svg {
+    display: none;
+    background-color: white;
+}
+
+.card-wizard .k-stepper .k-step-current .k-step-indicator .k-svg-i-check-circle::after {
+    color: #000000;
+    /* content: "\21E2"; */
+    content: "\2B24";
+    font-size: var(--sz-6);
+}
+
+.card-wizard .k-step .k-step-first .k-step-success .k-step-current:hover {
+    background-color: white;
+}
+
+.card-wizard .k-stepper .k-step-current .k-step-indicator .k-svg-i-check-circle::after:hover {
+    color: white;
+    content: "\21E2";
+    font-size: var(--sz-24);
+    background-color: var(--Primary900);
+}
+
+.card-wizard .k-stepper .k-step:hover .k-step-indicator, .k-stepper .k-step.k-hover .k-step-indicator, .k-stepper .k-step.k-step-hover .k-step-indicator:hover {
+    background-color: white;
+}
+
+.card-wizard .telerik-blazor .k-step-indicator-icon .k-svg-icon .k-svg-i-check-circle::before {
+    content: "\e11a" !important;
+}
+
+.data-table.k-grid td, .k-grid .k-table-td {
+    vertical-align: middle !important;
+}
+
+.offcanvas .k-grid .k-grid-header .k-table-th {
+    /* text-align: start !important; */
+}
+
+.icon-Total-Overdue {
+    font-size: 15px !important;
+}
+
+.text-black {
+    --bs-text-opacity: 1;
+    color: var(--Text-100) !important;
+}
+
+.k-floating-label-container {
+    padding-top: 28.0000000004px !important;
+}
+
+/* Credit Card Wizard New by UI team Ends here  */
+
+
+
+/* Issue CrditCard Wizard */
+
+.IssueDetails-Grid {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1fr;
+}
+
+.issueDetails-row1 {
+    grid-row: 1 / 2;
+    grid-column: 1 / 3;
+    display: flex;
+    align-items: center;
+}
+
+.IssueDetails-Grid img {
+    width: 220px;
+}
+
+.issueDetails-row1 .Heading2 {
+    margin-inline-start: 1rem
+}
+
+.supplementaryCard-Grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.address-row1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.address-row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.address-row3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 32px;
+}
+
+.address-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+    .address-flex .Heading3 {
+        margin: 0rem;
+    }
+
+.creditWizard-sticky {
+    position: sticky;
+    top: 180px;
+    z-index: 9999;
+    background-color: var(--bs-gray-100)
+}
+
+/* Telerik Notification CSS starts here */
+
+
+.MyTelerikNotification {
+    z-index: 110000 !important;
+}
+
+    .MyTelerikNotification .k-notification-container .k-notification-wrap {
+        font-size: 1.2em;
+    }
+
+.k-wizard {
+    height: 100% !important;
+}
+
+
+.wizard-full.k-wizard .k-wizard-content {
+    width: 100% !important;
+    margin: var(--sz-0) var(--sz-auto) !important;
+    margin-inline-start: var(--sz-38) !important;
+}
+
+/* Telerik Notification CSS Ends here */
+
+
+/* Issue CrditCard Wizard - END */
+.card-drop-down-item {
+    display: flex;
+    text-align: justify;
+    align-items: center;
+}
+
+    .card-drop-down-item img {
+        width: 85px !important;
+    }
+
+
+    .card-drop-down-item p {
+        margin: auto !important;
+    }
+
+
+.card-item-detail {
+    display: flex;
+    text-align: justify;
+    align-items: center;
+}
+
+    .card-item-detail p {
+        margin: auto !important;
+    }
+
+
+    .card-item-detail img {
+        width: 200px !important;
+    }
+
+
+.center-display-flex {
+    display: flex;
+    align-items: center;
+}
+
+.k-form .k-form-fieldset {
+    margin-top: 0 !important;
+}
+
+.k-form-field {
+    /* margin-top: 0 !important;
+    padding: 10px; */
+}
+
+.validation-message {
+    padding-block-end: 0.5rem !important;
+}
+
+
+img.Notification--image {
+    width: 150px;
+    /* height: 50px; */
+    margin-inline-start: 150px;
+    position: absolute;
+    top: var(--sz-half);
+    left: var(--sz-half);
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    border-radius: var(--sz-4);
+}
+
+.clear-both {
+    clear: both;
+}
+
+.credit-card-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.cc-dropdown-filter {
+    width: 300px;
+}
+
+    .cc-dropdown-filter:has(.k-daterange-picker .k-dateinput), .k-daterangepicker .k-dateinput {
+        width: 14.25em !important;
+    }
+
+.ccard-profile-header {
+    margin: unset;
+}
+
+    .ccard-profile-header:has(.AO-Top--container) {
+        margin: unset;
+    }
+
+    /* .ccard-profile-header .AO-sticky  .AO-Top--container .AO-flex--row .AO-customerProfile--info {
+    margin-inline-start: unset;
+    gap: 20px !important;
+} */
+
+    .ccard-profile-header .AO-sticky .AO-Top--container .AO-flex--row {
+        gap: var(--sz-10);
+    }
+
+        .ccard-profile-header .AO-sticky .AO-Top--container .AO-flex--row .AO-customerProfile--heading {
+            margin: unset;
+        }
+
+    .ccard-profile-header .AO-sticky .AO-Top--container {
+        padding: var(--sz-24) var(--sz-0);
+    }
+
+.ccards-cards {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr !important;
+}
+
+.cc-accountStatement-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.accountStatement-header .Heading1 {
+    margin-top: var(--sz-0);
+    margin-bottom: var(--sz-8);
+}
+
+.accountStatement-header .Heading5 {
+    color: var(--Text-50);
+    margin-block-start: var(--sz-8);
+    margin-block-end: var(--sz-8);
+}
+
+.cc-accountStatement-headerActions {
+    display: flex;
+    gap: var(--sz-8);
+}
+
+.cc-accountStatement-pe {
+    padding-inline-end: 21.8rem !important;
+}
+
+.AO-left80--container {
+    margin-block-end: unset !important;
+}
+
+.cc-transactions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sz-0) var(--sz-0);
+    padding-block-end: var(--sz-0);
+    margin-block-end: var(--sz-0);
+    top: 225px;
+    background-color: var(--leftNAV);
+    z-index: 999;
+}
+
+
+.action-menu ul li.cancel-card .Heading2,
+.action-menu ul li.cancel-card span {
+    background-color: transparent;
+    color: var(--Critical900) !important;
+}
+
+.action-menu ul li.cancel-card:hover .Heading2,
+.action-menu ul li.cancel-card:hover span {
+    color: var(--Critical900) !important;
+}
+
+
+.alert {
+    width: var(--sz-full);
+}
+
+.cc-accountStatement-header .AO-card-item {
+    background-color: var(--light);
+    border-radius: var(--sz-8);
+    border: var(--border-1);
+    padding: var(--sz-4) var(--sz-8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cc-accountStatement-header .AO-cards--grid {
+    margin-block-start: unset;
+    gap: var(--sz-24);
+}
+
+.cc-accountStatement-header .AO-card-item .Heading2 {
+    margin-block-start: unset;
+}
+
+.cc-accountStatement-header .AO-card-item p {
+    font-size: var(--sz-16);
+    padding-inline-start: var(--sz-8);
+}
+
+.AO-profile--btn {
+    right: 0% !important;
+}
+
+/* .card-wizard .k-stepper .k-step-list {
+    width: 300px;
+    padding-block-start: 250px;
+    padding-inline-start: 40px;
+} */
+
+.card-wizard li.k-step.k-step-current {
+    background-color: unset !important;
+}
+
+    .card-wizard li.k-step.k-step-current:hover {
+        background-color: unset !important;
+    }
+
+.card-wizard li.k-step {
+    background-color: unset !important;
+}
+
+
+.card-wizard .k-stepper {
+    display: block !important;
+}
+
+    .card-wizard .k-stepper .k-step-current .k-step-indicator {
+        border-color: unset;
+        color: var(--Text-100);
+        background-color: white;
+    }
+
+.card-wizard .AO-flex--container {
+    margin: unset;
+}
+
+
+.card-wizard .k-stepper .k-step-current:hover .k-step-indicator, .k-stepper .k-step-current.k-hover .k-step-indicator, .k-stepper .k-step-current.k-step-hover .k-step-indicator {
+    background-color: unset !important;
+    color: white;
+}
+
+.card-wizard .k-stepper .k-step-done:hover .k-step-indicator, .k-stepper .k-step-done.k-hover .k-step-indicator, .k-stepper .k-step-done.k-step-hover .k-step-indicator {
+    background-color: unset !important;
+    color: white;
+}
+
+
+
+.card-wizard .row {
+    flex-wrap: wrap !important;
+}
+
+.card-wizard .card-view {
+    /* border: unset !important; */
+    min-height: unset;
+}
+
+
+.card-wizard .k-stepper .k-step-indicator {
+    margin: 12px !important;
+}
+
+.card-wizard .search-tags {
+    align-items: end !important;
+    background-color: var(--light);
+}
+
+.breadcrumb-stickyHeader {
+    background: unset;
+}
+
+.card-wizard .types {
+    /* align-items: unset; */
+}
+
+.card-wizard .thankyou-img {
+    display: flex;
+    width: var(--sz-full);
+    align-items: center;
+    /* padding: var(--sz-6) var(--sz-0); */
+    /* margin-block-end: var(--sz-8); */
+    align-items: start !important;
+}
+
+.card-wizard .accountStatement-header .cardImg {
+    align-items: start !important;
+}
+
+
+.card-wizard .cardDetails-drawerHeader img {
+    width: 250px !important;
+    height: 150px !important;
+}
+
+.card-wizard .k-stepper .k-step-error .k-step-label {
+    color: var(--Text-100) !important;
+}
+
+.card-wizard a.card-view:hover {
+    background-color: var(--PrimarySelected);
+    outline: var(--sz-1) solid var(--Primary900);
+    margin-inline-end: var(--sz-1);
+    margin-inline-start: var(--sz-1);
+}
+
+.count {
+    font-family: var(--font-semiBold) !important;
+    color: var(--border-gray-100) !important;
+    padding-block: 0px;
+}
+
+.card-wizard .search-box {
+    background-color: unset;
+}
+
+.circle-counter {
+    font-size: var(--sz-2);
+    color: var(--Primary900);
+    width: var(--sz-20);
+    height: var(--sz-20);
+    background-color: var(--PrimarySelected);
+    border-radius: var(--sz-half);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body .text-info {
+    border-radius: 4px !important;
+}
+
+.k-drawer-item {
+    line-height: unset !important;
+}
+
+
+/* Card Payment CSS starts here  */
+
+.cardpayment-container {
+    padding-block: unset;
+    display: grid;
+    grid-template-columns: 17% 80% 17%;
+    padding-inline: unset;
+}
+
+/* Card Payment CSS ends here  */
+
+
+/* Grid css columns  */
+
+.wrapper-5columns {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+
+.wrapper-4columns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+
+.wrapper-2columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+
+
+.wrapper-1columns {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+/* Grid css columns  */
+
+.offcanvas-content .alert, .kfh-info-prv-cont .alert {
+    margin: var(--sz-0) !important;
+}
+
+.sub-offcanvas-sticky-header {
+    display: block;
+    position: sticky;
+    margin-block-start: 20px;
+}
+
+.message-view {
+    display: flex;
+    flex-direction: column;
+    width: var(--sz-half);
+    gap: var(--sz-32);
+    margin: var(--sz-0) var(--sz-auto);
+    margin-block-end: 150px;
+}
+
+
+
+
+/* Confetti Animation */
+
+.conffetti-container {
+    position: absolute;
+    width: 140px;
+    margin-block-start: -96px;
+    margin-inline-start: 194px;
+}
+
+.conf0 {
+    fill: #FC6394;
+}
+
+.conf1 {
+    fill: #EF3C8A;
+}
+
+.conf2 {
+    fill: #5ADAEA;
+}
+
+.conf3 {
+    fill: #974CBE;
+}
+
+.conf4 {
+    fill: #3CBECD;
+}
+
+.conf5 {
+    fill: #813BBE;
+}
+
+.conf6 {
+    fill: #F9B732;
+}
+
+.conf7 {
+    display: none;
+    fill: none;
+    stroke: #000000;
+    stroke-miterlimit: 10;
+}
+
+.conf8 {
+    fill: none;
+    stroke: #F9B732;
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-miterlimit: 10;
+}
+
+
+.confetti-cone {
+    transform-origin: 200px 50px;
+    animation: confetti-cone1 1.2s ease infinite;
+}
+
+@keyframes confetti-cone1 {
+    0% {
+        transform: translate(40px, 95px) rotate(45deg) scale(1, 1);
+    }
+
+    15% {
+        transform: translate(10px, 145px) rotate(45deg) scale(1.1, 0.85);
+    }
+
+    100% {
+        transform: translate(40px, 105px) rotate(45deg) scale(1, 1);
+    }
+}
+
+#yellow-strip {
+    fill: none;
+    stroke: #F9B732;
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-miterlimit: 10;
+    animation: confdash 1.2s ease infinite;
+}
+
+
+@keyframes confdash {
+    0% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 500;
+        transform: translate(-30px, 30px);
+        opacity: 0;
+    }
+
+    2% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 500;
+        transform: translate(-30px, 30px);
+        opacity: 0;
+    }
+
+    35% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 900;
+        transform: translate(-2px, 0px);
+        opacity: 1;
+    }
+
+    85% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        transform: translate(1px, -5px);
+        opacity: 1;
+    }
+
+    90% {
+        stroke-dashoffset: 1000;
+        stroke-dashoffset: 1000;
+        transform: translate(2px, -8px);
+        opacity: 0;
+    }
+
+    100% {
+        stroke-dashoffset: 1000;
+        stroke-dashoffset: 500;
+        transform: translate(2px, -8px);
+        opacity: 0;
+    }
+}
+
+
+
+#a2 {
+    transform-origin: 310.9px 241px;
+    animation: confa 1.2s ease-out infinite;
+}
+
+#a1 {
+    transform-origin: 276px 246px;
+    animation: confa 1.2s ease-out infinite;
+}
+
+@keyframes confa {
+    0% {
+        opacity: 0;
+        transform: translate(-30px, 20px) rotate(0);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translate(25px, -10px) rotate(60deg);
+    }
+
+    80% {
+        opacity: 1;
+        transform: translate(33px, -18px) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(37px, -23px) scale(0.5)rotate(230deg);
+    }
+}
+
+
+#b1 {
+    transform-origin: 195.2px 232.6px;
+    animation: confb 1.2s ease-out infinite;
+}
+
+#b2 {
+    transform-origin: 230.8px 219.8px;
+    animation: confb 1.2s ease-out infinite;
+}
+
+#b3 {
+    transform-origin: 222.8px 190.6px;
+    animation: confb 1.2s ease-out infinite;
+}
+
+#b4 {
+    transform-origin: 262px 188.5px;
+    animation: confb 1.2s ease-out infinite;
+}
+
+#b5 {
+    transform-origin: 282.3px 170.6px;
+    animation: confb 1.2s ease-out infinite;
+}
+
+
+@keyframes confb {
+    0% {
+        opacity: 0;
+        transform: translate(-30px, 20px) rotate(0);
+    }
+
+    12% {
+        opacity: 1;
+        transform: translate(25px, -10px) rotate(60deg);
+    }
+
+    76% {
+        opacity: 1;
+        transform: translate(33px, -18px) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(37px, -23px) scale(0.5) rotate(240deg);
+    }
+}
+
+#c1 {
+    transform-origin: 174.8px 183.4px;
+    animation: confc 1.2s ease-out infinite;
+}
+
+#c2 {
+    transform-origin: 178.9px 156.2px;
+    animation: confc 1.2s ease-out infinite;
+}
+
+#c3 {
+    transform-origin: 206.7px 140px;
+    animation: confc 1.2s ease-out infinite;
+}
+
+#c4 {
+    transform-origin: 213.5px 120.2px;
+    animation: confc 1.2s ease-out infinite;
+}
+
+@keyframes confc {
+    0% {
+        opacity: 0.7;
+        transform: translate(-30px, 20px) rotate(0);
+    }
+
+    18% {
+        opacity: 1;
+        transform: translate(5px, -10px) rotate(60deg);
+    }
+
+    76% {
+        opacity: 1;
+        transform: translate(13px, -18px) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(17px, -23px) scale(0.5) rotate(230deg);
+    }
+}
+
+#d1 {
+    transform-origin: 127px 176px;
+    animation: confd 1.2s ease-out infinite;
+}
+
+#d2 {
+    transform-origin: 133px 118px;
+    animation: confd 1.2s ease-out infinite;
+}
+
+#d3 {
+    transform-origin: 152px 100px;
+    animation: confd 1.2s ease-out infinite;
+}
+
+@keyframes confd {
+    0% {
+        opacity: 0.7;
+        transform: translate(-20px, 20px) rotate(0);
+    }
+
+    18% {
+        opacity: 1;
+        transform: translate(-5px, -10px) rotate(60deg);
+    }
+
+    76% {
+        opacity: 1;
+        transform: translate(-8px, -18px) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-10px, -23px) scale(0.5) rotate(230deg);
+    }
+}
+
+/* Confetti Animation Ends */
+
+
+.CC-Statement-Cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr !important;
+    gap: var(--sz-32);
+    margin-block-start: var(--sz-32);
+}
+
+.cc-statement-header-amount {
+    display: flex;
+    flex-direction: column;
+    padding-inline-end: 3rem;
+}
+
+
+
+
+/*TODO - Need stop remove once updating the package*/
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--sz-8);
+    color: var(--Text-100);
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+
+
+.declined-amount {
+    position: relative;
+    /* text-decoration: line-through; */
+}
+
+
+
+    .declined-amount::before {
+        content: " ";
+        width: 101%;
+        height: 1px;
+        background-color: #000000;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+    }
+
+.cc-table-description.Heading3 {
+    --tw-text-opacity: 1;
+    color: var(--Text-50);
+    font-size: var(--sz-16);
+    font-family: var(--font-medium);
+    margin-block-end: var(--sz-16);
+    margin-block-start: 1rem;
+    margin-inline-start: unset;
+}
+
+.accountStatement-content:has(.SubHeading2) {
+    --tw-text-opacity: 1;
+    color: var(--Text-50) !important;
+    font-size: var(--sz-16);
+    font-family: var(--font-medium);
+    margin-block-end: var(--sz-12) !;
+    margin-block-start: 1rem;
+    margin-inline-start: unset;
+}
+
+.tooltip-action-menu .action-menu {
+    position: fixed !important;
+}
+
+.tooltip-action-menu .action-menu {
+    width: fit-content !important;
+    font-size: 16px;
+    color: var(--Text-50);
+    margin-top: 30px !important;
+    padding-block-start: var(--sz-14);
+    padding-inline-start: var(--sz-18);
+    padding: var(--sz-0) var(--sz-18) !important;
+    align-items: center;
+}
+
+.icon-width {
+    display: flex;
+    width: 18px !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-menu ul {
+    /* gap: var(--sz-20) !important; */
+}
+
+/* service subscription  */
+
+.kfh-data-table .k-grid th.detailsCenter {
+    --tw-text-opacity: 1;
+    color: var(--Text-100);
+    padding-block-start: var(--sz-16) !important;
+    padding-block-end: var(--sz-14) !important;
+    padding-inline-end: var(--sz-16) !important;
+    padding-inline-start: var(--sz-16) !important;
+    /* background-color: var(--Dark25); */
+    font-size: var(--sz-16);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-medium);
+    letter-spacing: var(--letter-spacing-section-heading);
+    border-width: var(--sz-0);
+    /* border-top: var(--border-1); */
+    border-bottom: var(--sz-2) solid var(--border-gray-200);
+    text-align: center !important;
+}
+
+.h3color {
+    color: var(--Text-100) !important;
+}
+
+.table-showHeader.k-grid .k-grid-header .k-table-th {
+    display: block !important;
+}
+
+.accessDropdown {
+    border: unset;
+    background: transparent;
+}
+
+.addServicesFont {
+    font-size: var(--sz-14) !important;
+}
+
+.table-viewHeader.k-grid .k-grid-header .k-table-th {
+    display: table-header-group !important;
+}
+
+.textAlign-center {
+    text-align: center !important;
+}
+
+.k-grid tr.no-children td.k-hierarchy-cell * {
+    display: none;
+}
+
+.k-grid tr.no-children td.k-hierarchy-cell {
+    pointer-events: none;
+}
+
+
+.kfh-data-table .k-grid.potato th {
+    display: none;
+}
+
+.kfh-data-table .k-grid.tomato th {
+    display: table-cell;
+}
+
+.fieldHeader {
+    font-family: var(--font-regular);
+    font-size: var(--sz-16);
+    text-align: center !important;
+}
+
+.circle-green {
+    background-color: var(--fill-green-bg) !important;
+}
+
+    .circle-green span {
+        color: var(--fill-green-text) !important;
+    }
+
+.gp-half {
+    gap: var(--sz-half);
+}
+
+.kfh-data-table .k-grid.special-table td {
+    text-align: center !important;
+}
+
+/* service subscription  - END */
+
+
+
+
+/* Loyalty Page Starts */
+
+.loyalty-sections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+    margin: var(--sz-32);
+}
+
+.loyalty-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+}
+
+.loyalty-section-title {
+    /* position: sticky;
+    top: 29rem; */
+    height: var(--sz-fit);
+}
+
+    .loyalty-section-title .Heading1 {
+        margin-block: var(--sz-0);
+    }
+
+    .loyalty-section-title .Heading3 {
+        max-width: 50ch;
+        margin-block-start: 1rem;
+        color: var(--Text-50);
+    }
+
+.loyalty-section-cotnent {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 2.5rem;
+}
+
+.loyalty-section-card {
+    padding: var(--sz-18) !important;
+    border: var(--border-1);
+    border-width: var(--sz-1);
+    border-radius: var(--sz-6);
+    background-color: var(--light);
+    color: var(--Text-100);
+}
+
+    .loyalty-section-card span {
+        font-size: var(--sz-32);
+    }
+
+    .loyalty-section-card .Heading4 {
+        color: var(--Text-50);
+        /* margin-block-start: var(--sz-24); */
+    }
+
+    .loyalty-section-card.blue .Heading2 {
+        color: var(--fill-blue-text);
+    }
+
+    .loyalty-section-card.blue span {
+        color: var(--fill-blue-text);
+    }
+
+    .loyalty-section-card.blue:hover {
+        border-color: var(--fill-blue-text);
+    }
+
+    .loyalty-section-card.orange .Heading2 {
+        color: var(--fill-orange-text);
+    }
+
+    .loyalty-section-card.orange span {
+        color: var(--fill-orange-text);
+    }
+
+    .loyalty-section-card.orange:hover {
+        border-color: var(--fill-orange-text);
+    }
+
+    .loyalty-section-card.purple .Heading2 {
+        color: var(--fill-purple-text);
+    }
+
+    .loyalty-section-card.purple span {
+        color: var(--fill-purple-text);
+    }
+
+    .loyalty-section-card.purple:hover {
+        border-color: var(--fill-purple-text);
+    }
+
+    .loyalty-section-card.green .Heading2 {
+        color: var(--fill-green-text);
+    }
+
+    .loyalty-section-card.green span {
+        color: var(--fill-green-text);
+    }
+
+    .loyalty-section-card.green:hover {
+        border-color: var(--fill-green-text);
+    }
+
+    .loyalty-section-card.yellow .Heading2 {
+        color: var(--fill-yellow-text);
+    }
+
+    .loyalty-section-card.yellow span {
+        color: var(--fill-yellow-text);
+    }
+
+    .loyalty-section-card.yellow:hover {
+        border-color: var(--fill-yellow-text);
+    }
+
+    .loyalty-section-card.red .Heading2 {
+        color: var(--fill-red-text);
+    }
+
+    .loyalty-section-card.red span {
+        color: var(--fill-red-text);
+    }
+
+    .loyalty-section-card.red:hover {
+        border-color: var(--fill-red-text);
+    }
+
+    .loyalty-section-card.teal .Heading2 {
+        color: var(--fill-teal-text);
+    }
+
+    .loyalty-section-card.teal span {
+        color: var(--fill-teal-text);
+    }
+
+    .loyalty-section-card.teal:hover {
+        border-color: var(--fill-teal-text);
+    }
+
+    .loyalty-section-card.primary .Heading2 {
+        color: var(--Primary900);
+    }
+
+    .loyalty-section-card.primary span {
+        color: var(--Primary900);
+    }
+
+    .loyalty-section-card.primary:hover {
+        border-color: var(--Primary900);
+    }
+
+    .loyalty-section-card .k-svg-icon > svg {
+        display: none;
+    }
+
+.nosvgIcon .k-svg-icon > svg {
+    display: none;
+}
+
+@-webkit-keyframes shimmer {
+    to {
+        background-position: -200% 0
+    }
+}
+
+@keyframes shimmer {
+    to {
+        background-position: -200% 0
+    }
+}
+
+/* Loyalty - END */
+
+/* Icons */
+
+.icons-doc {
+    margin-inline: 20rem;
+}
+
+    .icons-doc .hero-title .Heading1 {
+        font-size: 3rem;
+    }
+
+    .icons-doc .hero-title .Heading2 {
+        font-size: var(--sz-20);
+    }
+
+    .icons-doc .loyalty-section-cotnent {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+/* Icons - END */
+
+/* No of activities */
+
+.activities {
+    display: flex;
+    list-style-type: none;
+    margin: auto;
+    padding: var(--sz-0);
+    flex-direction: column;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.activities-item {
+    background-color: var(--Primary100-Hover);
+    border: var(--sz-1) solid var(--light);
+    border-radius: var(--sz-full);
+    color: var(--Primary900);
+    display: flex;
+    font-family: var(--font-bold);
+    font-size: var(--sz-12);
+    height: var(--sz-32);
+    width: var(--sz-32);
+    line-height: var(--sz-32);
+    text-align: center;
+    transition: margin 0.1s ease-in-out;
+    /* margin-left: -10px; */
+    z-index: 9;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+
+
+/* End of day Report Panel */
+
+.panelbar-eodreport {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--sz-3);
+}
+
+.panelbar-template {
+    padding: 20px;
+    font-size: var(--sz-16) !important;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.panelbar-eodreport .AvatarTeams, .k-panelbar-toggle.k-icon, .k-link.k-selected {
+    background-color: transparent !important;
+}
+
+.panelbar-eodreport ul.k-panelbar, li.k-panelbar-header {
+    font-size: var(--sz-16) !important;
+    font-weight: normal;
+}
+
+
+.section-card {
+    padding: var(--sz-16) !important;
+    border: var(--border-1);
+    border-width: var(--sz-1);
+    border-radius: var(--sz-6);
+    background-color: var(--light);
+    color: var(--Text-100);
+}
+
+.text-nowrap {
+    text-wrap: nowrap !important;
+}
+
+.value-changed-bg {
+    color: var(--Critical900);
+    background-color: var(--Critical100);
+    border-color: var(--Critical100);
+    min-width: 96px;
+}
+
+.form-buttons-popup {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    gap: var(--sz-8);
+    align-items: center;
+    padding-inline-end: var(--sz-16);
+    height: 7vh;
+    bottom: 0px;
+    justify-content: flex-end !important;
+}
+
+.custom-popup .k-window-actions {
+    border: unset !important;
+}
+
+.form-buttons-popup .k-button span.k-button-icon {
+    color: unset !important;
+}
+
+.custom-popup .k-checkbox-wrap {
+    align-self: unset !important;
+}
+
+.actionsmenu-items.k-item .k-link:hover {
+    background-color: unset !important;
+    color: var(--fill-item-unselected) !important
+}
+
+.owned-sticky-cards {
+    max-height: 55vh;
+    position: relative;
+    overflow-y: auto;
+    border-bottom-right-radius: var(--sz-8);
+    border-bottom-left-radius: var(--sz-8);
+    border-top-right-radius: var(--sz-8);
+    border-top-left-radius: var(--sz-8);
+    border-bottom: var(--border-1);
+    border-top: var(--border-1);
+}
+
+.k-tabstrip-content, .k-tabstrip > .k-content {
+    height: 80vh;
+}
+
+.k-tabstrip-top > .k-tabstrip-items-wrapper {
+    position: sticky;
+    top: 10px;
+}
+
+.cards-list ul > div:first-child li {
+    border-top: unset;
+}
+
+.cards-list ul > div:last-child li {
+    border-bottom: unset !important;
+}
+
+.accountStatement-content .k-tabstrip-top > .k-content, .k-tabstrip-top > .k-tabstrip-content {
+    padding-block: unset;
+}
+
+.request-wrap-text {
+    line-height: 1.5rem;
+    display: flex;
+    flex-flow: wrap;
+}
+
+    .request-wrap-text .StatusFlag {
+        padding: var(--sz-0) var(--sz-8) !important;
+    }

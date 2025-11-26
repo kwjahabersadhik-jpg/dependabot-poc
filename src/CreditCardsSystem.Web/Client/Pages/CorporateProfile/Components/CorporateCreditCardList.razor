@@ -1,0 +1,147 @@
+﻿@using CreditCardsSystem.Domain.Models.Access;
+@using CreditCardsSystem.Domain.Models.CardOperation;
+@using CreditCardsSystem.Domain.Models.Corporate
+@using CreditCardsSystem.Domain.Models.SupplementaryCard;
+@using CreditCardsSystem.Web.Client.Components.Dialog;
+@using System.ComponentModel;
+@using CreditCardsSystem.Domain.Common;
+@using CreditCardsSystem.Domain.Enums;
+@using CreditCardsSystem.Domain.Models.Card;
+@using CreditCardsSystem.Domain.Shared.Interfaces;
+@using CreditCardsSystem.Utility.Extensions;
+@using CreditCardsSystem.Web.Client.Components.Elements
+@using CreditCardsSystem.Web.Client.Pages.CardRequest;
+@using CreditCardsSystem.Web.Client.Pages.CardRequest.Components
+@inject ICustomerProfileAppService CustomerProfileAppService;
+@inject IRequestAppService RequestAppService;
+@inject IReportAppService ReportService;
+@inject ICardDetailsAppService CardDetailsAppService;
+@inject IRequestActivityAppService RequestActivityAppService;
+
+@inject IJSRuntime Js;
+
+@inherits CancellableComponent
+@if (Cards is not null)
+{
+    <div class="table-header mt-6 mx-0">
+        <Title Text="Owned Credit Cards"></Title>
+        <div class="table-selectedFilters">
+            <SingleDropdown Type="Status" DropDownData="@StatusValue" SelectedValue="@FilterCardStatus" SelectedValueChanged="@OnChangeCardStatus"></SingleDropdown>
+            <SingleDropdown Type="Category" DropDownData="@CardCategories" SelectedValue="@FilterCardCategory" SelectedValueChanged="@OnChangeCardCategory"></SingleDropdown>
+        </div>
+    </div>
+
+    <div class="KFHnopadding kfh-data-table">
+        <TelerikGrid Data="@FilteredCards" @ref=CardgridRef EditMode="@GridEditMode.Inline"
+                     Pageable="true" PageSize="20" Width="100%" Resizable="false" Reorderable="false"
+                     Groupable="true"
+                     Sortable="false" SortMode="@SortMode.Multiple">
+
+            <GridColumns>
+                <GridColumn Field="" OnCellRender="@((e) => e.Class = "Cell5")" HeaderClass="Cell5">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+
+
+                            <TelerikButton class="AO-image--button" OnClick="async () => { _selectedCard=item; await CreditCarDetailsDrawerRef.ToggleAsync();}">
+                                <picture>
+                                    <source srcset="" />
+                                    <img class="AO-cell--image" src=@GetCreditCardImage(item?.CardType) />
+                                </picture>
+                            </TelerikButton>
+
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Card Details" OnCellRender="@((e) => e.Class = "Cell17 AO-detailed--cell")" HeaderClass="Cell17 AO-detailed--cell">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            string? cardNumber = DisplayCardNumber(item?.CardNumberDto);
+                            <TelerikTooltip Id="cardNumberT" TargetSelector="#cardNumber" ShowOn="@TooltipShowEvent.Hover" Position="TooltipPosition.Bottom"></TelerikTooltip>
+                            <a href="@StatementPageLink(item.RequestId.ToString())">
+                                <H2 Id="cardNumber" Title="Click here to view card statement"> @cardNumber</H2>
+                            </a>
+
+                            <H3 title="Civil Id" id="civilId"> <span class="icon-Id-card"></span> @item.CivilId</H3>
+                            <H3 title="Mobile Number" id="mobile-number"> <span class="icon-Phone"></span> @item.MobileNumber</H3>
+                            <H3>@item.BankAccountNumber</H3>
+                            <H3>@item?.ProductType</H3>
+                            <SubH1>Branch - @(item?.BranchName)</SubH1>
+                        }
+                    </Template>
+                </GridColumn>
+
+
+                <GridColumn Field="Approved Limit" OnCellRender="@((e) => e.Class = "Cell15 Amountalign AO-cell--removepr AO-cell--removepl")" HeaderClass="Cell15 Amountalign AO-cell--removepr AO-cell--removepl">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            <H2>@(item?.ApprovedLimit.ToString("n3") ?? "0.000")</H2>
+                        }
+                    </Template>
+                </GridColumn>
+
+
+
+                <GridColumn Field="Open Date" OnCellRender="@((e) => e.Class = "Cell15 Amountalign AO-cell--removepr AO-cell--removepl")" HeaderClass="Cell15 Amountalign AO-cell--removepr AO-cell--removepl">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            <H3>@(item?.OpenedDate.ToString("MMMM d, yyyy"))</H3>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Expiry  Date" OnCellRender="@((e) => e.Class = "Cell15 Amountalign AO-cell--removepr AO-cell--removepl")" HeaderClass="Cell15 Amountalign AO-cell--removepr AO-cell--removepl">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            <H3>@(item?.ExpirationDate?.ToString("MMMM d, yyyy"))</H3>
+                        }
+                    </Template>
+                </GridColumn>
+
+                <GridColumn Field="Card Status" OnCellRender="@((e) => e.Class = "Cell10 AO-CellTitle--pl AO-cell--removepl")" HeaderClass="Cell10 AO-CellTitle--pl AO-cell--removepl">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            <Status StatusClass="@StatusClass(item!.StatusId)" StatusTitle="@item.Status"></Status>
+                        }
+                    </Template>
+                </GridColumn>
+
+
+                <GridColumn Field="" OnCellRender="@((e) => e.Class = "col-1")" HeaderClass="col-1">
+                    <Template>
+                        @{
+                            var item = context as CorporateCard;
+                            var Actions = EligibleActions.Select(x => new ListItem<string>(x.Text, x.Text)).ToList();
+                            <ActionMenuNew Data="@Actions" Status="DataStatus.Success" Callback="@(async (ListItem<string> selectedItem)=> {await detailRef.LoadCardBalance(item.RequestId); } )" />
+                        }
+                    </Template>
+                </GridColumn>
+
+            </GridColumns>
+
+            <NoDataTemplate>
+                <NoRecordsFound />
+            </NoDataTemplate>
+        </TelerikGrid>
+    </div>
+}
+else
+{
+    <div class="KFHnopadding kfh-data-table">
+        <DataTableSkeleton />
+    </div>
+}
+
+
+<CorporateCardDetail @ref=detailRef />
+@code {
+    private CorporateCardDetail detailRef { get; set; } = default!;
+}
+

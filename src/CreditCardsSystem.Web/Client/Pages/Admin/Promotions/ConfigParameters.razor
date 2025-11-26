@@ -1,0 +1,259 @@
+﻿@using CreditCardsSystem.Domain.Models.Access
+@using Telerik.FontIcons
+@using CreditCardsSystem.Domain.Common
+@using CreditCardsSystem.Domain.Enums
+@using CreditCardsSystem.Domain.Models.BCDPromotions.Services
+@using CreditCardsSystem.Domain.Shared.Enums
+@using CreditCardsSystem.Domain.Shared.Interfaces
+@using CreditCardsSystem.Domain.Shared.Models.BCDPromotions.ConfigParameter
+@using Telerik.Blazor.Data
+
+
+@page "/config/params"
+@inject IConfigParameterAppService ConfigParameterAppService
+@inject ILogger<ConfigParameters> Logger
+@inherits ApplicationComponent
+
+<ul style="color:red">
+    @foreach (var error in Errors)
+    {
+        <li>@error</li>
+    }
+</ul>
+
+@if (!IsAllowTo(Permissions.ConfigParameter.View()))
+{
+    <AccessDenied />
+}
+else
+{
+
+<div class="main-container">
+    <div class="container-fluid">
+            <div class="table-header mx-0">
+                <Title Text="Configuration Parameters"></Title>
+            </div>
+            <div class="KFHnopadding kfh-data-table">
+                @if (ParamsResponse.Status == DataStatus.Success)
+                {
+                    <TelerikGrid Data="@ParamsResponse.Data"
+                                EditMode="@GridEditMode.Inline"
+                                Pageable="true"
+                                PageSize="10"
+                                Width="100%"
+                                OnUpdate="@EditParam">
+
+                        <GridToolBarTemplate>
+
+                            <span class="k-toolbar-spacer"></span>
+                            <GridSearchBox Size="@ThemeConstants.SearchBox.Size.Large" />
+
+                        </GridToolBarTemplate>
+
+                        <GridColumns>
+
+                            <GridColumn Field="@nameof(ConfigParameterDto.ParamName)" Title="Parameter Name" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-start ps-4")" HeaderClass="col-xl-1 text-start ps-4">
+                                <Template>
+
+                                    @{
+                                        var item = context as ConfigParameterDto;
+                                        <H4 class="text-start">@item!.ParamName</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(ConfigParameterDto.ParamType)" Title="Parameter Type" Editable="false" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ConfigParameterDto;
+                                        <H4>@item!.ConfigParameterType</H4>
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(ConfigParameterDto.ParamValue)" Title="Parameter Value" OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ConfigParameterDto;
+                                        if (item!.ParamValue == "0")
+                                        {
+                                            <H4>No</H4>
+                                        }
+                                        else if (item.ParamValue == "1")
+                                        {
+                                            <H4>Yes</H4>
+                                        }
+                                        else
+                                        {
+                                            <H4>@item!.ParamValue</H4>
+                                        }
+                                    }
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+
+                                        var item = context as ConfigParameterDto;
+
+                                        if (item!.ConfigParameterType == ConfigParameterTypes.Text || item!.ConfigParameterType == ConfigParameterTypes.Number)
+                                        {
+                                            <TelerikTextBox @bind-Value="@item.ParamValue"></TelerikTextBox>
+                                        }
+                                        if (item.ConfigParameterType == ConfigParameterTypes.Boolean)
+                                        {
+                                            var value = item.ParamValue == "1";
+                                            <TelerikCheckBox @bind-Value="@value" OnChange="(val) => OnValueChanged(val , item)"></TelerikCheckBox>
+                                        }
+                                    }
+                                </EditorTemplate>
+
+                            </GridColumn>
+
+                            <GridColumn Field="@nameof(ConfigParameterDto.ParamDesc)" Title="Parameter Description" OnCellRender="@((e) => e.Class = "col-xl-2 text-center")" HeaderClass="col-xl-2 text-center">
+                                <Template>
+
+                                    @{
+                                        var item = context as ConfigParameterDto;
+                                        <TelerikTextArea @bind-Value="@item!.ParamDesc" Enabled="false"></TelerikTextArea>
+                                    }
+
+                                </Template>
+                                <EditorTemplate>
+                                    @{
+                                        var item = context as ConfigParameterDto;
+                                        <TelerikTextArea @bind-Value="@item!.ParamDesc"></TelerikTextArea>
+                                    }
+                                </EditorTemplate>
+                            </GridColumn>
+
+                            <GridCommandColumn OnCellRender="@((e) => e.Class = "col-xl-1 text-center")" HeaderClass="col-xl-1 text-center">
+
+
+                                @if (IsAllowTo(Permissions.ConfigParameter.Edit()))
+                                {
+                                    <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true">Save</GridCommandButton>
+                                    <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil"></GridCommandButton>
+                                }
+
+                                <GridCommandButton Command="Cancel" Icon="@FontIcon.Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+
+
+
+                            </GridCommandColumn>
+
+                        </GridColumns>
+
+                        <NoDataTemplate>
+                            <NoRecordsFound />
+                        </NoDataTemplate>
+
+                    </TelerikGrid>
+
+                }
+                else if (ParamsResponse.Status == DataStatus.Loading)
+                {   
+                    <div class="col-12 p-5">
+                        <SkeletonBuilder Type="Table" Rows="4" Columns="5" ColWidth="100" ColHeight="15" Margin="my-4"></SkeletonBuilder>
+                    </div>
+                    @* <DataTableSkeleton /> *@
+
+                }
+                else if (ParamsResponse.Status == DataStatus.Error)
+                {
+                    <EmptyState IconName="tech-error" Heading="Technical Error" Description="An error occurred in retrieving data, please contact support team."></EmptyState>
+
+                }
+
+            </div>
+        </div>
+    </div>
+}
+@code {
+
+ 
+
+    public DataItem<List<ConfigParameterDto>> ParamsResponse { get; } = new();
+    public ConfigParameterDto SelectedParameter { get; set; } = new();
+    public List<string> Errors { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetParams();
+    }
+
+    async Task GetParams()
+    {
+        ParamsResponse.Loading();
+        var response = await ConfigParameterAppService.Get();
+        if (response.IsSuccess)
+            ParamsResponse.SetData(response.Data!);
+        else
+            ParamsResponse.Error(new Exception(response.Message));
+    }
+
+    bool ValidateParameter(ConfigParameterDto parameter)
+    {
+        Errors = new List<string>();
+        switch (parameter.ConfigParameterType)
+        {
+            case ConfigParameterTypes.Text:
+                if (string.IsNullOrEmpty(parameter.ParamValue))
+                {
+                    Errors.Add("Parameter Value cannot be blank");
+                }
+                break;
+            case ConfigParameterTypes.Number:
+                if (string.IsNullOrEmpty(parameter.ParamValue))
+                {
+                    Errors.Add("Parameter Value should be numeric");
+                }
+                break;
+        }
+
+        if (string.IsNullOrEmpty(parameter.ParamDesc))
+            Errors.Add("Parameter Description cannot be blank");
+
+        return !Errors.Any();
+    }
+
+    async Task EditParam(GridCommandEventArgs args)
+    {
+        try
+        {
+            var param = (ConfigParameterDto)args.Item;
+
+            var isValid = ValidateParameter(param);
+
+            if (!isValid) return;
+
+            var response = await ConfigParameterAppService.Update(param);
+
+            if (response.IsSuccess)
+            {
+                Notification.Show(AlertType.Success, "parameter is updated successfully");
+                await GetParams();
+            }
+            else
+                Notification.Show(AlertType.Error, response.Message);
+        }
+        catch (Exception e)
+        {
+            Notification.Show(AlertType.Error, "something went wrong...please try again");
+            Logger.LogError(e, nameof(EditParam));
+        }
+    }
+
+    void OnValueChanged(object value, ConfigParameterDto parameterDto)
+    {
+        var paramValue = parameterDto.ConfigParameterType switch
+        {
+            ConfigParameterTypes.Boolean => (bool)value ? "1" : "0",
+            ConfigParameterTypes.Number => (string)value,
+            _ => string.Empty
+        };
+
+        parameterDto.ParamValue = paramValue!;
+    }
+
+}

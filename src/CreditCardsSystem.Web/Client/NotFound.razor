@@ -1,0 +1,22 @@
+﻿@inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
+
+<PageTitle>Not Found</PageTitle>
+
+<div class="kfh-404-header">
+    <img src="dist/images/kfh-logo.svg" alt="Kuwait Finance House" />
+</div>
+
+<div class="kfh-404-content">
+    <img src="dist/images/404- Illustration.svg" alt="Kuwait Finance House" />
+
+    <h6>Whooops! Lost in space?</h6>
+    <p>They say that all roads lead to Rome. But we've lost our way, so let's try going home.</p>
+    <TelerikButton class="kfh-btn-primary-green-normal btn btn-sm" ButtonType="ButtonType.Submit" OnClick="@BackHome">Back Home</TelerikButton>
+</div>
+
+<div class="kfh-404-footer">Kuwait Finance House © @DateTime.Now.Year</div>
+
+@code {
+    void BackHome() => NavigationManager.NavigateTo("/");
+}

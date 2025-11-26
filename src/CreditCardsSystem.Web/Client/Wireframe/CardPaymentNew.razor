@@ -1,0 +1,84 @@
+﻿@page "/cardpaymentnew"
+@layout BlankLayout
+@inherits ApplicationComponent
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-8">
+<TelerikButton Class="btn btn-primary btn-sm" OnClick="async () => await OffCanvasRef.ToggleAsync()">Card Payment</TelerikButton>
+</div>
+<OffCanvas @ref="OffCanvasRef" Title="Card Payment">
+     <OffcanvasContent>
+
+        <div class="cardDetails-drawerHeader">
+            <div class="AO-card--header">
+                <picture>
+                    <img src="@DefaultImage" />
+                </picture>
+            </div>
+            <div class="card-basicInfo">
+                <H2>2626XXX1211XXX12121 </H2>
+                <H4>ChargeCard </H4>
+            </div>
+        </div>
+
+        <div class="form-flex">
+            <ul class="list">
+                    <li>
+                         <div class="mt-6">
+                            <H5>Due Amount</H5>
+                            <H3>55.250 <SubH2>KWD</SubH2></H3>
+                        </div>
+                    </li>
+                    <li>
+                          <div class="mt-6">
+                            <label class="editor-label mb-2">Debit Account*</label>
+                                <TelerikDropDownList Data="@DebitAccount" @bind-Value="@AccountValue" TextField="name" ValueField="value"  DefaultText="Select Account">
+                                <DropDownListSettings>
+                                    <DropDownListPopupSettings MaxHeight="200px" />
+                                </DropDownListSettings>
+                                </TelerikDropDownList>
+                          </div>
+                    </li>
+                    <li>
+                          <div class="mt-6">
+                            <H5>Available Balance</H5>
+                            <H3>1155.250 <SubH2>KWD</SubH2></H3>
+                          </div>
+                    </li>
+                       
+
+                    <li>
+                          <div class="mt-6">
+                             <TextInputField Type="textfield-input" Label="Amount" Placeholder="0" HelperText="Enter amount for payment "></TextInputField>
+                          </div>
+                    </li>
+                </ul>
+      
+        </div>
+    </OffcanvasContent>
+   
+    <OffcanvasFooterContent>
+            <div class="drawer-buttons justify-content-between align-items-center">
+                <Button Type="btn-secondary" ButtonType="@ButtonType.Button" Label="Cancel"></Button>
+                <Button Type="btn-primary btn-sm" Label="Submit"></Button>
+
+            </div>
+        </OffcanvasFooterContent>
+
+</OffCanvas>
+
+
+
+@code {
+    
+public OffCanvas OffCanvasRef { get; set; }
+
+
+public string StatusValue { get; set; } = "Activate";
+public List<string> Status { get; set; } = new List<string> { "Activate", "Block", "Lock", "Delete" };
+public string TextAreaValue { get; set; }
+
+public List<string> DebitAccount { get; set; } = new List<string> { "Account 1", "Account 2", "Account 3", "Account 4" };
+
+ public string AccountValue { get; set; } = "";
+
+}
